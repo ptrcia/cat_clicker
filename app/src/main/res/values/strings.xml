@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">android_app</string>
+    <string name="contentDescriptiontienda">tienda</string>
+    <string name="tienda">Tienda</string>
+    <string name="button_to_click_to_obtain_points">Button to click to obtain points</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,5 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.application) // Solo necesitas este alias si está definido en el build.gradle root
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -25,19 +27,41 @@ android {
             )
         }
     }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17 // Cambiado del 11 al 17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
+
+    // En teoría esto está desfasado
+    // implementation(libs.legacy.support.v4)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.room.compiler) // para room
+
+    implementation(libs.gson)
 }
