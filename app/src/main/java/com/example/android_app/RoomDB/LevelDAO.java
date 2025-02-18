@@ -9,11 +9,11 @@ import androidx.room.Query;
 import java.util.List;
 
 @Dao
-public interface ClickUpgradeDAO {
+public interface LevelDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ClickUpgrade clickUpgrade);
+    void insert(Level level);
 
-    @Query("SELECT * FROM click_upgrade")
-    LiveData<List<ClickUpgrade>> getAllUpgrades();
+    @Query("SELECT * FROM level WHERE clickUpgradeId = :clickUpgradeId ORDER BY level ASC")
+    LiveData<List<Level>> getLevelsByClickUpgrade(int clickUpgradeId);
 }

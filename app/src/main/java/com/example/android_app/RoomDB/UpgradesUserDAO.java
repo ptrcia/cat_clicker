@@ -9,11 +9,11 @@ import androidx.room.Query;
 import java.util.List;
 
 @Dao
-public interface ClickUpgradeDAO {
+public interface UpgradesUserDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ClickUpgrade clickUpgrade);
+    void insert(UpgradesUser upgradesUser);
 
-    @Query("SELECT * FROM click_upgrade")
-    LiveData<List<ClickUpgrade>> getAllUpgrades();
+    @Query("SELECT * FROM user_upgrades WHERE idUpgrades = :idUpgrades")
+    LiveData<List<UpgradesUser>> getUserUpgrades(int userId);
 }

@@ -35,26 +35,7 @@ public class QueryTest {
             }
         });
     }
-    public void clickUpgradeQuery(){
-        //Consulta 2
-        LiveData<List<ClickUpgrade>> clickUpgradesLiveData = db.clickUpgradeDAO().getAllUpgrades();
-        clickUpgradesLiveData.observe(lifecycleOwner, new Observer<List<ClickUpgrade>>() {
-            @Override
-            public void onChanged(List<ClickUpgrade> clickUpgrades) {
-                for (ClickUpgrade clickUpgrade : clickUpgrades) {
-                    Log.d("QueryExample", "Upgrade: " + clickUpgrade.getName() + ", Key: " + clickUpgrade.getKey() + ", Description: " + clickUpgrade.getDescription());
-                    List<Level> levels = clickUpgrade.getLevel();
-                    if (levels != null) {
-                        for (Level level : levels) {
-                            Log.d("QueryExample", "Level: " + level.getLevel() + ", Cost: " + level.getCost() + ", Effect: " + level.getEffect());
-                        }
-                    } else {
-                        Log.d("QueryExample", "Levels: null");
-                    }
-                }
-            }
-        });
-
+    public void clickUpgradeQuery() {
     }
 
     //Lista ClickUpgrades
@@ -66,14 +47,6 @@ public class QueryTest {
     public LiveData<ClickUpgrade> getAllActiveUpgradesL1() {
         return db.clickUpgradeDAO().getActiveUpgrade1();
     }
-  /*  public  LiveData<ClickUpgrade> gerActiveUpgrade1Level1() {
-        return db.clickUpgradeDAO().getActiveUpgrade1Level1();
-    }
-    public LiveData<ClickUpgrade> getAllActiveUpgradesL2Level1() {
-        return db.clickUpgradeDAO().getActiveUpgrade2Level1();
-    }*/
-
-
 
     //Lista ClickUpgrades pasivos
     public LiveData<ClickUpgrade> getAllPassiveUpgradesL1() {
@@ -90,15 +63,7 @@ public class QueryTest {
     }
 
     //objetner los nivele s(mejoras) de un usuario
-    public LiveData<List<UpgradesUser>> getUserActiveLevels(String user) {
-        return Transformations.map(db.userStatsDAO().getAllUserStats(), userStatsList -> {
-            List<UpgradesUser> activeLevels = new ArrayList<>();
-            for (UserStats userStats : userStatsList) {
-                activeLevels.addAll(userStats.getLevelActive());
-            }
-            return activeLevels;
-        });
-    }
+
     public LiveData<UserStats> getUserStats(String user) {
         return db.userStatsDAO().getUserStatsByName(user);
     }

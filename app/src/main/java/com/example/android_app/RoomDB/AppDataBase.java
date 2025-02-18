@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ClickUpgrade.class, UserStats.class}, version =2, exportSchema = false)
-@TypeConverters({Converters.class})
+@Database(entities = {ClickUpgrade.class, UserStats.class, Level.class, UpgradesUser.class}, version =2, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     //region Configuración
@@ -25,6 +24,8 @@ public abstract class AppDataBase extends RoomDatabase {
     //DAOs
     public abstract ClickUpgradeDAO clickUpgradeDAO();
     public abstract UserStatsDAO userStatsDAO();
+    public abstract LevelDao levelDAO();
+    public abstract UpgradesUserDAO upgradesUserDAO();
 
     //Manejo de hilos
     private static final int NUMBER_OF_THREADS = 4;
@@ -69,41 +70,26 @@ public abstract class AppDataBase extends RoomDatabase {
                 //Insertar UserStats vacio porq va a leerse y escribirse
 
                 List<UpgradesUser> levelsUserActive = new ArrayList<>();
-                levelsUserActive.add(new UpgradesUser( 0, 0));
-                levelsUserActive.add(new UpgradesUser( 0, 0));
+                levelsUserActive.add(new UpgradesUser( 0, 0, 1));
+                levelsUserActive.add(new UpgradesUser( 0, 0, 1));
 
                 List<UpgradesUser> levelsUserPassive = new ArrayList<>();
-                levelsUserPassive.add(new UpgradesUser( 0, 0));
-                levelsUserPassive.add(new UpgradesUser(  0,0));
+                levelsUserPassive.add(new UpgradesUser( 0, 0, 1));
+                levelsUserPassive.add(new UpgradesUser(  0,0, 1));
 
-                UserStats userStats = new UserStats("User1", 0, 0, 0,  levelsUserActive, levelsUserPassive);
+                UserStats userStats = new UserStats("User1", 0, 0, 0, 1 );
 
                 userStatsDAO.insert(userStats);
 
-                //Lista de los niveles dentro de cada mejora activa
-                List<Level> levelsActive1 = new ArrayList<>();
-                levelsActive1.add(new Level(1, 1, 2));
-                levelsActive1.add(new Level(2, 2, 4));
+                // niveles dentro de cada mejora activa
 
-                List<Level> levelsActive2 = new ArrayList<>();
-                levelsActive2.add(new Level(1, 4, 6));
-                levelsActive2.add(new Level(2, 6, 8));
-
-                //Lista de los niveles dentro de cada mejora pasiva
-                List<Level> levelsPassive1 = new ArrayList<>();
-                levelsPassive1.add(new Level(1, 1, 2));
-                levelsPassive1.add(new Level(2, 2, 4));
-
-                List<Level> levelsPassive2 = new ArrayList<>();
-                levelsPassive2.add(new Level(1, 4, 6));
-                levelsPassive2.add(new Level(2, 6, 8));
 
                 //Llistas de mejoras activas y pasivas
-                clickUpgradeDAO.insert(new ClickUpgrade("MejoraActiva1", "acp_1", 1,"Activa1", levelsActive1));
-                clickUpgradeDAO.insert(new ClickUpgrade("MejoraActiva2", "acp_2", 1,"Activa2", levelsActive2));
+                clickUpgradeDAO.insert(new ClickUpgrade(1, "Cuchue", "","Activa"));
+                clickUpgradeDAO.insert(new ClickUpgrade(2, "Castillo", "","Activa"));
 
-                clickUpgradeDAO.insert(new ClickUpgrade("MejoraPasiva1", "pcp_1", 1,"Pasiva1", levelsPassive1));
-                clickUpgradeDAO.insert(new ClickUpgrade("MejoraPasiva2", "pcp_2",  1,"Pasiva2", levelsPassive2));
+                clickUpgradeDAO.insert(new ClickUpgrade(1, "Gato", "","Pasiva"));
+                clickUpgradeDAO.insert(new ClickUpgrade(2, "Veterinario",  "","Pasiva"));
 
             });
         }

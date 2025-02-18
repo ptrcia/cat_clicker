@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Entity(tableName = "user_stats")
-@TypeConverters(Converters.class)
 public class UserStats {
 
     @PrimaryKey
@@ -19,16 +18,15 @@ public class UserStats {
     int totalScore;  //Total score
     int pcuTotal;   // suma total de todos los upgrades pasivos
     int acuTotal;  // suma total de todos los upgrades activos
-    List<UpgradesUser> levelActive;
-    List<UpgradesUser> levelPassive;
+    int id; //id para relacionarlo con upgradesuser
 
-    public UserStats(@NonNull String name ,int totalScore, int pcuTotal, int acuTotal , List<UpgradesUser> levelActive, List<UpgradesUser> levelPassive) {
+
+    public UserStats(@NonNull String name ,int totalScore, int pcuTotal, int acuTotal , int id ) {
         this.name = name;
         this.totalScore = totalScore;
         this.pcuTotal = pcuTotal;
         this.acuTotal = acuTotal;
-        this.levelActive = levelActive;
-        this.levelPassive = levelPassive;
+        this.id = id;
     }
     @NonNull
     public String getName() {
@@ -59,18 +57,12 @@ public class UserStats {
         this.acuTotal = acuTotal;
     }
 
-    public List<UpgradesUser> getLevelActive() {
-        return levelActive;
+    public int getId() {
+        return id;
     }
-    public void setLevelActive(List<UpgradesUser> levelActive) {
-        this.levelActive = levelActive;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public List<UpgradesUser> getLevelPassive() {
-        return levelPassive;
-    }
-    public void setLevelPassive(List<UpgradesUser> levelPassive) {
-        this.levelPassive = levelPassive;
-    }
 
 }
