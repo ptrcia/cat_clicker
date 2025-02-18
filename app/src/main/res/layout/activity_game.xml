@@ -105,33 +105,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Logros"
-            android:textColor="@color/white">
-
-        </Button>
-
-        <Button
-            android:id="@+id/buttonA"
-            style="?android:attr/buttonBarButtonStyle"
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="A"
-
-            android:textColor="@color/white">
-
-        </Button>
-
-        <Button
-            android:id="@+id/buttonB"
-            style="?android:attr/buttonBarButtonStyle"
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="B"
-
+            android:text="Mejoras pasivas"
             android:textColor="@color/white">
 
         </Button>
@@ -143,8 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/contentDescriptiontienda"
-
-            android:text="@string/tienda"
+            android:text="Mejoras activas"
             android:textColor="@color/white">
 
         </Button>

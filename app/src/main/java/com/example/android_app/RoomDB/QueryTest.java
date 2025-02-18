@@ -5,7 +5,9 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueryTest {
@@ -19,19 +21,21 @@ public class QueryTest {
 
     }
 
-    public void executeQuery() {
+    public void userStatsQuery() {
 
         //Consulta 1
         LiveData<List<UserStats>> userStatsLiveData = db.userStatsDAO().getAllUserStats();
-            userStatsLiveData.observe(lifecycleOwner, new Observer<List<UserStats>>() {
-                @Override
-                public void onChanged(List<UserStats> userStats) {
-                    for (UserStats userStat : userStats) {
-                        //Solo hay 1 así que solo imprime 1
-                        Log.d("QueryExample", "User: " + userStat.getName() + ", Total Score: " + userStat.GetTotalScore());
-                    }
+        userStatsLiveData.observe(lifecycleOwner, new Observer<List<UserStats>>() {
+            @Override
+            public void onChanged(List<UserStats> userStats) {
+                for (UserStats userStat : userStats) {
+                    //Solo hay 1 así que solo imprime 1
+                    Log.d("QueryExample", "User: " + userStat.getName() + ", Total Score: " + userStat.getTotalScore());
                 }
+            }
         });
+    }
+    public void clickUpgradeQuery(){
         //Consulta 2
         LiveData<List<ClickUpgrade>> clickUpgradesLiveData = db.clickUpgradeDAO().getAllUpgrades();
         clickUpgradesLiveData.observe(lifecycleOwner, new Observer<List<ClickUpgrade>>() {
@@ -51,4 +55,50 @@ public class QueryTest {
             }
         });
     }
+
+    //Lista ClickUpgrades
+    public LiveData<List<ClickUpgrade>> getAllClickUpgrades() {
+        return db.clickUpgradeDAO().getAllUpgrades();
+    }
+
+    //Lista ClickUpgrades activos
+    public LiveData<List<ClickUpgrade>> getAllActiveUpgradesL1() {
+        return db.clickUpgradeDAO().getActiveUpgrade1();
+    }
+    public LiveData<List<ClickUpgrade>> getAllActiveUpgradesL2() {
+        return db.clickUpgradeDAO().getActiveUpgrade2();
+    }
+    //Lista ClickUpgrades pasivos
+    public LiveData<List<ClickUpgrade>> getAllPassiveUpgradesL1() {
+        return db.clickUpgradeDAO().getPassiveUpgrade1();
+    }
+    public LiveData<List<ClickUpgrade>> getAllPassiveUpgradesL2() {
+        return db.clickUpgradeDAO().getPassiveUpgrade2();
+    }
+
+    //Lista UserStats
+    public LiveData<List<UserStats>> getAllUserStats() {
+        return db.userStatsDAO().getAllUserStats();
+    }
+    //Resultado level userStats
+    /*public LiveData<List<UpgradesUser>> getLevel() {
+        return db.userStatsDAO().getActiveLevel();
+    }*/
+
+
+    public LiveData<List<UpgradesUser>> getUserActiveLevels(String user) {
+        return Transformations.map(db.userStatsDAO().getAllUserStats(), userStatsList -> {
+            List<UpgradesUser> activeLevels = new ArrayList<>();
+            for (UserStats userStats : userStatsList) {
+                activeLevels.addAll(userStats.getLevelActive());
+            }
+            return activeLevels;
+        });
+    }
+
+    public LiveData<List<UserStats>> getUserStats(String user) {
+        return db.userStatsDAO().getAllUserStats();
+    }
+
+
 }

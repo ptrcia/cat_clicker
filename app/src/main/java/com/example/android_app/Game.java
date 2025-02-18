@@ -1,7 +1,6 @@
 package com.example.android_app;
 
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,7 +45,7 @@ public class Game extends AppCompatActivity {
                 Log.d("Clicker-> ", "Se ha hecho click en tienda");
 
                 //Open a fragment to the store
-                Fragment fragment = StoreFragment.newInstance();
+                Fragment fragment = ActiveUpgradeFragment.newInstance();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 Log.d("Clicker->", "Transacción de fragmento en progreso");
 
@@ -68,7 +67,7 @@ public class Game extends AppCompatActivity {
         //Consulta de prueba para imprimir
         AppDataBase db = AppDataBase.getDatabase(this);
         QueryTest queryTest = new QueryTest(db, this);
-        queryTest.executeQuery();
+        queryTest.userStatsQuery();
     }
 
 

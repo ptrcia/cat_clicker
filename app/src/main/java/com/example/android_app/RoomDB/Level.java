@@ -1,6 +1,14 @@
 package com.example.android_app.RoomDB;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
+
+@Entity(tableName = "level")
 public class Level {
+    @PrimaryKey
+    @NotNull
     public int level;
     public int cost;
     public int effect;

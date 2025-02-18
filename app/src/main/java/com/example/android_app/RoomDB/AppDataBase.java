@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ClickUpgrade.class, UserStats.class}, version = 1, exportSchema = false)
+@Database(entities = {ClickUpgrade.class, UserStats.class, UpgradesUser.class}, version = 1, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDataBase extends RoomDatabase {
 
@@ -64,7 +64,17 @@ public abstract class AppDataBase extends RoomDatabase {
                 UserStatsDAO userStatsDAO = dataBase.userStatsDAO();
 
                 //Insertar UserStats vacio porq va a leerse y escribirse
-                UserStats userStats = new UserStats("User1", 0, 0, 0, 0, 0);
+
+                List<UpgradesUser> levelsUserActive = new ArrayList<>();
+                levelsUserActive.add(new UpgradesUser("User1", 0, 0));
+                levelsUserActive.add(new UpgradesUser("User1", 0, 0));
+
+                List<UpgradesUser> levelsUserPassive = new ArrayList<>();
+                levelsUserPassive.add(new UpgradesUser("User1", 0, 0));
+                levelsUserPassive.add(new UpgradesUser("User1", 0, 0));
+
+                UserStats userStats = new UserStats("User1", 0, 0, 0, 0, levelsUserActive, levelsUserPassive);
+
                 userStatsDAO.insert(userStats);
 
                 //Lista de los niveles dentro de cada mejora activa
@@ -88,7 +98,6 @@ public abstract class AppDataBase extends RoomDatabase {
                 //Llistas de mejoras activas y pasivas
                 clickUpgradeDAO.insert(new ClickUpgrade("MejoraAciva1", "acp_1", "Activa1", levelsActive1));
                 clickUpgradeDAO.insert(new ClickUpgrade("MejoraAciva2", "acp_2", "Activa2", levelsActive2));
-
 
                 clickUpgradeDAO.insert(new ClickUpgrade("MejoraPasiva1", "pcp_1", "Pasiva1", levelsPassive1));
                 clickUpgradeDAO.insert(new ClickUpgrade("MejoraPasiva2", "pcp_2", "Pasiva2", levelsPassive2));
