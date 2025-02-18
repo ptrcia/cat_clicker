@@ -8,27 +8,32 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class Converters {
+
+    private static final Gson gson = new Gson();
+
     @TypeConverter
-    public static List<Level> fromString(String value) {
+    public static List<Level> fromStringToLevelList(String value) {
+        if (value == null) return null;
         Type listType = new TypeToken<List<Level>>() {}.getType();
-        return new Gson().fromJson(value, listType);
+        return gson.fromJson(value, listType);
     }
 
     @TypeConverter
-    public static String fromList(List<Level> list) {
-        Gson gson = new Gson();
+    public static String fromLevelListToString(List<Level> list) {
+        if (list == null) return null;
         return gson.toJson(list);
     }
 
     @TypeConverter
     public static List<UpgradesUser> fromStringToUpgradesUserList(String value) {
+        if (value == null) return null;
         Type listType = new TypeToken<List<UpgradesUser>>() {}.getType();
-        return new Gson().fromJson(value, listType);
+        return gson.fromJson(value, listType);
     }
 
     @TypeConverter
     public static String fromUpgradesUserListToString(List<UpgradesUser> list) {
-        Gson gson = new Gson();
+        if (list == null) return null;
         return gson.toJson(list);
     }
 }

@@ -41,8 +41,6 @@ public class ActiveUpgradeFragment extends Fragment {
     LinearLayout container;
     private int currentLevelIndex = 0;
 
-
-
     public static ActiveUpgradeFragment newInstance(){
         return new ActiveUpgradeFragment();
     }
@@ -75,42 +73,45 @@ public class ActiveUpgradeFragment extends Fragment {
 
     private void inflateFragment(LinearLayout container) {
         if (container == null) {
-            System.out.println("Query: Container is null!");
+            Log.d("Clicker-> " ,"Container is null!");
             return;
         }
+        Log.d("Clicker-> ", "IOUTSIDE SWITCH");
 
-    //Consulta para saer que mejoras y que nivel de mejoras tiene el usuario
-        queryTest.getUserStats("User1").observe(getViewLifecycleOwner(), new Observer<List<UserStats>>() {
+        //Consulta para saer que mejoras y que nivel de mejoras tiene el usuario
+        //quioero que esta funcion me devuelva el calor de upgradeuser y level
+        queryTest.getUserStats("User1").observe(getViewLifecycleOwner(), new Observer<UserStats>() {
             @Override
-            public void onChanged(List<UserStats> userStatsList) {
-                if (userStatsList != null && !userStatsList.isEmpty()) {
-                    for (UserStats userStats : userStatsList) {
-                        List<UpgradesUser> activeUpgrades = userStats.getLevelActive();
-                        for (UpgradesUser upgrade : activeUpgrades) {
-                            int upgradeUser = upgrade.getUserUpgrade();
-                            int level = upgrade.getUserLevel();
-                            Log.d("UserUpgrades", "Upgrade: " + upgradeUser + ", Level: " + level);
-                        }
+            public void onChanged(UserStats userStats) {
+                if (userStats != null) {
+                    List<UpgradesUser> activeUpgrades = userStats.getLevelActive();
+                    for (UpgradesUser upgrade : activeUpgrades) {
+                        int upgradeUser = upgrade.getUserUpgrade();
+                        int level = upgrade.getUserLevel();
+                        Log.d("Clicker->  ", "Upgrade: " + upgradeUser + ", Level: " + level);
+                        ProcessUserUpgrades(upgradeUser, level);
                     }
                 }
             }
         });
-
-        //Consulta
-        queryTest.getAllActiveUpgradesL1().observe(getViewLifecycleOwner(), new Observer<List<ClickUpgrade>>() {
-            @Override
-            public void onChanged(List<ClickUpgrade> clickUpgrades) {
-                for (ClickUpgrade clickUpgrade : clickUpgrades) {
-                    String name = clickUpgrade.getName();
-                    String key = clickUpgrade.getKey();
-                    String description = clickUpgrade.getDescription();
-                    List<Level> levels = clickUpgrade.getLevel();
-
-                    processClickUpgrade(name, key, description, levels);
-                }
-            }
-        });
     }
+
+    //Switch para mostrar las mejoras que me interesan
+    private void ProcessUserUpgrades(int upgradeUser, int level) {
+        Log.d("Clicker-> ", "INSIDE SWITCH: Upgrade: " + upgradeUser + ", Level: " + level);
+
+        switch (upgradeUser){
+            case 0:
+                //Consulra las mejoras activas de nivel1
+
+                break;
+            case 1:
+                //Consulra las mejoras activas de nivel1
+
+        }
+    }
+
+
     //Procesado y recoger los levsels
     private void processClickUpgrade(String name, String key, String description, List<Level> levels){
         if (levels != null) {
@@ -118,11 +119,11 @@ public class ActiveUpgradeFragment extends Fragment {
                 int levelNumber = level.getLevel();
                 int cost = level.getCost();
                 int effect = level.getEffect();
-                Log.d("ProcessClickUpgrade", "Level: " + levelNumber + ", Cost: " + cost + ", Effect: " + effect);
+                Log.d("Clicker-> ", "Level: " + levelNumber + ", Cost: " + cost + ", Effect: " + effect);
                 FormatUI(name, key, description, levels, cost, effect);
             }
         } else {
-            Log.d("ProcessClickUpgrade", "Levels: null");
+            Log.d("Clicker-> ", "Levels: null");
         }
     }
     ///EFECTTTTTTTT???????????
@@ -257,17 +258,12 @@ public class ActiveUpgradeFragment extends Fragment {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    //Método para cambiar la mejora
-    public void setCurrentLevelIndex(int index) {
-        this.currentLevelIndex = index;
-        }
-
     private final View.OnClickListener upgradeActive = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Obtener la nota a partir del tag del botón
             view.getTag();  // La instancia de la nota almacenada en el tag
-            System.out.println("Query: Mejora ->" );
+            Log.d("Clicker-> ", "Upgrade: " + view.getTag() );
 
             //meter info a la tabla usuario
         }

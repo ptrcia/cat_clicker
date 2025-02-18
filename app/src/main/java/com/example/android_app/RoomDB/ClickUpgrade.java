@@ -1,7 +1,10 @@
 package com.example.android_app.RoomDB;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -17,6 +20,7 @@ public class ClickUpgrade {
     @PrimaryKey
     @NotNull
     public String key;
+    public int levelKey;
     //icono
     public String description;
 
@@ -24,9 +28,10 @@ public class ClickUpgrade {
     public List<Level> level;
 
 
-    public ClickUpgrade(String name, @NonNull String key, String description, List<Level> level){
+    public ClickUpgrade(String name, @NonNull String key, int levelKey, String description, List<Level> level){
         this.name = name;
         this.key = key;
+        this.levelKey = levelKey;
         this.description = description;
         this.level  = level;
     }
@@ -37,6 +42,9 @@ public class ClickUpgrade {
     @NonNull
     public String getKey() {return key;}
     public void setKey(@NonNull String key) {this.key = key;}
+
+    public int getLevelKey() {return levelKey;}
+    public void setLevelKey(int levelKey) {this.levelKey = levelKey;}
 
     public void setDescription(String description){this.description = description;}
     public String getDescription() {return description;}

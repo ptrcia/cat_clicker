@@ -17,12 +17,19 @@ public interface ClickUpgradeDAO {
     LiveData<List<ClickUpgrade>> getAllUpgrades();
 
     @Query("SELECT * FROM click_upgrade WHERE `key` = 'acp_1'")
-    LiveData<List<ClickUpgrade>> getActiveUpgrade1();
-    @Query("SELECT * FROM click_upgrade WHERE `key` = 'acp_2'")
-    LiveData<List<ClickUpgrade>> getActiveUpgrade2();
+    LiveData<ClickUpgrade> getActiveUpgrade1();
+    //como añado dos condiciones where a una consulta
 
-    @Query("SELECT * FROM click_upgrade WHERE `key` = '9cp_1'")
-    LiveData<List<ClickUpgrade>> getPassiveUpgrade1();
-    @Query("SELECT * FROM click_upgrade WHERE `key` = '9cp_2'")
-    LiveData<List<ClickUpgrade>> getPassiveUpgrade2();
+    @Query("SELECT * FROM click_upgrade WHERE `key` = :key AND level LIKE '%' || :level || '%' LIMIT 1")
+    ClickUpgrade getClickUpgradeByKeyAndLevel(String key, int level);
+
+    @Query("SELECT * FROM click_upgrade WHERE `key` = 'acp_2'")
+    LiveData<ClickUpgrade> getActiveUpgrade2();
+    /*@Query("SELECT * FROM click_upgrade WHERE `key` = 'acp_2' AND levelKey = 1")
+    LiveData<ClickUpgrade> getActiveUpgrade2Level1();
+*/
+    @Query("SELECT * FROM click_upgrade WHERE `key` = 'pcp_1'")
+    LiveData<ClickUpgrade> getPassiveUpgrade1();
+    @Query("SELECT * FROM click_upgrade WHERE `key` = 'pcp_2'")
+    LiveData<ClickUpgrade> getPassiveUpgrade2();
 }

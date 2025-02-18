@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+    implementation(libs.junit.junit)
 
     // En teoría esto está desfasado
     // implementation(libs.legacy.support.v4)

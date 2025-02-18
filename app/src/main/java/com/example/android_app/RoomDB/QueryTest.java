@@ -54,6 +54,7 @@ public class QueryTest {
                 }
             }
         });
+
     }
 
     //Lista ClickUpgrades
@@ -62,17 +63,24 @@ public class QueryTest {
     }
 
     //Lista ClickUpgrades activos
-    public LiveData<List<ClickUpgrade>> getAllActiveUpgradesL1() {
+    public LiveData<ClickUpgrade> getAllActiveUpgradesL1() {
         return db.clickUpgradeDAO().getActiveUpgrade1();
     }
-    public LiveData<List<ClickUpgrade>> getAllActiveUpgradesL2() {
-        return db.clickUpgradeDAO().getActiveUpgrade2();
+  /*  public  LiveData<ClickUpgrade> gerActiveUpgrade1Level1() {
+        return db.clickUpgradeDAO().getActiveUpgrade1Level1();
     }
+    public LiveData<ClickUpgrade> getAllActiveUpgradesL2Level1() {
+        return db.clickUpgradeDAO().getActiveUpgrade2Level1();
+    }*/
+
+
+
     //Lista ClickUpgrades pasivos
-    public LiveData<List<ClickUpgrade>> getAllPassiveUpgradesL1() {
+    public LiveData<ClickUpgrade> getAllPassiveUpgradesL1() {
         return db.clickUpgradeDAO().getPassiveUpgrade1();
     }
-    public LiveData<List<ClickUpgrade>> getAllPassiveUpgradesL2() {
+
+    public LiveData<ClickUpgrade> getAllPassiveUpgradesL2() {
         return db.clickUpgradeDAO().getPassiveUpgrade2();
     }
 
@@ -80,12 +88,8 @@ public class QueryTest {
     public LiveData<List<UserStats>> getAllUserStats() {
         return db.userStatsDAO().getAllUserStats();
     }
-    //Resultado level userStats
-    /*public LiveData<List<UpgradesUser>> getLevel() {
-        return db.userStatsDAO().getActiveLevel();
-    }*/
 
-
+    //objetner los nivele s(mejoras) de un usuario
     public LiveData<List<UpgradesUser>> getUserActiveLevels(String user) {
         return Transformations.map(db.userStatsDAO().getAllUserStats(), userStatsList -> {
             List<UpgradesUser> activeLevels = new ArrayList<>();
@@ -95,10 +99,7 @@ public class QueryTest {
             return activeLevels;
         });
     }
-
-    public LiveData<List<UserStats>> getUserStats(String user) {
-        return db.userStatsDAO().getAllUserStats();
+    public LiveData<UserStats> getUserStats(String user) {
+        return db.userStatsDAO().getUserStatsByName(user);
     }
-
-
 }
