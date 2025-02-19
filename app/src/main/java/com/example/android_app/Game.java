@@ -14,14 +14,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.android_app.RoomDB.AppDataBase;
-import com.example.android_app.RoomDB.QueryTest;
+import com.example.android_app.RoomDB.GameViewModel;
+
+import java.lang.reflect.Array;
+
 
 public class Game extends AppCompatActivity {
 
+    private GameViewModel gameViewModel;
     TextView textScore;
     ScoreManager scoreManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +38,32 @@ public class Game extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        Button buttonStore = findViewById(R.id.buttonStore);
+        Button buttonPassives = findViewById(R.id.buttonPassives);
+        Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
         textScore = findViewById(R.id.scoreText);
         scoreManager = ScoreManager.getInstance();
 
-        buttonStore.setOnClickListener(new View.OnClickListener() {
+        //RoomDB
+        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        gameViewModel.getUserStats(1).observe(this, userStats -> {
+            if (userStats != null) {
+                textScore.setText(String.valueOf(userStats.getTotalScore())); //gestionar los pùntos totales
+            }
+        });
+
+
+        //region Botones
+        buttonActives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Clicker-> ", "Se ha hecho click en tienda");
-
-                //Open a fragment to the store
-                Fragment fragment = ActiveUpgradeFragment.newInstance();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                Log.d("Clicker->", "Transacción de fragmento en progreso");
-
-                transaction.replace(R.id.container_layout, fragment);
-                //transaction.addToBackStack(null);
-                transaction.commit();
+                OpenFragment("Actives");
+            }
+        });
+        buttonPassives.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenFragment("Passives");
             }
         });
         buttonClickScore.setOnClickListener(new View.OnClickListener() {
@@ -63,13 +75,27 @@ public class Game extends AppCompatActivity {
                 UpdateScoreText();
             }
         });
+        //emdregion
 
         //Consulta de prueba para imprimir
-        AppDataBase db = AppDataBase.getDatabase(this);
-        QueryTest queryTest = new QueryTest(db, this);
-        queryTest.userStatsQuery();
-    }
 
+    }
+    private void OpenFragment(String upgradeType){
+        Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
+        //abrir
+
+        //Fragment fragment = UpgradeFragment.newInstance(upgradeType);
+        Fragment fragment = UpgradeFragment.newInstance("");
+        if (fragment == null) {
+            Log.e("Clicker->", "Error: fragmento es null");
+            //return;
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Log.d("Clicker->", "Transacción de fragmento en progreso");
+        transaction.replace(R.id.container_layout, fragment);
+        //transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     public void UpdateScoreText(){
         textScore.setText(scoreManager.getScore());

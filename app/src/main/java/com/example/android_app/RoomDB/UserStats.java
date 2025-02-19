@@ -3,11 +3,7 @@ package com.example.android_app.RoomDB;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 @Entity(tableName = "user_stats")
 public class UserStats {

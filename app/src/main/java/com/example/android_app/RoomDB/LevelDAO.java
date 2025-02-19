@@ -14,6 +14,7 @@ public interface LevelDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Level level);
 
-    @Query("SELECT * FROM level WHERE clickUpgradeId = :clickUpgradeId ORDER BY level ASC")
-    LiveData<List<Level>> getLevelsByClickUpgrade(int clickUpgradeId);
+    @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade")
+    LiveData<List<Level>> getLevelsForUpgrade(int idUpgrade);
+
 }

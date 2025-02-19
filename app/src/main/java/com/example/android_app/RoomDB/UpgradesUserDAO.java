@@ -6,14 +6,12 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import java.util.List;
-
 @Dao
 public interface UpgradesUserDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UpgradesUser upgradesUser);
 
-    @Query("SELECT * FROM user_upgrades WHERE idUpgrades = :idUpgrades")
-    LiveData<List<UpgradesUser>> getUserUpgrades(int userId);
+    @Query("SELECT * FROM user_upgrades WHERE id = :id LIMIT 1")
+    LiveData<UpgradesUser> getUpgradesByUserId(int id);
 }

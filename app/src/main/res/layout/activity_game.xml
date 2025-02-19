@@ -100,7 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@+id/buttonLogros"
+            android:id="@+id/buttonPassives"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
         </Button>
 
         <Button
-            android:id="@+id/buttonStore"
+            android:id="@+id/buttonActives"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

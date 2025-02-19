@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ActiveUpgradeFragment">
+    tools:context=".UpgradeFragment">
 
     <!-- Upper bar -->
 
@@ -25,11 +25,12 @@
             android:textColor="@color/white">
         </ImageButton>
         <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Mejoras Activas"
+
             android:textSize="30sp">
         </TextView>
     </LinearLayout>

@@ -19,4 +19,6 @@ public interface UserStatsDAO {
     @Query("SELECT * FROM user_stats WHERE name = :user LIMIT 1")
     LiveData<UserStats> getUserStatsByName(String user);
 
+    @Query("SELECT * FROM user_stats WHERE id = :id LIMIT 1")
+    LiveData<UserStats> getUserStats(int id);
 }

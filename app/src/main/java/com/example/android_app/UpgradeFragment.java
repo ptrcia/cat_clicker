@@ -6,11 +6,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -18,41 +17,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.ClickUpgrade;
-import com.example.android_app.RoomDB.ClickUpgradeDAO;
 import com.example.android_app.RoomDB.Level;
-import com.example.android_app.RoomDB.QueryTest;
-import com.example.android_app.RoomDB.UpgradesUser;
-import com.example.android_app.RoomDB.UserStats;
+import com.example.android_app.RoomDB.LevelDAO;
+import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
+import com.example.android_app.UpgradeFragmentViewModel;
 
 import java.util.List;
 
-public class ActiveUpgradeFragment extends Fragment {
+public class UpgradeFragment extends Fragment {
 
+    private static String ARG_UPGRADE_TYPE = "upgrade_type";
+    UpgradeFragmentViewModel viewModel;
     Context context;
     LinearLayout container;
-    private int currentLevelIndex = 0;
+    TextView title;
 
-    public static ActiveUpgradeFragment newInstance(){
-        return new ActiveUpgradeFragment();
+    //instancia segun el tipo
+    public static UpgradeFragment newInstance(String upgradeType) {
+        UpgradeFragmentViewModel viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
+        UpgradeFragment fragment = new UpgradeFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_UPGRADE_TYPE, upgradeType);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("Clicker->", "UpgradeFragment inflando la vista");
 
-        View rootView = inflater.inflate(R.layout.fragment_activeupgrades, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
         context = rootView.getContext();
         this.container = rootView.findViewById(R.id.container);
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
+        title = rootView.findViewById(R.id.title);
 
         //boton de regreso
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -62,38 +67,74 @@ public class ActiveUpgradeFragment extends Fragment {
                 startActivity(myIntent);
             }
         });
+        //Boton de atras nativo
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent myIntent = new Intent(context, Game.class);
+                startActivity(myIntent);
+            }
+        });
+
+        // Mostrar algo básico si no hay datos
+        assert getArguments() != null;
+        String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+        if (upgradeType == null || upgradeType.isEmpty()) {
+            // Si no hay datos, muestra un mensaje simple
+            TextView noDataTextView = new TextView(context);
+            noDataTextView.setText("No hay datos para mostrar.");
+            container.addView(noDataTextView);
+        } else {
+            // Si hay datos, maneja como normalmente
+            viewModel.setUpgradesType(upgradeType);
+            title.setText("Mejora " + upgradeType);
+            viewModel.getUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
+                container.removeAllViews();
+                for (ClickUpgrade upgrade : upgrades) {
+                    List<Level> levels = getLevelsForUpgrade(upgrade.getId());
+                    FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), levels);
+                }
+            });
+        /*
+        //RoomDB
+        viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
+
+        assert getArguments() != null;
+        String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+
+        if (upgradeType != null) {
+            viewModel.setUpgradesType(upgradeType);//typo
+        }
+
+        //Observar cambios en la lista de mejoras
+        viewModel.getUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
+            container.removeAllViews();
+            for (ClickUpgrade upgrade : upgrades) {
+                List<Level> levels = getLevelsForUpgrade(upgrade.getId());
+                FormatUI(upgrade.getName(), upgrade.getDescription(),upgrade.getId() , levels);
+            }*/
+        }
+
         // inflar
         inflateFragment(this.container);
         return rootView;
     }
-    //Configuración consultas
-    AppDataBase db = AppDataBase.getDatabase(context);
-    QueryTest queryTest = new QueryTest(db, this);
 
+    //Sacar los niveles de cada mejora
+    private List<Level> getLevelsForUpgrade(int upgradeId) {
+        LevelDAO levelDao = AppDataBase.getDatabase(getContext()).levelDAO();
+        return levelDao.getLevelsForUpgrade(upgradeId);  // Devuelve los niveles para la mejora dada
+    }
 
     private void inflateFragment(LinearLayout container) {
         if (container == null) {
             Log.d("Clicker-> " ,"Container is null!");
             return;
         }
-        Log.d("Clicker-> ", "IOUTSIDE SWITCH");
 
         //Consulta para saer que mejoras y que nivel de mejoras tiene el usuario
         //quioero que esta funcion me devuelva el calor de upgradeuser y level
-        queryTest.getUserStats("User1").observe(getViewLifecycleOwner(), new Observer<UserStats>() {
-            @Override
-            public void onChanged(UserStats userStats) {
-                if (userStats != null) {
-                    List<UpgradesUser> activeUpgrades = userStats.getLevelActive();
-                    for (UpgradesUser upgrade : activeUpgrades) {
-                        int upgradeUser = upgrade.getUserUpgrade();
-                        int level = upgrade.getUserLevel();
-                        Log.d("Clicker->  ", "Upgrade: " + upgradeUser + ", Level: " + level);
-                        ProcessUserUpgrades(upgradeUser, level);
-                    }
-                }
-            }
-        });
+
     }
 
     //Switch para mostrar las mejoras que me interesan
@@ -111,25 +152,8 @@ public class ActiveUpgradeFragment extends Fragment {
         }
     }
 
-
-    //Procesado y recoger los levsels
-    private void processClickUpgrade(String name, String key, String description, List<Level> levels){
-        if (levels != null) {
-            for (Level level : levels) {
-                int levelNumber = level.getLevel();
-                int cost = level.getCost();
-                int effect = level.getEffect();
-                Log.d("Clicker-> ", "Level: " + levelNumber + ", Cost: " + cost + ", Effect: " + effect);
-                FormatUI(name, key, description, levels, cost, effect);
-            }
-        } else {
-            Log.d("Clicker-> ", "Levels: null");
-        }
-    }
-    ///EFECTTTTTTTT???????????
-
     //Volcado UI
-    private void FormatUI(String name, String key, String description, List<Level> levels, int cost, int effect) {
+    private void FormatUI(String name, String description, int id, List<Level> levels) {
 
         //Layout
         LinearLayout newLayout2 = new LinearLayout(context);
@@ -175,50 +199,28 @@ public class ActiveUpgradeFragment extends Fragment {
         newDescription.setTypeface(typefaceDes);
         newDescription.setTextColor(ContextCompat.getColor(context, R.color.black));
 */
-        //Coste
-        TextView newCost = new TextView(context);
-        LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        costParams.setMarginStart(dpToPx(30));
-        newCost.setLayoutParams(titleParams);
-        newCost.setText(String.valueOf(cost));
-        newCost.setTextSize(20);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
-        newCost.setTypeface(typefaceCost);
-        newCost.setTextColor(Color.RED);
+        for (Level level : levels) {
+            String levelInfo = "Nivel: " + level.getLevel() + " Costo: " + level.getCost()
+                    + " Efecto: " + level.getEffect();
 
-        //Efecto
-        TextView newEffect = new TextView(context);
-        LinearLayout.LayoutParams effectParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        effectParams.setMarginStart(dpToPx(30));
-        newEffect.setLayoutParams(titleParams);
-        newEffect.setText(String.valueOf(effect));
-        newEffect.setTextSize(20);
-        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
-        newEffect.setTypeface(typefaceEffect);
-        newEffect.setTextColor(Color.RED);
+            //Coste
+            TextView newCost = new TextView(context);
+            LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
+                    //dpToPx(300),
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            costParams.setMarginStart(dpToPx(30));
+            newCost.setLayoutParams(titleParams);
+            newCost.setText(String.valueOf(levelInfo));
+            newCost.setTextSize(20);
+            Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+            newCost.setTypeface(typefaceCost);
+            newCost.setTextColor(Color.RED);
 
-        //Nivel
-        TextView newLevel = new TextView(context);
-        LinearLayout.LayoutParams levelParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        levelParams.setMarginStart(dpToPx(30));
-        newLevel.setLayoutParams(titleParams);
-        newLevel.setText(String.valueOf(levels.get(currentLevelIndex).getLevel()));
-        newLevel.setTextSize(20);
-        Typeface typefaceLvel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
-        newLevel.setTypeface(typefaceLvel);
-        newLevel.setTextColor(Color.BLUE);
+            newLayout2.addView(newCost);
+        }
+
 
         //Button
         Button newButton = new Button(context);
@@ -244,15 +246,16 @@ public class ActiveUpgradeFragment extends Fragment {
         //newLayout2.addView(newImg);
         newLayout2.addView(newTitle);
         //newLayout2.addView(newDescription);
-        newLayout2.addView(newCost);
-        newLayout2.addView(newEffect);
-        newLayout2.addView(newLevel);
+
         newLayout2.addView(newButton);
 
         // Añadir el nuevo LinearLayout al contenedor
         container.addView(newLayout2, 0);
-        Log.d("FormatUI", "Upgrade: " + name + ", Key: " + key + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
+        Log.d("FormatUI", "Upgrade: " + name + ", Key: " + id + ", Description: " + description);
     }
+
+    //Pafuncion para el boton supongo que cambiar el dato
+    //gameViewModel.insertClickUpgrade(defaultActiveUpgrade1);
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
@@ -268,7 +271,7 @@ public class ActiveUpgradeFragment extends Fragment {
             //meter info a la tabla usuario
         }
     };
-
 }
+
 
 
