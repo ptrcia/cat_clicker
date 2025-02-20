@@ -1,34 +1,34 @@
 package com.example.android_app.RoomDB;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
 import org.jetbrains.annotations.NotNull;
 
 @Entity(tableName = "user_stats")
 public class UserStats {
 
     @PrimaryKey
-    @NotNull
+            @NotNull
+    String id; //id para relacionarlo con upgradesuser
     String name;
     int totalScore;  //Total score
     int pcuTotal;   // suma total de todos los upgrades pasivos
     int acuTotal;  // suma total de todos los upgrades activos
-    int id; //id para relacionarlo con upgradesuser
 
 
-    public UserStats(@NonNull String name ,int totalScore, int pcuTotal, int acuTotal , int id ) {
+
+    public UserStats( @NotNull String id, String name ,int totalScore, int pcuTotal, int acuTotal ) {
         this.name = name;
         this.totalScore = totalScore;
         this.pcuTotal = pcuTotal;
         this.acuTotal = acuTotal;
         this.id = id;
     }
-    @NonNull
     public String getName() {
         return name;
     }
-    public void setName(@NonNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -53,10 +53,11 @@ public class UserStats {
         this.acuTotal = acuTotal;
     }
 
-    public int getId() {
+    @NotNull
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId( @NotNull String id) {
         this.id = id;
     }
 

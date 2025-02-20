@@ -1,32 +1,47 @@
 package com.example.android_app.RoomDB;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "user_upgrades",
-        foreignKeys = @ForeignKey(entity = UpgradesUser.class,
-                parentColumns = "id",
-                childColumns = "idUpgrades",
-                onDelete = ForeignKey.CASCADE))
-public class UpgradesUser {
-@PrimaryKey(autoGenerate = true)
-    private int id;
-    private int userLevel;
-    private int userUpgrade;
-    private int idUpgrades;
+import org.jetbrains.annotations.NotNull;
 
-    public UpgradesUser(int id, int userUpgrade, int userLevel, int idUpgrades) {
+@Entity(tableName = "user_upgrades",
+        foreignKeys = {
+                @ForeignKey(entity = UserStats.class,
+                        parentColumns = "id",
+                        childColumns = "idUser",
+                        onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = ClickUpgrade.class,
+                        parentColumns = "id",
+                        childColumns = "idUpgrades",
+                        onDelete = ForeignKey.CASCADE)
+        }, indices = {@Index(value = "idUser"), @Index(value = "idUpgrades")}
+)
+public class UpgradesUser {
+    @PrimaryKey
+@NotNull
+    private String id;
+    private int userLevel;
+    @ColumnInfo(name = "idUpgrades")
+    private String idUpgrades;
+    @ColumnInfo(name = "idUser")
+    private String idUser;
+
+    public UpgradesUser(@NotNull String id, String idUpgrades, int userLevel, String idUser) {
         this.id = id;
-        this.userUpgrade = userUpgrade;
-        this.userLevel = userLevel;
         this.idUpgrades = idUpgrades;
+        this.userLevel = userLevel;
+        this.idUser = idUser;
 
     }
-    public int getId() {
+    @NotNull
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(@NotNull String id) {
         this.id = id;}
 
     public int getUserLevel() {
@@ -36,18 +51,18 @@ public class UpgradesUser {
         this.userLevel = userLevel;
     }
 
-    public int getUserUpgrade() {
-        return userUpgrade;
-    }
-    public void setUserUpgrade(int userUpgrade) {
-        this.userUpgrade = userUpgrade;
-    }
-
-
-    public int getIdUpgrades() {
+    public String getIdUpgrades() {
         return idUpgrades;
     }
-    public void setIdUpgrades(int idUpgrades) {
+    public void setIdUpgrades(String idUpgrades) {
         this.idUpgrades = idUpgrades;
+    }
+
+
+    public String getIdUser() {
+        return idUser;
+    }
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 }

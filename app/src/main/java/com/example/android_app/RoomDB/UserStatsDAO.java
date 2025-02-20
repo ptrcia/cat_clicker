@@ -20,5 +20,7 @@ public interface UserStatsDAO {
     LiveData<UserStats> getUserStatsByName(String user);
 
     @Query("SELECT * FROM user_stats WHERE id = :id LIMIT 1")
-    LiveData<UserStats> getUserStats(int id);
+    LiveData<UserStats> getUserStatsById(String id);
+
+
 }

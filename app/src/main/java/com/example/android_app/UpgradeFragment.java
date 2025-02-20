@@ -10,6 +10,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -26,8 +28,8 @@ import com.example.android_app.RoomDB.ClickUpgrade;
 import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.LevelDAO;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
-import com.example.android_app.UpgradeFragmentViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpgradeFragment extends Fragment {
@@ -37,10 +39,10 @@ public class UpgradeFragment extends Fragment {
     Context context;
     LinearLayout container;
     TextView title;
+    String user = "User1";
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeType) {
-        UpgradeFragmentViewModel viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
         UpgradeFragment fragment = new UpgradeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_UPGRADE_TYPE, upgradeType);
@@ -52,12 +54,14 @@ public class UpgradeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("Clicker->", "UpgradeFragment inflando la vista");
-
         View rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
         context = rootView.getContext();
         this.container = rootView.findViewById(R.id.container);
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
         title = rootView.findViewById(R.id.title);
+
+        //Conecta con el viewmodel
+        viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
 
         //boton de regreso
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -79,81 +83,99 @@ public class UpgradeFragment extends Fragment {
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
         String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-        if (upgradeType == null || upgradeType.isEmpty()) {
-            // Si no hay datos, muestra un mensaje simple
-            TextView noDataTextView = new TextView(context);
-            noDataTextView.setText("No hay datos para mostrar.");
-            container.addView(noDataTextView);
-        } else {
-            // Si hay datos, maneja como normalmente
-            viewModel.setUpgradesType(upgradeType);
-            title.setText("Mejora " + upgradeType);
-            viewModel.getUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
+/* Esto es otra opcion
+        viewModel.getUpgradesType(upgradeType).observe(getViewLifecycleOwner(), new Observer<List<ClickUpgrade>>() {
+            @Override
+            public void onChanged(List<ClickUpgrade> filteredUpgrades) {
                 container.removeAllViews();
-                for (ClickUpgrade upgrade : upgrades) {
-                    List<Level> levels = getLevelsForUpgrade(upgrade.getId());
-                    FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), levels);
+                title.setText("Mejora " + upgradeType);
+                Log.d("Clicker-> ", "UpgradeType: " + upgradeType);
+                Log.d("Clicker-> ", "filteredUpgrades size: " + filteredUpgrades.size());
+
+                // Comprobar la filtración
+                Log.d("Clicker-> ", "FilteredUpgrades: " + filteredUpgrades);
+                if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
+                    Log.d("Clicker-> ", "No hay datos para mostrar.");
+                } else {
+                    // Manejar los datos como normalmente
                 }
-            });
-        /*
-        //RoomDB
-        viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
+            }
 
-        assert getArguments() != null;
-        String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+        });*/
 
-        if (upgradeType != null) {
-            viewModel.setUpgradesType(upgradeType);//typo
-        }
 
-        //Observar cambios en la lista de mejoras
-        viewModel.getUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
+        //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
+        viewModel.getUpgradesType(upgradeType).observe(getViewLifecycleOwner(), filteredUpgrades -> {
             container.removeAllViews();
-            for (ClickUpgrade upgrade : upgrades) {
-                List<Level> levels = getLevelsForUpgrade(upgrade.getId());
-                FormatUI(upgrade.getName(), upgrade.getDescription(),upgrade.getId() , levels);
-            }*/
-        }
+            title.setText("Mejora " + upgradeType);
+            Log.d("Clicker-> ", "UpgradeType: " + upgradeType);
+            Log.d("Clicker-> ", "filteredUpgrades size: " + filteredUpgrades.size());
+//COMPROBAR LA FILTRACION
+            Log.d("Clicker-> ", "FilteredUpgrades1: " + filteredUpgrades);
+            if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
+                // Si no hay datos, muestra un mensaje simple
+                //title.setText("No hay datos para mostrar.");
+                Log.d("Clicker-> ", "No hay datos para mostrar.");
+                //return;
+            }
+            // Si hay datos, maneja como normalmente
+            title.setText(upgradeType);
 
+
+
+/*
+            //obtener todas las mejoras del usuario y meterlas en userupgrades
+            viewModel.getAllUserUpgrades(user).observe(getViewLifecycleOwner(), userUpgrades -> {
+            Log.d("FiltradoMejoras", "User upgrades: " + userUpgrades.toString());
+                List<ClickUpgrade> availableUpgrades = new ArrayList<>();
+
+                assert filteredUpgrades != null;
+                for (ClickUpgrade upgrade : filteredUpgrades) {
+                    int userLevel = getUserUpgradeLevel(userUpgrades, upgrade.getId()); // Obtener nivel del usuario
+                    List<Level> levels = getLevelsForUpgrade(); // Obtener niveles de la mejora
+
+                    // Filtrar mejoras que el usuario aún puede mejorar
+                    if (userLevel < levels.size()) {
+                        availableUpgrades.add(upgrade);
+                    }
+                }
+
+                // Mostrar mejoras disponibles en la UI
+                for (ClickUpgrade upgrade : availableUpgrades) {
+                    View upgradeView = createUpgradeView(upgrade);
+                    container.addView(upgradeView);
+                }
+            });*/
+        });
         // inflar
         inflateFragment(this.container);
         return rootView;
     }
 
+/*
     //Sacar los niveles de cada mejora
-    private List<Level> getLevelsForUpgrade(int upgradeId) {
-        LevelDAO levelDao = AppDataBase.getDatabase(getContext()).levelDAO();
-        return levelDao.getLevelsForUpgrade(upgradeId);  // Devuelve los niveles para la mejora dada
+private List<Level> getLevelsForUpgrade(int upgradeId) {
+    List<Level> levels = new ArrayList<>();
+    viewModel.getLevelsForUpgrade(upgradeId).observe(getViewLifecycleOwner(), levels::addAll);
+    return levels;
+}
+    */
+    private void processLevels(List<Level> levels) {
+        // Tu lógica para manejar los niveles y actualizar la UI
     }
 
     private void inflateFragment(LinearLayout container) {
         if (container == null) {
             Log.d("Clicker-> " ,"Container is null!");
-            return;
-        }
 
-        //Consulta para saer que mejoras y que nivel de mejoras tiene el usuario
-        //quioero que esta funcion me devuelva el calor de upgradeuser y level
-
-    }
-
-    //Switch para mostrar las mejoras que me interesan
-    private void ProcessUserUpgrades(int upgradeUser, int level) {
-        Log.d("Clicker-> ", "INSIDE SWITCH: Upgrade: " + upgradeUser + ", Level: " + level);
-
-        switch (upgradeUser){
-            case 0:
-                //Consulra las mejoras activas de nivel1
-
-                break;
-            case 1:
-                //Consulra las mejoras activas de nivel1
-
+        }else{
+            Log.d("Clicker-> " ,"Container is not null!");
+            //FormatUI();
         }
     }
 
     //Volcado UI
-    private void FormatUI(String name, String description, int id, List<Level> levels) {
+    private void FormatUI(String name, String description, String id, List<Level> levels) {
 
         //Layout
         LinearLayout newLayout2 = new LinearLayout(context);
@@ -212,7 +234,7 @@ public class UpgradeFragment extends Fragment {
             );
             costParams.setMarginStart(dpToPx(30));
             newCost.setLayoutParams(titleParams);
-            newCost.setText(String.valueOf(levelInfo));
+            newCost.setText(levelInfo);
             newCost.setTextSize(20);
             Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
             newCost.setTypeface(typefaceCost);
@@ -272,6 +294,7 @@ public class UpgradeFragment extends Fragment {
         }
     };
 }
+
 
 
 

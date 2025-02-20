@@ -17,7 +17,7 @@ public interface ClickUpgradeDAO {
     @Query("SELECT * FROM click_upgrade")
     LiveData<List<ClickUpgrade>> getAllUpgrades();
 
-    @Query("SELECT * FROM click_upgrade WHERE 'id' = :id")
+    @Query("SELECT * FROM click_upgrade WHERE id = :id")
     LiveData<ClickUpgrade> getClickUpgradeById(String id);
 
     @Query("SELECT * FROM click_upgrade WHERE type = :type")
@@ -28,4 +28,8 @@ public interface ClickUpgradeDAO {
 
     @Query("SELECT * FROM click_upgrade WHERE type = 'passive'")
     LiveData<List<ClickUpgrade>> getPassiveUpgrades();
+
+    @Query("SELECT * FROM click_upgrade WHERE id NOT IN (SELECT idUpgrades FROM user_upgrades WHERE idUser = :idUser)")
+    LiveData<List<ClickUpgrade>> getAvailableUpgrades(String idUser);
+
 }

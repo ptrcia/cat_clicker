@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android_app.RoomDB.GameViewModel;
 
-import java.lang.reflect.Array;
 
 
 public class Game extends AppCompatActivity {
@@ -46,7 +45,7 @@ public class Game extends AppCompatActivity {
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        gameViewModel.getUserStats(1).observe(this, userStats -> {
+        gameViewModel.getUserStats("User1").observe(this, userStats -> {
             if (userStats != null) {
                 textScore.setText(String.valueOf(userStats.getTotalScore())); //gestionar los pùntos totales
             }
@@ -57,13 +56,13 @@ public class Game extends AppCompatActivity {
         buttonActives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenFragment("Actives");
+                OpenFragment("Active");
             }
         });
         buttonPassives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenFragment("Passives");
+                OpenFragment("Passive");
             }
         });
         buttonClickScore.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +74,7 @@ public class Game extends AppCompatActivity {
                 UpdateScoreText();
             }
         });
-        //emdregion
+        //endregion
 
         //Consulta de prueba para imprimir
 
@@ -84,12 +83,7 @@ public class Game extends AppCompatActivity {
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
 
-        //Fragment fragment = UpgradeFragment.newInstance(upgradeType);
-        Fragment fragment = UpgradeFragment.newInstance("");
-        if (fragment == null) {
-            Log.e("Clicker->", "Error: fragmento es null");
-            //return;
-        }
+        Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
         transaction.replace(R.id.container_layout, fragment);
