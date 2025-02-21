@@ -26,7 +26,6 @@ public class Game extends AppCompatActivity {
     TextView textScore;
     ScoreManager scoreManager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

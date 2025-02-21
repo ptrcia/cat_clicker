@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 @Dao
@@ -17,4 +19,6 @@ public interface LevelDAO {
     @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade")
     LiveData<List<Level>> getLevelsForUpgrade(String idUpgrade);
 
+    @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade AND idLevel = :level")
+    LiveData<Level> getLevelForUpgradeByLevel(@NotNull String idUpgrade, String level);
 }

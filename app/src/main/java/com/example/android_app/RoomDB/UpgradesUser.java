@@ -24,13 +24,13 @@ public class UpgradesUser {
     @PrimaryKey
 @NotNull
     private String id;
-    private int userLevel;
+    private String userLevel;
     @ColumnInfo(name = "idUpgrades")
     private String idUpgrades;
     @ColumnInfo(name = "idUser")
     private String idUser;
 
-    public UpgradesUser(@NotNull String id, String idUpgrades, int userLevel, String idUser) {
+    public UpgradesUser(@NotNull String id, String idUpgrades, String userLevel, String idUser) {
         this.id = id;
         this.idUpgrades = idUpgrades;
         this.userLevel = userLevel;
@@ -44,10 +44,10 @@ public class UpgradesUser {
     public void setId(@NotNull String id) {
         this.id = id;}
 
-    public int getUserLevel() {
+    public String getUserLevel() {
         return userLevel;
     }
-    public void setUserLevel(int userLevel) {
+    public void setUserLevel(String userLevel) {
         this.userLevel = userLevel;
     }
 

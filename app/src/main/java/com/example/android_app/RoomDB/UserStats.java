@@ -61,5 +61,9 @@ public class UserStats {
         this.id = id;
     }
 
-
+    //metodo to string
+    @Override
+    public String toString() {
+        return "UserStats{" + this.name + this.totalScore + this.pcuTotal + this.acuTotal + this.id +'}';
+    }
 }

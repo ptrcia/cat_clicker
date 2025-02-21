@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-public class UserRepository {
+public class UserRepository{
     private final UserStatsDAO userStatsDAO;
     private final UpgradesUserDAO upgradesUserDAO;
     private final ExecutorService executorService;
@@ -49,7 +49,7 @@ public class UserRepository {
 
     }
     //obtener mejoras y nivel del usuario
-    public LiveData<Integer> getUserLevel(String idUpgrades) {
+    public LiveData<String> getUserLevel(String idUpgrades) {
         return upgradesUserDAO.getUserLevel(idUpgrades);
     }
     //consultar mejoras de un nivel concreto
@@ -65,21 +65,19 @@ public class UserRepository {
         return upgradesUserDAO.getUserUpgrade(userId, upgradeId);
     }
     //obtener el nivel de una mejora concreta de un usuario concreto
-    public LiveData<Integer> getUserUpgradeLevel(String userId, String upgradeId) {
+    public LiveData<String> getUserUpgradeLevel(String userId, String upgradeId) {
         return upgradesUserDAO.getUserUpgradeLevel(userId, upgradeId);
     }
-
-
 
     public void upgradeUser(){
         executorService.execute(() -> {
             UserStats userStats = new UserStats("User1", "User1", 41000, 0, 1);
             userStatsDAO.insert(userStats);
 
-            UpgradesUser upgradesUser1 = new UpgradesUser("upgradeuser_1", "up_1", 0, "User1");
+            UpgradesUser upgradesUser1 = new UpgradesUser("upgradeuser_1", "up_1", "0", "User1");
             upgradesUserDAO.insert(upgradesUser1);
 
-            UpgradesUser upgradesUser2 = new UpgradesUser("upgradeuser_2", "up_2", 0, "User1");
+            UpgradesUser upgradesUser2 = new UpgradesUser("upgradeuser_2", "up_2", "0", "User1");
             upgradesUserDAO.insert(upgradesUser2);
         });
     }

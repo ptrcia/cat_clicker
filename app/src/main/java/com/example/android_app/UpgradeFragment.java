@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -23,23 +22,22 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.ClickUpgrade;
 import com.example.android_app.RoomDB.Level;
-import com.example.android_app.RoomDB.LevelDAO;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UpgradeFragment extends Fragment {
 
-    private static String ARG_UPGRADE_TYPE = "upgrade_type";
+    private static final String ARG_UPGRADE_TYPE = "upgrade_type";
     UpgradeFragmentViewModel viewModel;
     Context context;
     LinearLayout container;
     TextView title;
-    String user = "User1";
+    String userId = "User1";
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeType) {
@@ -83,29 +81,29 @@ public class UpgradeFragment extends Fragment {
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
         String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-/* Esto es otra opcion
-        viewModel.getUpgradesType(upgradeType).observe(getViewLifecycleOwner(), new Observer<List<ClickUpgrade>>() {
-            @Override
-            public void onChanged(List<ClickUpgrade> filteredUpgrades) {
-                container.removeAllViews();
-                title.setText("Mejora " + upgradeType);
-                Log.d("Clicker-> ", "UpgradeType: " + upgradeType);
-                Log.d("Clicker-> ", "filteredUpgrades size: " + filteredUpgrades.size());
 
-                // Comprobar la filtración
-                Log.d("Clicker-> ", "FilteredUpgrades: " + filteredUpgrades);
-                if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
-                    Log.d("Clicker-> ", "No hay datos para mostrar.");
-                } else {
-                    // Manejar los datos como normalmente
-                }
+
+
+/*
+
+        //ESTO ES PRUEBA PARA EL LOG
+        viewModel.getAllUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
+            if (upgrades == null || upgrades.isEmpty()) {
+                // Si no hay datos, muestra un mensaje simple
+                title.setText("No hay datos para mostrar.");
+            } else {
+                Log.d("Clicker-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + upgrades);
             }
 
-        });*/
-
+            for (ClickUpgrade upgrade : upgrades) {
+                Log.d("Clicker-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + "Nombre " +  upgrade.getName() + "Desc " +upgrade.getDescription()+"Id " +upgrade.getId()+"? " + new ArrayList<>() );
+                FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), new ArrayList<>());
+            }
+        });
+*/
 
         //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
-        viewModel.getUpgradesType(upgradeType).observe(getViewLifecycleOwner(), filteredUpgrades -> {
+        viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
             container.removeAllViews();
             title.setText("Mejora " + upgradeType);
             Log.d("Clicker-> ", "UpgradeType: " + upgradeType);
@@ -120,37 +118,20 @@ public class UpgradeFragment extends Fragment {
             }
             // Si hay datos, maneja como normalmente
             title.setText(upgradeType);
+            Log.d("Clicker-> ", "FilteredUpgrades2: " + filteredUpgrades);
+            for (Map.Entry<ClickUpgrade, Level> upgradeWithLevel : filteredUpgrades.entrySet()) {
+                ClickUpgrade upgrade = upgradeWithLevel.getKey();
+                Level level = upgradeWithLevel.getValue();
+                FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), level.getCost(), level.getEffect());
+            }
 
-
-
-/*
-            //obtener todas las mejoras del usuario y meterlas en userupgrades
-            viewModel.getAllUserUpgrades(user).observe(getViewLifecycleOwner(), userUpgrades -> {
-            Log.d("FiltradoMejoras", "User upgrades: " + userUpgrades.toString());
-                List<ClickUpgrade> availableUpgrades = new ArrayList<>();
-
-                assert filteredUpgrades != null;
-                for (ClickUpgrade upgrade : filteredUpgrades) {
-                    int userLevel = getUserUpgradeLevel(userUpgrades, upgrade.getId()); // Obtener nivel del usuario
-                    List<Level> levels = getLevelsForUpgrade(); // Obtener niveles de la mejora
-
-                    // Filtrar mejoras que el usuario aún puede mejorar
-                    if (userLevel < levels.size()) {
-                        availableUpgrades.add(upgrade);
-                    }
-                }
-
-                // Mostrar mejoras disponibles en la UI
-                for (ClickUpgrade upgrade : availableUpgrades) {
-                    View upgradeView = createUpgradeView(upgrade);
-                    container.addView(upgradeView);
-                }
-            });*/
         });
+
         // inflar
-        inflateFragment(this.container);
-        return rootView;
+       // inflateFragment(this.container);
+       return rootView;
     }
+
 
 /*
     //Sacar los niveles de cada mejora
@@ -160,10 +141,10 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
     return levels;
 }
     */
+    /*
     private void processLevels(List<Level> levels) {
         // Tu lógica para manejar los niveles y actualizar la UI
     }
-
     private void inflateFragment(LinearLayout container) {
         if (container == null) {
             Log.d("Clicker-> " ,"Container is null!");
@@ -173,9 +154,9 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
             //FormatUI();
         }
     }
-
+*/
     //Volcado UI
-    private void FormatUI(String name, String description, String id, List<Level> levels) {
+    private void FormatUI(String name, String description, String id, int cost, int effect) {
 
         //Layout
         LinearLayout newLayout2 = new LinearLayout(context);
@@ -221,27 +202,38 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         newDescription.setTypeface(typefaceDes);
         newDescription.setTextColor(ContextCompat.getColor(context, R.color.black));
 */
-        for (Level level : levels) {
-            String levelInfo = "Nivel: " + level.getLevel() + " Costo: " + level.getCost()
-                    + " Efecto: " + level.getEffect();
 
-            //Coste
-            TextView newCost = new TextView(context);
-            LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
-                    //dpToPx(300),
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            costParams.setMarginStart(dpToPx(30));
-            newCost.setLayoutParams(titleParams);
-            newCost.setText(levelInfo);
-            newCost.setTextSize(20);
-            Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
-            newCost.setTypeface(typefaceCost);
-            newCost.setTextColor(Color.RED);
+        //Coste
+        TextView newCost = new TextView(context);
+        LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
+                //dpToPx(300),
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        costParams.setMarginStart(dpToPx(30));
+        newCost.setLayoutParams(titleParams);
+        newCost.setText(String.valueOf(cost));
+        newCost.setTextSize(20);
+        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        newCost.setTypeface(typefaceCost);
+        newCost.setTextColor(Color.RED);
+        //Effect
 
-            newLayout2.addView(newCost);
-        }
+        TextView newEffect = new TextView(context);
+        LinearLayout.LayoutParams costEfect = new LinearLayout.LayoutParams(
+                //dpToPx(300),
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        costEfect.setMarginStart(dpToPx(30));
+        newEffect.setLayoutParams(titleParams);
+        newEffect.setText(String.valueOf(effect));
+        newEffect.setTextSize(20);
+        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        newEffect.setTypeface(typefaceEffect);
+        newEffect.setTextColor(Color.RED);
+
+        newLayout2.addView(newEffect);
 
 
         //Button
