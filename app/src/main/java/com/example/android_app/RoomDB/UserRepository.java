@@ -74,11 +74,17 @@ public class UserRepository{
             UserStats userStats = new UserStats("User1", "User1", 41000, 0, 1);
             userStatsDAO.insert(userStats);
 
-            UpgradesUser upgradesUser1 = new UpgradesUser("upgradeuser_1", "up_1", "0", "User1");
+            UpgradesUser upgradesUser1 = new UpgradesUser("upgradeuser_1", "ua_1", "0", "User1");
             upgradesUserDAO.insert(upgradesUser1);
 
-            UpgradesUser upgradesUser2 = new UpgradesUser("upgradeuser_2", "up_2", "0", "User1");
+            UpgradesUser upgradesUser2 = new UpgradesUser("upgradeuser_2", "ua_2", "0", "User1");
             upgradesUserDAO.insert(upgradesUser2);
+
+            UpgradesUser upgradesUser3 = new UpgradesUser("upgradeuser_3", "up_1", "0", "User1");
+            upgradesUserDAO.insert(upgradesUser3);
+
+            UpgradesUser upgradesUser4 = new UpgradesUser("upgradeuser_4", "up_2", "0", "User1");
+            upgradesUserDAO.insert(upgradesUser4);
         });
     }
 }

@@ -38,13 +38,16 @@ public class UpgradeFragment extends Fragment {
     LinearLayout container;
     TextView title;
     String userId = "User1";
+    //String upgradeType;
+
 
     //instancia segun el tipo
-    public static UpgradeFragment newInstance(String upgradeType) {
+    public static UpgradeFragment newInstance(String upgradeTypeInput) {
         UpgradeFragment fragment = new UpgradeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_UPGRADE_TYPE, upgradeType);
+        args.putString(ARG_UPGRADE_TYPE, upgradeTypeInput);
         fragment.setArguments(args);
+        //upgradeType = upgradeTypeInput;
         return fragment;
     }
 
@@ -80,12 +83,10 @@ public class UpgradeFragment extends Fragment {
 
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
-        String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+       String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
 
-
-
+       //region test
 /*
-
         //ESTO ES PRUEBA PARA EL LOG
         viewModel.getAllUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
             if (upgrades == null || upgrades.isEmpty()) {
@@ -101,27 +102,25 @@ public class UpgradeFragment extends Fragment {
             }
         });
 */
+        //endregion
 
         //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
+        //upgradeType te lo da el boton al pulsar y userID lo hardcodeo
         viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
             container.removeAllViews();
             title.setText("Mejora " + upgradeType);
-            Log.d("Clicker-> ", "UpgradeType: " + upgradeType);
-            Log.d("Clicker-> ", "filteredUpgrades size: " + filteredUpgrades.size());
-//COMPROBAR LA FILTRACION
-            Log.d("Clicker-> ", "FilteredUpgrades1: " + filteredUpgrades);
+
             if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
-                // Si no hay datos, muestra un mensaje simple
-                //title.setText("No hay datos para mostrar.");
+                title.setText("No hay datos para mostrar.");
                 Log.d("Clicker-> ", "No hay datos para mostrar.");
-                //return;
             }
             // Si hay datos, maneja como normalmente
             title.setText(upgradeType);
-            Log.d("Clicker-> ", "FilteredUpgrades2: " + filteredUpgrades);
+            //assert filteredUpgrades != null;
             for (Map.Entry<ClickUpgrade, Level> upgradeWithLevel : filteredUpgrades.entrySet()) {
                 ClickUpgrade upgrade = upgradeWithLevel.getKey();
                 Level level = upgradeWithLevel.getValue();
+                Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", Level: " + level.getLevel() + ", Effect: " + level.getEffect());
                 FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), level.getCost(), level.getEffect());
             }
 

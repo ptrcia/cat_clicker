@@ -96,11 +96,11 @@ public class UpgradesRepository {
     public void upgradesTable() {
 
         executorService.execute(() -> {
-            ClickUpgrade defaultActiveUpgrade1 = new ClickUpgrade("ua_1", "nombremejora1", 1, "", "Active");
-            ClickUpgrade defaultActiveUpgrade2 = new ClickUpgrade("ua_2", "nombremejora2", 1, "", "Active");
+            ClickUpgrade defaultActiveUpgrade1 = new ClickUpgrade("ua_1", "nombremejora1", 9, "", "Active");
+            ClickUpgrade defaultActiveUpgrade2 = new ClickUpgrade("ua_2", "nombremejora2", 9, "", "Active");
 
-            ClickUpgrade defaultPassiveUpgrade1 = new ClickUpgrade("up_1", "nombremejora1", 1, "", "Passive");
-            ClickUpgrade defaultPassiveUpgrade2 = new ClickUpgrade("up_2", "nombremejora2", 1, "", "Passive");
+            ClickUpgrade defaultPassiveUpgrade1 = new ClickUpgrade("up_1", "nombremejora1", 9, "", "Passive");
+            ClickUpgrade defaultPassiveUpgrade2 = new ClickUpgrade("up_2", "nombremejora2", 9, "", "Passive");
 
             Level defaultLevel1_1 = new Level("level_1", "ua_1", "1", 2, 4);
             Level defaultLevel1_2 = new Level("level_2", "ua_2", "2", 6, 8);
@@ -125,7 +125,7 @@ public class UpgradesRepository {
         });
     }
 
-    public LiveData<Level> getLevelForUpgradeByLevel(@NotNull String idUpgrade, String level) {
+    public LiveData<Level> getLevelForUpgradeByUserLevel(@NotNull String idUpgrade, String level) {
             return levelDAO.getLevelForUpgradeByLevel(idUpgrade, level);
     }
 }

@@ -17,9 +17,9 @@ public interface UpgradesUserDAO {
     @Query("SELECT * FROM user_upgrades WHERE id = :id LIMIT 1")
     LiveData<UpgradesUser> getUpgradesByUserId(String id);
 
-    //consultar el nivel de la mejora+
-    @Query("SELECT userLevel FROM user_upgrades WHERE idUser = :idUser")
-    LiveData<String> getUserLevel(String idUser);
+    //consultar el nivel de la mejora idUpgrade
+    @Query("SELECT userLevel FROM user_upgrades WHERE idUpgrades = :idUpgrade")
+    LiveData<String> getUserLevel(String idUpgrade);
 
     //consultar una mejora concreta a un niuvel concreto
     @Query("SELECT idUpgrades FROM user_upgrades WHERE idUser = :idUser AND userLevel = :userLevel")
