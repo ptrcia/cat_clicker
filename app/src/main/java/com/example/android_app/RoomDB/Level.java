@@ -19,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Level {
     @PrimaryKey
-@NotNull
+    @NotNull
+    @ColumnInfo(name = "id")
     private String id;
     @ColumnInfo(name = "idUpgrade")
     public  String idUpgrade; //foránea
@@ -47,7 +48,7 @@ public class Level {
     public void setIdUpgrade(String idUpgrade) {this.idUpgrade = idUpgrade;}
 
     public void setIdLevel(String idLevel) {this.idLevel = idLevel;}
-    public String getLevel() {return idLevel;}
+    public String getIdLevel() {return idLevel;}
 
 
     public int getCost() {return cost;}

@@ -49,14 +49,6 @@ public class UpgradesRepository {
     //UPgrades por tipo
     public LiveData<List<ClickUpgrade>> getClickUpgradeByType(String type) {
         LiveData<List<ClickUpgrade>> getClickUpgradeByType = clickUpgradeDAO.getClickUpgradeByType(type);
-
-        getClickUpgradeByType.observeForever(upgrades -> {
-            if (upgrades != null) {
-                //Log.d("Clicker -> ViewModel", "Datos obtenidos: " + upgrades);
-            } else {
-                //Log.d("Clicker -> ViewModel", "No hay datos en la tabla.");
-            }
-        });
         //return clickUpgradeDAO.getClickUpgradeByType(type);
         return getClickUpgradeByType;
 
@@ -67,13 +59,13 @@ public class UpgradesRepository {
     //ESTO ES TAMBIEN PARA EL TEXT
     public LiveData<List<ClickUpgrade>> getAllUpgrades() {
         LiveData<List<ClickUpgrade>> getAllUpgrades = clickUpgradeDAO.getAllUpgrades();
-        getAllUpgrades.observeForever(upgrades -> {
+        /*getAllUpgrades.observeForever(upgrades -> {
             if (upgrades != null) {
                 Log.d("Clicker -> ViewModel", "Datos obtenidos UPGRADE RESPOITORY: " + upgrades);
             } else {
                 Log.d("Clicker -> ViewModel", "No hay datos en la tabla.");
             }
-        });
+        });*/
         return getAllUpgrades;
     }
     //get active upgrades
@@ -106,7 +98,7 @@ public class UpgradesRepository {
             Level defaultLevel1_2 = new Level("level_2", "ua_2", "2", 6, 8);
 
             Level defaultLevel2_1 = new Level("level_1", "up_1", "1", 2, 4);
-            Level defaultLevel2_2 = new Level("level_2", "up_2", "2", 2, 4);
+            Level defaultLevel2_2 = new Level("level_2", "up_2", "2", 6, 8);
 
 
             clickUpgradeDAO.insert(defaultActiveUpgrade1);

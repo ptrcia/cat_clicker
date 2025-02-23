@@ -103,24 +103,26 @@ public class UpgradeFragment extends Fragment {
         });
 */
         //endregion
+        //FormatUI("Name", "Description", "Id", 0, 0);
 
         //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
         //upgradeType te lo da el boton al pulsar y userID lo hardcodeo
         viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
             container.removeAllViews();
-            title.setText("Mejora " + upgradeType);
+            title.setText(upgradeType + " Upgrades");
 
             if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
                 title.setText("No hay datos para mostrar.");
                 Log.d("Clicker-> ", "No hay datos para mostrar.");
             }
             // Si hay datos, maneja como normalmente
-            title.setText(upgradeType);
             //assert filteredUpgrades != null;
             for (Map.Entry<ClickUpgrade, Level> upgradeWithLevel : filteredUpgrades.entrySet()) {
                 ClickUpgrade upgrade = upgradeWithLevel.getKey();
                 Level level = upgradeWithLevel.getValue();
-                Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", Level: " + level.getLevel() + ", Effect: " + level.getEffect());
+                Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + level.getIdLevel() + ", Cost: " + level.getCost()+ ", Effect: " + level.getEffect());
+                //Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + "???" + ", Effect: " + level.getEffect() + ", Cost: " + level.getCost());
+
                 FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), level.getCost(), level.getEffect());
             }
 
@@ -131,29 +133,6 @@ public class UpgradeFragment extends Fragment {
        return rootView;
     }
 
-
-/*
-    //Sacar los niveles de cada mejora
-private List<Level> getLevelsForUpgrade(int upgradeId) {
-    List<Level> levels = new ArrayList<>();
-    viewModel.getLevelsForUpgrade(upgradeId).observe(getViewLifecycleOwner(), levels::addAll);
-    return levels;
-}
-    */
-    /*
-    private void processLevels(List<Level> levels) {
-        // Tu lógica para manejar los niveles y actualizar la UI
-    }
-    private void inflateFragment(LinearLayout container) {
-        if (container == null) {
-            Log.d("Clicker-> " ,"Container is null!");
-
-        }else{
-            Log.d("Clicker-> " ,"Container is not null!");
-            //FormatUI();
-        }
-    }
-*/
     //Volcado UI
     private void FormatUI(String name, String description, String id, int cost, int effect) {
 
@@ -185,6 +164,22 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newTitle.setTypeface(typefaceTitle);
         newTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
+
+        //Nivel
+        TextView newLevel = new TextView(context);
+        LinearLayout.LayoutParams levelParams = new LinearLayout.LayoutParams(
+                //dpToPx(300),
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        levelParams.setMarginStart(dpToPx(30));
+        newLevel.setLayoutParams(titleParams);
+        newLevel.setText(String.valueOf(id));
+        newLevel.setTextSize(20);
+        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        newLevel.setTypeface(typefaceLevel);
+        newLevel.setTextColor(Color.BLUE);
+
 /*
         //Descripción
         TextView newDescription = new TextView(context);
@@ -216,8 +211,9 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newCost.setTypeface(typefaceCost);
         newCost.setTextColor(Color.RED);
-        //Effect
 
+
+        //Effect
         TextView newEffect = new TextView(context);
         LinearLayout.LayoutParams costEfect = new LinearLayout.LayoutParams(
                 //dpToPx(300),
@@ -232,7 +228,6 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         newEffect.setTypeface(typefaceEffect);
         newEffect.setTextColor(Color.RED);
 
-        newLayout2.addView(newEffect);
 
 
         //Button
@@ -251,7 +246,7 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newButton.setTypeface(typeface);
         newButton.setTextColor(ContextCompat.getColor(context, R.color.black));
-        //newButton.setId(note.id*10); //                    <---------
+        newButton.setTag(id); //                    <--------- IMPIRTANTE PAR ALA FUNCIONALIDAD
         newButton.setTag(name); //COSAS
         newButton.setOnClickListener(upgradeActive);
 
@@ -259,16 +254,17 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         //newLayout2.addView(newImg);
         newLayout2.addView(newTitle);
         //newLayout2.addView(newDescription);
-
+        newLayout2.addView(newCost);
+        newLayout2.addView(newEffect);
+        newLayout2.addView(newLevel);
         newLayout2.addView(newButton);
+
 
         // Añadir el nuevo LinearLayout al contenedor
         container.addView(newLayout2, 0);
-        Log.d("FormatUI", "Upgrade: " + name + ", Key: " + id + ", Description: " + description);
+        Log.d("Cllicker -> ", "FormatUI: " + name + ", Id: " + id + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
     }
 
-    //Pafuncion para el boton supongo que cambiar el dato
-    //gameViewModel.insertClickUpgrade(defaultActiveUpgrade1);
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
@@ -279,7 +275,7 @@ private List<Level> getLevelsForUpgrade(int upgradeId) {
         public void onClick(View view) {
             // Obtener la nota a partir del tag del botón
             view.getTag();  // La instancia de la nota almacenada en el tag
-            Log.d("Clicker-> ", "Upgrade: " + view.getTag() );
+            Log.d("Clicker-> ", "Upgrade?: " + view.getTag() );
 
             //meter info a la tabla usuario
         }
