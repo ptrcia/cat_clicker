@@ -14,13 +14,13 @@ public interface UserStatsDAO {
     void insert(UserStats userStats);
 
     @Query("SELECT * FROM user_stats")
-    LiveData<List<UserStats>> getAllUserStats();
+    List<UserStats> getAllUserStats();
 
     @Query("SELECT * FROM user_stats WHERE name = :user LIMIT 1")
-    LiveData<UserStats> getUserStatsByName(String user);
+    UserStats getUserStatsByName(String user);
 
     @Query("SELECT * FROM user_stats WHERE id = :id LIMIT 1")
-    LiveData<UserStats> getUserStatsById(String id);
+    UserStats getUserStatsById(String id);
 
 
 }

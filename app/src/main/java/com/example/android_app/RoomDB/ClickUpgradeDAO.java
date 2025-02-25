@@ -15,21 +15,21 @@ public interface ClickUpgradeDAO {
     void insert(ClickUpgrade clickUpgrade);
 
     @Query("SELECT * FROM click_upgrade")
-    LiveData<List<ClickUpgrade>> getAllUpgrades();
+    List<ClickUpgrade> getAllUpgrades();
 
     @Query("SELECT * FROM click_upgrade WHERE id = :id")
-    LiveData<ClickUpgrade> getClickUpgradeById(String id);
+    ClickUpgrade getClickUpgradeById(String id);
 
     @Query("SELECT * FROM click_upgrade WHERE type = :type")
-    LiveData<List<ClickUpgrade>> getClickUpgradeByType(String type);
+    List<ClickUpgrade> getClickUpgradeByType(String type);
 
     @Query("SELECT * FROM click_upgrade WHERE type = 'active'")
-    LiveData<List<ClickUpgrade>> getActiveUpgrades();
+    List<ClickUpgrade> getActiveUpgrades();
 
     @Query("SELECT * FROM click_upgrade WHERE type = 'passive'")
-    LiveData<List<ClickUpgrade>> getPassiveUpgrades();
+    List<ClickUpgrade> getPassiveUpgrades();
 
     @Query("SELECT * FROM click_upgrade WHERE id NOT IN (SELECT idUpgrades FROM user_upgrades WHERE idUser = :idUser)")
-    LiveData<List<ClickUpgrade>> getAvailableUpgrades(String idUser);
+    List<ClickUpgrade> getAvailableUpgrades(String idUser);
 
 }

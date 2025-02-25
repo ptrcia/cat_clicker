@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android_app.RoomDB.GameViewModel;
@@ -22,7 +23,7 @@ import com.example.android_app.RoomDB.GameViewModel;
 
 public class Game extends AppCompatActivity {
 
-    private GameViewModel gameViewModel;
+    GameViewModel gameViewModel;
     TextView textScore;
     ScoreManager scoreManager;
 
@@ -44,10 +45,9 @@ public class Game extends AppCompatActivity {
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        gameViewModel.getUserStats("User1").observe(this, userStats -> {
-            if (userStats != null) {
-                textScore.setText(String.valueOf(userStats.getTotalScore())); //gestionar los pùntos totales
-            }
+
+        gameViewModel.userStatsLiveData.observe(this, userStats -> {
+            textScore.setText(userStats.getTotalScore());
         });
 
 
@@ -78,6 +78,8 @@ public class Game extends AppCompatActivity {
         //Consulta de prueba para imprimir
 
     }
+
+
     private void OpenFragment(String upgradeType){
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir

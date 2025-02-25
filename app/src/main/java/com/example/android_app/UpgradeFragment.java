@@ -7,9 +7,12 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -38,7 +41,7 @@ public class UpgradeFragment extends Fragment {
     LinearLayout container;
     TextView title;
     String userId = "User1";
-    //String upgradeType;
+    String upgradeType;
 
 
     //instancia segun el tipo
@@ -83,7 +86,7 @@ public class UpgradeFragment extends Fragment {
 
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
-       String upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+       upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
 
        //region test
 /*
@@ -107,31 +110,54 @@ public class UpgradeFragment extends Fragment {
 
         //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
         //upgradeType te lo da el boton al pulsar y userID lo hardcodeo
-        viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
-            container.removeAllViews();
-            title.setText(upgradeType + " Upgrades");
+
+        viewModel.pollo.observe(getViewLifecycleOwner(), pollitos-> {
+            //CUando este valor cambie, el codigo de aqui se ejecutará
+            Log.d("Pollo", "Pollo ha cambiado a :" + pollitos);
+                });
+
+        viewModel.filteredUpgrades.observe(getViewLifecycleOwner(), upgrades -> {
+            for(Map.Entry<ClickUpgrade, Level> e: upgrades.entrySet()){
+                Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " + e.getKey().getId() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost()+ ", Effect: " + e.getValue().getEffect());
+                FormatUI(  e.getKey().getName(),   e.getKey().getDescription(),   e.getKey().getId(), e.getValue().getCost(),  e.getValue().getEffect());
+
+            }
+        });
+       /* viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
+            //container.removeAllViews();
+            Log.d("Fragment-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + filteredUpgrades);
 
             if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
                 title.setText("No hay datos para mostrar.");
-                Log.d("Clicker-> ", "No hay datos para mostrar.");
+                Log.d("Fragment-> ", "No hay datos para mostrar.");
             }
+
+            title.setText(upgradeType + " Upgrades");
+
             // Si hay datos, maneja como normalmente
             //assert filteredUpgrades != null;
             for (Map.Entry<ClickUpgrade, Level> upgradeWithLevel : filteredUpgrades.entrySet()) {
                 ClickUpgrade upgrade = upgradeWithLevel.getKey();
                 Level level = upgradeWithLevel.getValue();
-                Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + level.getIdLevel() + ", Cost: " + level.getCost()+ ", Effect: " + level.getEffect());
+                Log.d("Fragment-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + level.getIdLevel() + ", Cost: " + level.getCost()+ ", Effect: " + level.getEffect());
                 //Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + "???" + ", Effect: " + level.getEffect() + ", Cost: " + level.getCost());
 
                 FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), level.getCost(), level.getEffect());
             }
-
-        });
+        });*/
 
         // inflar
        // inflateFragment(this.container);
        return rootView;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
+    }
+
+
 
     //Volcado UI
     private void FormatUI(String name, String description, String id, int cost, int effect) {

@@ -3,11 +3,12 @@ package com.example.android_app.RoomDB;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public class GameViewModel extends AndroidViewModel {
     private final UpgradesRepository upgradesRepository;
     private final UserRepository userRepository;
+    public final MutableLiveData<UserStats> userStatsLiveData = new MutableLiveData<>();
 
     public GameViewModel(Application application) {
         super(application);
@@ -19,11 +20,22 @@ public class GameViewModel extends AndroidViewModel {
          upgradesRepository.insert(upgrade);
     }
 
-    public LiveData<ClickUpgrade> getClickUpgradeByKey(String id) {
+    public ClickUpgrade getClickUpgradeByKey(String id) {
         return upgradesRepository.getClickUpgradeById(id);
     }
 
-    public LiveData<UserStats> getUserStats(String userId) {
-        return userRepository.getUserStats(userId);
+    public void getUserStats(String userId) {
+        userRepository.getUserStats(userId, new BaseCallback(){
+
+            @Override
+            public void onSuccess(UserStats userStats) {
+                userStatsLiveData.postValue(userStats);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 }

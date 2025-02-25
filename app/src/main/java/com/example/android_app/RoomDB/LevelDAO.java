@@ -17,8 +17,8 @@ public interface LevelDAO {
     void insert(Level level);
 
     @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade")
-    LiveData<List<Level>> getLevelsForUpgrade(String idUpgrade);
+    List<Level> getLevelsForUpgrade(String idUpgrade);
 
     @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade AND idLevel = :level")
-    LiveData<Level> getLevelForUpgradeByLevel(@NotNull String idUpgrade, String level);
+    Level getLevelForUpgradeByLevel(String idUpgrade, String level);
 }

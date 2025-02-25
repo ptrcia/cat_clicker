@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import javax.security.auth.callback.Callback;
+
 public class UserRepository{
     private final UserStatsDAO userStatsDAO;
     private final UpgradesUserDAO upgradesUserDAO;
@@ -18,14 +20,18 @@ public class UserRepository{
         upgradesUserDAO = db.upgradesUserDAO();
         executorService = AppDataBase.databaseWriteExecutor;
 
-        LiveData<List<UserStats>>  allUpgrades = userStatsDAO.getAllUserStats();
-        if (allUpgrades.getValue() == null || allUpgrades.getValue().isEmpty()) {
-            Log.d("Clicker-> ", "Table is empty");
-            upgradeUser();
-        } else {
-            Log.d("Clicker-> ", "Table is not empty");
-        }
+        executorService.execute(() -> {
+
+            List<UserStats> allUpgrades = userStatsDAO.getAllUserStats();
+            if (allUpgrades == null || allUpgrades.isEmpty()) {
+                Log.d("Clicker-> ", "Table is empty");
+                upgradeUser();
+            } else {
+                Log.d("Clicker-> ", "Table is not empty");
+            }
+        });
     }
+
 
     //region Introoducir dato aa usuario
     //Introducir a UserStats
@@ -39,33 +45,35 @@ public class UserRepository{
     //endregion
 
     // Obtener estadísticas del usuario por ID
-    public LiveData<UserStats> getUserStats(String userId) {
-        return userStatsDAO.getUserStatsById(userId);
+    public void getUserStats(String userId, BaseCallback callback) {
+        executorService.execute(()->{
+            callback.onSuccess(userStatsDAO.getUserStatsById(userId));
+        });
     }
 
     // obtener mejoras del usuario por id
-    public LiveData<UpgradesUser> getUserUpgradesById(String id) {
+    public UpgradesUser getUserUpgradesById(String id) {
         return upgradesUserDAO.getUpgradesByUserId(id);
 
     }
     //obtener mejoras y nivel del usuario
-    public LiveData<String> getUserLevel(String idUpgrades) {
+    public String getUserLevel(String idUpgrades) {
         return upgradesUserDAO.getUserLevel(idUpgrades);
     }
     //consultar mejoras de un nivel concreto
-    public LiveData<String> getUserUpgrade(String idUpgrades, int userLevel) {
+    public String getUserUpgrade(String idUpgrades, int userLevel) {
         return upgradesUserDAO.getUserUpgrade(idUpgrades, userLevel);
     }
     //obtener todas las mejoras del usuario
-    public LiveData<List<UpgradesUser>> getAllUserUpgrades(String userId) {
+    public List<UpgradesUser> getAllUserUpgrades(String userId) {
         return upgradesUserDAO.getAllUserUpgrades(userId);
     }
     //obtener una mejora concreta de un usuario concreto
-    public LiveData<UpgradesUser> getUserUpgrade(String userId, String upgradeId) {
+    public UpgradesUser getUserUpgrade(String userId, String upgradeId) {
         return upgradesUserDAO.getUserUpgrade(userId, upgradeId);
     }
     //obtener el nivel de una mejora concreta de un usuario concreto
-    public LiveData<String> getUserUpgradeLevel(String userId, String upgradeId) {
+    public String getUserUpgradeLevel(String userId, String upgradeId) {
         return upgradesUserDAO.getUserUpgradeLevel(userId, upgradeId);
     }
 
