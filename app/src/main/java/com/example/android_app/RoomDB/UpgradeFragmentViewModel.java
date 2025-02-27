@@ -25,34 +25,43 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
         userRepository = new UserRepository(application);
     }
 
-    public List<ClickUpgrade> getUpgradesType(String type) {
-        return upgradesRepository.getClickUpgradeByType(type);
-    }
-
 //region Metodo
 
     public void getUpgradesTypeUserLevel (String type, String userId){
         try {
 
             Map<ClickUpgrade, Level>auxMap = new HashMap<>();
-            List<ClickUpgrade> upgradesByType = getUpgradesType(type); //mejoras por tipo
+            upgradesRepository.getClickUpgradeByType(type, new BaseCallback<List<ClickUpgrade>>() {
+                @Override
+                public void onSuccess(List<ClickUpgrade> upgrades) {
+                    for (ClickUpgrade upgrade : upgrades) {
+                        String idUpgrades = upgrade.getId();
 
-            for(ClickUpgrade upgrade : upgradesByType){
-                String idUpgrades = upgrade.getId();
-                String currentLevelOfUpgrade = userRepository.getUserLevel(idUpgrades);
+                        userRepository.getUserLevel(idUpgrades, new BaseCallback<String>() {
+                            @Override
+                            public void onSuccess(String currentLevel) {
+                                String currentLevelOfUpgrade = currentLevel; //es redundante
+                                int nextLevel = Integer.parseInt(currentLevelOfUpgrade) + 1; //obtenermos el siguiente nivel
 
-                int nextLevel = Integer.parseInt(currentLevelOfUpgrade )+ 1; //obtenermos el siguiente nivel
-
-                Level levelNextUser = upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel)); //dame los niveles del siguiente nivel del jugador
-                auxMap.put(upgrade, levelNextUser);
-            }
-            filteredUpgrades.postValue(auxMap);
-            pollo.postValue("Juan");
-
+                                upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel), new BaseCallback<Level>() {
+                                    @Override
+                                    public void onSuccess(Level levelNextUser) {
+                                        if(levelNextUser!=null){
+                                            auxMap.put(upgrade, levelNextUser);
+                                        }
+                                        if(upgrades.size()-1 == upgrades.indexOf(upgrade)){
+                                            filteredUpgrades.postValue(auxMap);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    pollo.postValue("Juan");
+                }
+            });
         } catch (Exception e) {
             Log.d("Clicker->", "Error al obtener las mejoras por tipo: " + e.getMessage());
         }
-     }
-    //endregion
-
+    }
 }

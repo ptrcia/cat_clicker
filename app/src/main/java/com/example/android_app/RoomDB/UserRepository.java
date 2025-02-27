@@ -20,8 +20,8 @@ public class UserRepository{
         upgradesUserDAO = db.upgradesUserDAO();
         executorService = AppDataBase.databaseWriteExecutor;
 
-        executorService.execute(() -> {
 
+        executorService.execute(() -> {
             List<UserStats> allUpgrades = userStatsDAO.getAllUserStats();
             if (allUpgrades == null || allUpgrades.isEmpty()) {
                 Log.d("Clicker-> ", "Table is empty");
@@ -32,49 +32,33 @@ public class UserRepository{
         });
     }
 
-
     //region Introoducir dato aa usuario
+    //no hace falta callback
     //Introducir a UserStats
     public void insert(UserStats userStats) {
-        executorService.execute(() -> userStatsDAO.insert(userStats));
+        executorService.execute(() -> {
+            userStatsDAO.insert(userStats);
+        });
     }
     //Introducir a UpgradesUser
     public void insert(UpgradesUser upgradesUser) {
-        executorService.execute(() -> upgradesUserDAO.insert(upgradesUser));
+        executorService.execute(() -> {
+            upgradesUserDAO.insert(upgradesUser);
+        });
     }
     //endregion
 
     // Obtener estadísticas del usuario por ID
-    public void getUserStats(String userId, BaseCallback callback) {
+    public void getUserStats(String userId, BaseCallback<UserStats> callback) {
         executorService.execute(()->{
             callback.onSuccess(userStatsDAO.getUserStatsById(userId));
         });
     }
-
-    // obtener mejoras del usuario por id
-    public UpgradesUser getUserUpgradesById(String id) {
-        return upgradesUserDAO.getUpgradesByUserId(id);
-
-    }
     //obtener mejoras y nivel del usuario
-    public String getUserLevel(String idUpgrades) {
-        return upgradesUserDAO.getUserLevel(idUpgrades);
-    }
-    //consultar mejoras de un nivel concreto
-    public String getUserUpgrade(String idUpgrades, int userLevel) {
-        return upgradesUserDAO.getUserUpgrade(idUpgrades, userLevel);
-    }
-    //obtener todas las mejoras del usuario
-    public List<UpgradesUser> getAllUserUpgrades(String userId) {
-        return upgradesUserDAO.getAllUserUpgrades(userId);
-    }
-    //obtener una mejora concreta de un usuario concreto
-    public UpgradesUser getUserUpgrade(String userId, String upgradeId) {
-        return upgradesUserDAO.getUserUpgrade(userId, upgradeId);
-    }
-    //obtener el nivel de una mejora concreta de un usuario concreto
-    public String getUserUpgradeLevel(String userId, String upgradeId) {
-        return upgradesUserDAO.getUserUpgradeLevel(userId, upgradeId);
+    public void getUserLevel(String idUpgrades, BaseCallback<String> callback) {
+        executorService.execute(()-> {
+            callback.onSuccess(upgradesUserDAO.getUserLevel(idUpgrades));
+        });
     }
 
     public void upgradeUser(){

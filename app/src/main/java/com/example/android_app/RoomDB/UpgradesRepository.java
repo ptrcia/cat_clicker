@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.Executor;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public class UpgradesRepository {
     private final ClickUpgradeDAO clickUpgradeDAO;
     private final LevelDAO levelDAO;
@@ -29,7 +31,6 @@ public class UpgradesRepository {
             }
         });
 
-
     }
     //region Introducir Datos
     //Meter datos en el ClickUpgrade
@@ -48,48 +49,19 @@ public class UpgradesRepository {
     }
 
     //UPgrades por tipo
-    public List<ClickUpgrade> getClickUpgradeByType(String type) {
-        List<ClickUpgrade> getClickUpgradeByType = clickUpgradeDAO.getClickUpgradeByType(type);
-        //return clickUpgradeDAO.getClickUpgradeByType(type);
-        return getClickUpgradeByType;
-
+    public void getClickUpgradeByType(String type, BaseCallback<List<ClickUpgrade>> callback) {
+        executorService.execute(() -> {
+            callback.onSuccess(clickUpgradeDAO.getClickUpgradeByType(type));
+        });
     }
 
 
-    //get all upgrades
-    //ESTO ES TAMBIEN PARA EL TEXT
-    public List<ClickUpgrade> getAllUpgrades() {
-        List<ClickUpgrade> getAllUpgrades = clickUpgradeDAO.getAllUpgrades();
-        /*getAllUpgrades.observeForever(upgrades -> {
-            if (upgrades != null) {
-                Log.d("Clicker -> ViewModel", "Datos obtenidos UPGRADE RESPOITORY: " + upgrades);
-            } else {
-                Log.d("Clicker -> ViewModel", "No hay datos en la tabla.");
-            }
-        });*/
-        return getAllUpgrades;
-    }
-    //get active upgrades
-    public List<ClickUpgrade> getActiveUpgrades() {
-        return clickUpgradeDAO.getActiveUpgrades();
-    }
-    //get passive upgrades
-    public List<ClickUpgrade> getPassiveUpgrades() {
-        return clickUpgradeDAO.getPassiveUpgrades();
-    }
-    //levels
-    public List<Level> getLevelsForUpgrade(String idUpgrade) {
-        return levelDAO.getLevelsForUpgrade(idUpgrade);
-    }
-    //get avaliable upgrades
-    public List<ClickUpgrade> getAvailableUpgrades(String idUser) {
-        return clickUpgradeDAO.getAvailableUpgrades(idUser);
+    public void getLevelForUpgradeByUserLevel(@NotNull String idUpgrade, String level, BaseCallback<Level> callback) {
+        executorService.execute(()-> {
+            callback.onSuccess(levelDAO.getLevelForUpgradeByLevel(idUpgrade, level));
+        });
     }
 
-    public Level getLevelForUpgradeByUserLevel(@NotNull String idUpgrade, String level) {
-        Log.d("Clicker-> ", "Buscando nivel en la BD con idUpgrade: " + idUpgrade + " y level: " + level);
-        return levelDAO.getLevelForUpgradeByLevel(idUpgrade, level);
-    }
     public void upgradesTable() {
 
         executorService.execute(() -> {
@@ -117,8 +89,6 @@ public class UpgradesRepository {
             levelDAO.insert(defaultLevel1_2);
             levelDAO.insert(defaultLevel2_1);
             levelDAO.insert(defaultLevel2_2);
-
-
         });
     }
 

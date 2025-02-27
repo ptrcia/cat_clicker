@@ -16,26 +16,13 @@ public class GameViewModel extends AndroidViewModel {
         userRepository = new UserRepository(application);
     }
 
-    public void insertClickUpgrade(ClickUpgrade upgrade) {
-         upgradesRepository.insert(upgrade);
-    }
-
-    public ClickUpgrade getClickUpgradeByKey(String id) {
-        return upgradesRepository.getClickUpgradeById(id);
-    }
-
     public void getUserStats(String userId) {
-        userRepository.getUserStats(userId, new BaseCallback(){
-
+        userRepository.getUserStats(userId, new BaseCallback<UserStats>(){
             @Override
             public void onSuccess(UserStats userStats) {
                 userStatsLiveData.postValue(userStats);
             }
 
-            @Override
-            public void onError() {
-
-            }
         });
     }
 }

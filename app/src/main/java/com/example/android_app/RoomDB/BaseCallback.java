@@ -1,8 +1,7 @@
 package com.example.android_app.RoomDB;
 
-public interface BaseCallback {
-    void onSuccess(UserStats userStats);
+public interface BaseCallback<T> {
+    void onSuccess(T result);
 
-
-    void onError();
+    //void onError();
 }
