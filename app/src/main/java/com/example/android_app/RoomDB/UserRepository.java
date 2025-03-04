@@ -63,20 +63,32 @@ public class UserRepository{
 
     public void upgradeUser(){
         executorService.execute(() -> {
-            UserStats userStats = new UserStats("User1", "User1", 41000, 0, 1);
+
+            //Datos del usuario
+            UserStats userStats = new UserStats("User1", "User1", 0, 0, 1);
             userStatsDAO.insert(userStats);
 
-            UpgradesUser upgradesUser1 = new UpgradesUser("upgradeuser_1", "ua_1", "0", "User1");
-            upgradesUserDAO.insert(upgradesUser1);
+            //Datos sobre las mejoras que tiene adquiridas el usuario.
+            UpgradesUser upgradesUserActive1 = new UpgradesUser("upgradeuserActive_1", "ua_1", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserActive1);
 
-            UpgradesUser upgradesUser2 = new UpgradesUser("upgradeuser_2", "ua_2", "0", "User1");
-            upgradesUserDAO.insert(upgradesUser2);
+            UpgradesUser upgradesUserActive2 = new UpgradesUser("upgradeuserActive_2", "ua_2", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserActive2);
 
-            UpgradesUser upgradesUser3 = new UpgradesUser("upgradeuser_3", "up_1", "0", "User1");
-            upgradesUserDAO.insert(upgradesUser3);
+            UpgradesUser upgradesUserActive3 = new UpgradesUser("upgradeuserActive_3", "ua_3", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserActive3);
 
-            UpgradesUser upgradesUser4 = new UpgradesUser("upgradeuser_4", "up_2", "0", "User1");
-            upgradesUserDAO.insert(upgradesUser4);
+
+            UpgradesUser upgradesUserPassive1 = new UpgradesUser("upgradeuserPassive_1", "up_1", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserPassive1);
+
+            UpgradesUser upgradesUserPassive2 = new UpgradesUser("upgradeuserPassive_2", "up_2", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserPassive2);
+
+            UpgradesUser upgradesUserPassive3 = new UpgradesUser("upgradeuserPassive_3", "up_3", "0", "User1");
+            upgradesUserDAO.insert(upgradesUserPassive3);
+
+
         });
     }
 }

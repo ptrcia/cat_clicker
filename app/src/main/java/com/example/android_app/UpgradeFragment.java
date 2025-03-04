@@ -64,6 +64,7 @@ public class UpgradeFragment extends Fragment {
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
         title = rootView.findViewById(R.id.title);
 
+
         //Conecta con el viewmodel
         viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
 
@@ -87,25 +88,8 @@ public class UpgradeFragment extends Fragment {
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
+        title.setText("Mejora " + upgradeType);
 
-       //region test
-/*
-        //ESTO ES PRUEBA PARA EL LOG
-        viewModel.getAllUpgrades().observe(getViewLifecycleOwner(), upgrades -> {
-            if (upgrades == null || upgrades.isEmpty()) {
-                // Si no hay datos, muestra un mensaje simple
-                title.setText("No hay datos para mostrar.");
-            } else {
-                Log.d("Clicker-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + upgrades);
-            }
-
-            for (ClickUpgrade upgrade : upgrades) {
-                Log.d("Clicker-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + "Nombre " +  upgrade.getName() + "Desc " +upgrade.getDescription()+"Id " +upgrade.getId()+"? " + new ArrayList<>() );
-                FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), new ArrayList<>());
-            }
-        });
-*/
-        //endregion
         //FormatUI("Name", "Description", "Id", 0, 0);
 
         //Obtener todas las mejoras del tipo que sea y meterlas en filterdUpgrades
@@ -123,28 +107,6 @@ public class UpgradeFragment extends Fragment {
 
             }
         });
-       /* viewModel.getUpgradesTypeUserLevel(upgradeType, userId).observe(getViewLifecycleOwner(), filteredUpgrades -> {
-            //container.removeAllViews();
-            Log.d("Fragment-> ", "Datos obtenidos 3 UPGRADE FRAGMENT: " + filteredUpgrades);
-
-            if (filteredUpgrades == null || filteredUpgrades.isEmpty()) {
-                title.setText("No hay datos para mostrar.");
-                Log.d("Fragment-> ", "No hay datos para mostrar.");
-            }
-
-            title.setText(upgradeType + " Upgrades");
-
-            // Si hay datos, maneja como normalmente
-            //assert filteredUpgrades != null;
-            for (Map.Entry<ClickUpgrade, Level> upgradeWithLevel : filteredUpgrades.entrySet()) {
-                ClickUpgrade upgrade = upgradeWithLevel.getKey();
-                Level level = upgradeWithLevel.getValue();
-                Log.d("Fragment-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + level.getIdLevel() + ", Cost: " + level.getCost()+ ", Effect: " + level.getEffect());
-                //Log.d("Clicker-> ", "Upgrade: " + upgrade.getName() + ", ID: " + upgrade.getId() + ", Description: " + upgrade.getDescription() + ", Level: " + "???" + ", Effect: " + level.getEffect() + ", Cost: " + level.getCost());
-
-                FormatUI(upgrade.getName(), upgrade.getDescription(), upgrade.getId(), level.getCost(), level.getEffect());
-            }
-        });*/
 
         // inflar
        // inflateFragment(this.container);
@@ -288,7 +250,7 @@ public class UpgradeFragment extends Fragment {
 
         // Añadir el nuevo LinearLayout al contenedor
         container.addView(newLayout2, 0);
-        Log.d("Cllicker -> ", "FormatUI: " + name + ", Id: " + id + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
+        Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + id + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
     }
 
 
