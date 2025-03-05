@@ -25,10 +25,10 @@ public class UserRepository{
             List<UserStats> allUpgrades = userStatsDAO.getAllUserStats();
             if (allUpgrades == null || allUpgrades.isEmpty()) {
                 Log.d("Clicker-> ", "Table is empty");
-                upgradeUser();
+                //upgradeUser();
             } else {
                 Log.d("Clicker-> ", "Table is not empty");
-                upgradeUser();///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
+                //upgradeUser();///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
             }
         });
     }

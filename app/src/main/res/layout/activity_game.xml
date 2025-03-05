@@ -42,9 +42,11 @@
 
         <ImageButton
             android:id="@+id/buttonClickeableCat"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
+            android:src="@drawable/pawnormal"
+
             android:contentDescription="@string/button_to_click_to_obtain_points">
         </ImageButton>
     </FrameLayout>
@@ -65,6 +67,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contentDescription="Bonificadores que al adquirirlas, te suman valor automáticamente cada cierto tiempo"
             android:text="Mejoras pasivas"
             android:textColor="@color/white">
 
@@ -73,10 +76,11 @@
         <Button
             android:id="@+id/buttonActives"
             style="?android:attr/buttonBarButtonStyle"
+            android:background="@drawable/rounded_shape"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/contentDescriptiontienda"
+            android:contentDescription="Bonificadores que al adquirirlas, te suman valor por cada click que se realiza de manera manual"
             android:text="Mejoras activas"
             android:textColor="@color/white">
 

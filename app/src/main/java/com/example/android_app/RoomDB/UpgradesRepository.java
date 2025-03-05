@@ -26,10 +26,10 @@ public class UpgradesRepository {
             List<ClickUpgrade> allUpgrades = clickUpgradeDAO.getAllUpgrades();
             if (allUpgrades == null || allUpgrades.isEmpty()) {
                 Log.d("Clicker-> ", "Table is empty");
-                upgradesTable();
+                //upgradesTable();
             } else {
                 Log.d("Clicker-> ", "Table is not empty");
-                upgradesTable(); ///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
+                //upgradesTable(); ///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
             }
         });
 
