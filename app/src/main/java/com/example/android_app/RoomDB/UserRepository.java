@@ -19,7 +19,7 @@ public class UserRepository{
         userStatsDAO = db.userStatsDAO();
         upgradesUserDAO = db.upgradesUserDAO();
         executorService = AppDataBase.databaseWriteExecutor;
-
+        //db.clearAllTables();
 
         executorService.execute(() -> {
             List<UserStats> allUpgrades = userStatsDAO.getAllUserStats();
@@ -28,6 +28,7 @@ public class UserRepository{
                 upgradeUser();
             } else {
                 Log.d("Clicker-> ", "Table is not empty");
+                upgradeUser();///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
             }
         });
     }
@@ -75,8 +76,8 @@ public class UserRepository{
             UpgradesUser upgradesUserActive2 = new UpgradesUser("upgradeuserActive_2", "ua_2", "0", "User1");
             upgradesUserDAO.insert(upgradesUserActive2);
 
-            UpgradesUser upgradesUserActive3 = new UpgradesUser("upgradeuserActive_3", "ua_3", "0", "User1");
-            upgradesUserDAO.insert(upgradesUserActive3);
+            //UpgradesUser upgradesUserActive3 = new UpgradesUser("upgradeuserActive_3", "ua_3", "0", "User1");
+            //upgradesUserDAO.insert(upgradesUserActive3);
 
 
             UpgradesUser upgradesUserPassive1 = new UpgradesUser("upgradeuserPassive_1", "up_1", "0", "User1");
@@ -85,8 +86,8 @@ public class UserRepository{
             UpgradesUser upgradesUserPassive2 = new UpgradesUser("upgradeuserPassive_2", "up_2", "0", "User1");
             upgradesUserDAO.insert(upgradesUserPassive2);
 
-            UpgradesUser upgradesUserPassive3 = new UpgradesUser("upgradeuserPassive_3", "up_3", "0", "User1");
-            upgradesUserDAO.insert(upgradesUserPassive3);
+            //UpgradesUser upgradesUserPassive3 = new UpgradesUser("upgradeuserPassive_3", "up_3", "0", "User1");
+            //upgradesUserDAO.insert(upgradesUserPassive3);
 
 
         });

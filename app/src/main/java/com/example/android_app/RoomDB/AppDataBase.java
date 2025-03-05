@@ -44,7 +44,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .setQueryCallback((sqlQuery, bindArgs) -> {
                         Log.d("RoomQuery", "SQL Query: " + sqlQuery + ", Bind Args: " + bindArgs);
                     }, Executors.newSingleThreadExecutor())
-                    .fallbackToDestructiveMigration()
+                    //.fallbackToDestructiveMigration()
                     .build();
                 }
         return instance;

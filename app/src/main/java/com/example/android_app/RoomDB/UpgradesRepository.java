@@ -21,7 +21,7 @@ public class UpgradesRepository {
         clickUpgradeDAO = db.clickUpgradeDAO();
         levelDAO = db.levelDAO();
         executorService = AppDataBase.databaseWriteExecutor;
-        //db.clearAllTables();
+        //db.clearAllTables(); /// TENER EN CUENTA ESTO PARA LA BUILD FINAL
         executorService.execute(() -> {
             List<ClickUpgrade> allUpgrades = clickUpgradeDAO.getAllUpgrades();
             if (allUpgrades == null || allUpgrades.isEmpty()) {
@@ -29,6 +29,7 @@ public class UpgradesRepository {
                 upgradesTable();
             } else {
                 Log.d("Clicker-> ", "Table is not empty");
+                upgradesTable(); ///// TENER EN CUENTA ESTO PARA LA BUILD FINAL
             }
         });
 
@@ -67,15 +68,18 @@ public class UpgradesRepository {
 
         executorService.execute(() -> {
 
-            ClickUpgrade defaultActiveUpgrade1 = new ClickUpgrade("ua_1", "nombremejora1", 9, "", "Active");
-            ClickUpgrade defaultActiveUpgrade2 = new ClickUpgrade("ua_2", "nombremejora2", 9, "", "Active");
+            ClickUpgrade defaultActiveUpgrade1 = new ClickUpgrade("ua_1", "activa1", 0, "hola", "Active");
+            ClickUpgrade defaultActiveUpgrade2 = new ClickUpgrade("ua_2", "activa2", 0, "adiós", "Active");
 
-            ClickUpgrade defaultPassiveUpgrade1 = new ClickUpgrade("up_1", "nombremejora1", 9, "", "Passive");
-            ClickUpgrade defaultPassiveUpgrade2 = new ClickUpgrade("up_2", "nombremejora2", 9, "", "Passive");
+
+            ClickUpgrade defaultPassiveUpgrade1 = new ClickUpgrade("up_1", "pasiva1", 0, "", "Passive");
+            ClickUpgrade defaultPassiveUpgrade2 = new ClickUpgrade("up_2", "pasiva2", 0, "", "Passive");
 
             Level defaultLevelActive1_1 = new Level("levelActive1_1", "ua_1", "1", 2, 1);
             Level defaultLevelActive1_2 = new Level("levelActive1_2", "ua_1", "2", 6, 2);
             Level defaultLevelActive1_3 = new Level("levelActive1_3", "ua_1", "3", 12, 3);
+
+
             Level defaultLevelActive2_1 = new Level("levelActive2_1", "ua_2", "1", 10, 5);
             Level defaultLevelActive2_2 = new Level("levelActive2_2", "ua_2", "2", 20, 8);
             Level defaultLevelActive2_3 = new Level("levelActive2_3", "ua_2", "3", 40, 10);
@@ -91,6 +95,8 @@ public class UpgradesRepository {
             clickUpgradeDAO.insert(defaultActiveUpgrade1);
             Log.d("Clicker-> ", "Inserting: " + defaultActiveUpgrade1.getId());
             clickUpgradeDAO.insert(defaultActiveUpgrade2);
+
+
             clickUpgradeDAO.insert(defaultPassiveUpgrade1);
             clickUpgradeDAO.insert(defaultPassiveUpgrade2);
 

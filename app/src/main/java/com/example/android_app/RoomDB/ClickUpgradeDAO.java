@@ -22,10 +22,10 @@ public interface ClickUpgradeDAO {
     @Query("SELECT * FROM click_upgrade WHERE type = :type")
     List<ClickUpgrade> getClickUpgradeByType(String type);
 
-    @Query("SELECT * FROM click_upgrade WHERE type = 'active'")
+    @Query("SELECT * FROM click_upgrade WHERE type = 'Active'")
     List<ClickUpgrade> getActiveUpgrades();
 
-    @Query("SELECT * FROM click_upgrade WHERE type = 'passive'")
+    @Query("SELECT * FROM click_upgrade WHERE type = 'Passive'")
     List<ClickUpgrade> getPassiveUpgrades();
 
     @Query("SELECT * FROM click_upgrade WHERE id NOT IN (SELECT idUpgrades FROM user_upgrades WHERE idUser = :idUser)")
