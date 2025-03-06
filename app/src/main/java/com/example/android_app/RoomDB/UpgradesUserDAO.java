@@ -12,6 +12,8 @@ public interface UpgradesUserDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UpgradesUser upgradesUser);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<UpgradesUser>upgradesUser);
 
     //consultar el nivel de la mejora idUpgrade
     @Query("SELECT userLevel FROM user_upgrades WHERE idUpgrades = :idUpgrade")

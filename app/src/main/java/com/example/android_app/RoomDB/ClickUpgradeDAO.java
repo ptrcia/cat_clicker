@@ -12,6 +12,8 @@ public interface ClickUpgradeDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ClickUpgrade clickUpgrade);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<ClickUpgrade> clickUpgrades);
 
     @Query("SELECT * FROM click_upgrade")
     List<ClickUpgrade> getAllUpgrades();

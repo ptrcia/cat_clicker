@@ -55,8 +55,13 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                                     public void onSuccess(Level levelNextUser) {
                                         Log.d("Clicker->", "levelNextUser: " + levelNextUser); //"levelNextUser: levelActive1_2"
                                         if(levelNextUser!=null){
-                                            auxMap.put(upgrade, levelNextUser);
-                                            Log.d("Clicker->", "auxMap: " + auxMap);
+                                           // auxMap.put(upgrade, levelNextUser);
+                                            synchronized (auxMap) {  //ESTO ES IMPORTANTE PARA EVITAR ERRORES DE CONCURRENCIA
+                                                auxMap.put(upgrade, levelNextUser);
+                                                Log.d("Clicker->", "auxMap: " + auxMap);
+
+                                            }
+
                                         }
 
                                         if(upgrades.size()-1 == upgrades.indexOf(upgrade)){

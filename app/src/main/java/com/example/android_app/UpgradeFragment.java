@@ -30,6 +30,7 @@ import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,12 +102,15 @@ public class UpgradeFragment extends Fragment {
                 });
 
         viewModel.filteredUpgrades.observe(getViewLifecycleOwner(), upgrades -> {
-            for(Map.Entry<ClickUpgrade, Level> e: upgrades.entrySet()){
-                Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " + e.getKey().getId() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost()+ ", Effect: " + e.getValue().getEffect());
-                FormatUI(  e.getKey().getName(),   e.getKey().getDescription(),   e.getKey().getId(), e.getValue().getCost(),  e.getValue().getEffect());
+            // Crear una copa para que no haya ocnfluico
+            Map<ClickUpgrade, Level> upgradesCopy = new HashMap<>(upgrades);
 
+            for (Map.Entry<ClickUpgrade, Level> e : upgradesCopy.entrySet()) {
+                Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " + e.getKey().getId() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost() + ", Effect: " + e.getValue().getEffect());
+                FormatUI(e.getKey().getName(), e.getKey().getDescription(), e.getKey().getId(), e.getValue().getCost(), e.getValue().getEffect());
             }
         });
+
 
         // inflar
        // inflateFragment(this.container);

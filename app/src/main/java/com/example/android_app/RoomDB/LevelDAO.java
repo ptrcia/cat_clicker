@@ -13,6 +13,9 @@ public interface LevelDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Level level);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<Level> levels);
+
     @Query("SELECT * FROM level_table WHERE idUpgrade = :idUpgrade")
     List<Level> getLevelsForUpgrade(String idUpgrade);
 
