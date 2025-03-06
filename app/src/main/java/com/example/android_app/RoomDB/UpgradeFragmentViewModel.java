@@ -59,9 +59,7 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                                             synchronized (auxMap) {  //ESTO ES IMPORTANTE PARA EVITAR ERRORES DE CONCURRENCIA
                                                 auxMap.put(upgrade, levelNextUser);
                                                 Log.d("Clicker->", "auxMap: " + auxMap);
-
                                             }
-
                                         }
 
                                         if(upgrades.size()-1 == upgrades.indexOf(upgrade)){
@@ -81,27 +79,4 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
             Log.d("Clicker->", "Error al obtener las mejoras por tipo: " + e.getMessage());
         }
     }
-
-    /*private Map<ClickUpgrade, Level> sortUpgradesById(Map<ClickUpgrade, Level> upgradesMap) {
-        List<Map.Entry<ClickUpgrade, Level>> sortedEntries = new ArrayList<>(upgradesMap.entrySet());
-
-        Collections.sort(sortedEntries, (entry1, entry2) -> {
-            String id1 = entry1.getKey().getId().replaceAll("\\D", ""); // Extrae el número
-            String id2 = entry2.getKey().getId().replaceAll("\\D", "");
-            Log.d("Clicker->", "id1: " + id1);
-
-            if (id1.isEmpty() || id2.isEmpty()) return 0; // Evita errores
-
-            return Integer.compare(Integer.parseInt(id1), Integer.parseInt(id2));
-        });
-
-        // Convertimos la lista ordenada de vuelta a un LinkedHashMap para mantener el orden
-        Map<ClickUpgrade, Level> sortedMap = new LinkedHashMap<>();
-        for (Map.Entry<ClickUpgrade, Level> entry : sortedEntries) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-
-        return sortedMap;
-    }*/
-
 }

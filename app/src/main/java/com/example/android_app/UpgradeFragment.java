@@ -111,9 +111,6 @@ public class UpgradeFragment extends Fragment {
             }
         });
 
-
-        // inflar
-       // inflateFragment(this.container);
        return rootView;
     }
 
@@ -238,11 +235,16 @@ public class UpgradeFragment extends Fragment {
         Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newButton.setTypeface(typeface);
         newButton.setTextColor(ContextCompat.getColor(context, R.color.black));
-        newButton.setTag(id); //                    <--------- IMPIRTANTE PAR ALA FUNCIONALIDAD
-        newButton.setTag(name); //COSAS
-        newButton.setOnClickListener(upgradeActive);
 
-        //añadir
+        //FUNCINALIDAD
+        newButton.setTag(R.id.cost_tag, cost);
+        newButton.setTag(R.id.effect_tag, effect);
+        //EL PULSAR
+        newButton.setOnClickListener(ButtonUpgrade);
+
+
+
+                //añadir
         //newLayout2.addView(newImg);
         newLayout2.addView(newTitle);
         //newLayout2.addView(newDescription);
@@ -262,14 +264,17 @@ public class UpgradeFragment extends Fragment {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    private final View.OnClickListener upgradeActive = new View.OnClickListener() {
+    private final View.OnClickListener ButtonUpgrade = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            // Obtener la nota a partir del tag del botón
-            view.getTag();  // La instancia de la nota almacenada en el tag
-            Log.d("Clicker-> ", "Upgrade?: " + view.getTag() );
+            // Obtener la mejora a partir del tag del botón
 
-            //meter info a la tabla usuario
+            int cost = (int) view.getTag(R.id.cost_tag);
+            int effect = (int) view.getTag(R.id.effect_tag);
+
+            Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
+
+            ScoreManager.getInstance().applyUpgrade(cost, effect);
         }
     };
 }

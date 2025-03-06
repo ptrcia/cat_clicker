@@ -1,5 +1,6 @@
 package com.example.android_app;
 
+import android.os.Debug;
 import android.util.Log;
 
 public class ScoreManager {
@@ -46,4 +47,10 @@ public class ScoreManager {
         return scoreText;
     }
     //endregion
+
+    public void applyUpgrade(int cost, int effect){
+        clickValue += effect;
+        Log.d("Clicker-> ", "Ha entrado en el método. Score->" + clickValue);
+
+    }
 }
