@@ -23,15 +23,22 @@ import com.example.android_app.RoomDB.GameViewModel;
 
 public class Game extends AppCompatActivity {
 
+    private static Game instance;
     GameViewModel gameViewModel;
     TextView textScore;
+    TextView clickValueText;
+    TextView passiveValueText;
     ScoreManager scoreManager;
+    public static Game getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
+        instance = this;
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -41,7 +48,10 @@ public class Game extends AppCompatActivity {
         Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
         textScore = findViewById(R.id.scoreText);
+        clickValueText = findViewById(R.id.clickValueText);
+        passiveValueText = findViewById(R.id.passiveValueText);
         scoreManager = ScoreManager.getInstance();
+
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
@@ -49,7 +59,6 @@ public class Game extends AppCompatActivity {
         gameViewModel.userStatsLiveData.observe(this, userStats -> {
             textScore.setText(userStats.getTotalScore());
         });
-
 
         //region Botones
         buttonActives.setOnClickListener(new View.OnClickListener() {
@@ -69,16 +78,12 @@ public class Game extends AppCompatActivity {
             public void onClick(View v) {
                 //Reference Script Score
                 Log.d("Clicker-> ", "Se ha hecho click");
-                scoreManager.ClickImage();
+                scoreManager.ClickActive();
                 UpdateScoreText();
             }
         });
         //endregion
-
-        //Consulta de prueba para imprimir
-
     }
-
 
     private void OpenFragment(String upgradeType){
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
@@ -88,11 +93,12 @@ public class Game extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
         transaction.replace(R.id.container_layout, fragment);
-        //transaction.addToBackStack(null);
         transaction.commit();
     }
 
     public void UpdateScoreText(){
         textScore.setText(scoreManager.getScore());
+        clickValueText.setText(scoreManager.getClickValueText() + "/click");
+        passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
     }
 }

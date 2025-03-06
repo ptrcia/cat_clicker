@@ -38,12 +38,12 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                 public void onSuccess(List<ClickUpgrade> upgrades) {
                     for (ClickUpgrade upgrade : upgrades) {
                         String idUpgrades = upgrade.getId();
-                        Log.d("Clicker->", "Mejoras filtradas por tipo " + type + ": " + idUpgrades); //"idUpgrades: ua_1"
+                        //Log.d("Clicker->", "Mejoras filtradas por tipo " + type + ": " + idUpgrades); //"idUpgrades: ua_1"
 
                         userRepository.getUserLevel(idUpgrades, new BaseCallback<String>() {
                             @Override
                             public void onSuccess(String currentLevel) {
-                                Log.d("Clicker->", "Nivel al que la tiene el isuario la mejora  " + idUpgrades + ": " + currentLevel); //"currentLevel: 1"
+                                //Log.d("Clicker->", "Nivel al que la tiene el isuario la mejora  " + idUpgrades + ": " + currentLevel); //"currentLevel: 1"
 
                                 //hay un errror en el parse int porque currentlevel es null
                                 String currentLevelOfUpgrade = currentLevel; //es redundante
@@ -53,12 +53,12 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                                 upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel), new BaseCallback<Level>() {
                                     @Override
                                     public void onSuccess(Level levelNextUser) {
-                                        Log.d("Clicker->", "levelNextUser: " + levelNextUser); //"levelNextUser: levelActive1_2"
+                                        //Log.d("Clicker->", "levelNextUser: " + levelNextUser); //"levelNextUser: levelActive1_2"
                                         if(levelNextUser!=null){
                                            // auxMap.put(upgrade, levelNextUser);
                                             synchronized (auxMap) {  //ESTO ES IMPORTANTE PARA EVITAR ERRORES DE CONCURRENCIA
                                                 auxMap.put(upgrade, levelNextUser);
-                                                Log.d("Clicker->", "auxMap: " + auxMap);
+                                                //Log.d("Clicker->", "auxMap: " + auxMap);
                                             }
                                         }
 

@@ -274,7 +274,8 @@ public class UpgradeFragment extends Fragment {
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-            ScoreManager.getInstance().applyUpgrade(cost, effect);
+            if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(cost, effect);
+            else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(cost, effect);
         }
     };
 }
