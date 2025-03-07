@@ -73,16 +73,22 @@ public class UpgradeFragment extends Fragment {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(context, Game.class);
-                startActivity(myIntent);
+                requireActivity().getSupportFragmentManager().popBackStack();
+                //Intent myIntent = new Intent(context, Game.class);
+                //startActivity(myIntent);
             }
         });
         //Boton de atras nativo
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent myIntent = new Intent(context, Game.class);
-                startActivity(myIntent);
+                //Intent myIntent = new Intent(context, Game.class);
+                //startActivity(myIntent);
+                if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    requireActivity().getSupportFragmentManager().popBackStack(); // Quita el fragmento de la pila
+                } else {
+                    requireActivity().finish(); // Si no hay fragmentos en la pila, cierra la actividad
+                }
             }
         });
 

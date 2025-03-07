@@ -93,6 +93,7 @@ public class Game extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
         transaction.replace(R.id.container_layout, fragment);
+        transaction.addToBackStack(null); // Añadir a la pila de retroceso
         transaction.commit();
     }
 

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="@color/teal_200"
+        android:background="#F6BD60"
         android:orientation="horizontal">
         <ImageButton
             android:id="@+id/buttonBack"
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/teal_700">
+        android:background="#8f2d56">
         <TextView
             android:textColor="@color/white"
             android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/teal_200">
+        android:background="#F7EDE2">
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
