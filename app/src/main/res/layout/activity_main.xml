@@ -11,20 +11,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-28dp">
+        tools:layout_editor_absoluteY="-28dp"
+        android:background="#F7EDE2">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_marginBottom="-5dp"
+            android:layout_height="100dp"
+            android:src="@drawable/cats1"
+            android:layout_gravity="bottom">
+        </ImageView>
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/ic_dialog_info">
-
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/cats2"
+            android:layout_gravity="top">
         </ImageView>
 
 
         <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="300dp"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:orientation="vertical"
+            android:layout_marginBottom="200dp"
             android:layout_gravity="center|bottom"
             >
 
@@ -33,20 +43,51 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Start" />
+                android:text="Start"
+                android:fontFamily="@font/parkinsans_bold"
+                />
 
             <Button
                 android:id="@+id/buttonContinue"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Continue" />
-            <Button
-                android:id="@+id/buttonExit"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Exit" />
+                android:text="Continue"
+                android:fontFamily="@font/parkinsans_bold"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/buttonConfig"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/settings"
+                    />
+                <Button
+                    android:id="@+id/buttonExit"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Exit"
+                    android:fontFamily="@font/parkinsans_bold"
+                    android:layout_marginHorizontal="30dp"
+                    />
+                <ImageButton
+                    android:id="@+id/buttonVolume"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:background="@android:color/transparent"                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/volume" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView
@@ -54,30 +95,23 @@
             android:layout_width="300dp"
             android:layout_height="130dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="50dp"
             android:gravity="center"
             android:text="Cat Clicker"
-            android:textColor="#5000"
+            android:textColor="#F28482"
             android:textSize="50sp"
-            android:textStyle="bold"
-            android:typeface="monospace" />
+            android:fontFamily="@font/parkinsans_bold"
+            />
 
-        <ImageButton
-            android:id="@+id/buttonInfo"
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_dialog_info" />
 
-        <ImageButton
-            android:id="@+id/buttonConfig"
-            android:layout_gravity="start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_manage" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
+            android:fontFamily="@font/parkinsans_light"
+            android:textSize="15sp"
+            android:textColor="#F28482"
+            android:layout_marginBottom="100dp"
             android:text="Patricia S. Gracia Artero"
             >
 

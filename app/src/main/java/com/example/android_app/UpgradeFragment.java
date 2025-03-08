@@ -30,6 +30,8 @@ import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +113,20 @@ public class UpgradeFragment extends Fragment {
             // Crear una copa para que no haya ocnfluico
             Map<ClickUpgrade, Level> upgradesCopy = new HashMap<>(upgrades);
 
-            for (Map.Entry<ClickUpgrade, Level> e : upgradesCopy.entrySet()) {
+            // Convertir el mapa a una lista de entradas
+            List<Map.Entry<ClickUpgrade, Level>> sortedUpgrades = new ArrayList<>(upgradesCopy.entrySet());
+
+            // ORDENAR POR EL id
+            Collections.sort(sortedUpgrades, new Comparator<Map.Entry<ClickUpgrade, Level>>() {
+                @Override
+                public int compare(Map.Entry<ClickUpgrade, Level> e1, Map.Entry<ClickUpgrade, Level> e2) {
+                    int lastDigit1 = Integer.parseInt(e1.getKey().getId().replaceAll("\\D+", ""));
+                    int lastDigit2 = Integer.parseInt(e2.getKey().getId().replaceAll("\\D+", ""));
+                    return Integer.compare(lastDigit2, lastDigit1);
+                }
+            });
+            //para la UI
+            for (Map.Entry<ClickUpgrade, Level> e : sortedUpgrades) {
                 Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " + e.getKey().getId() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost() + ", Effect: " + e.getValue().getEffect());
                 FormatUI(e.getKey().getName(), e.getKey().getDescription(), e.getKey().getId(), e.getValue().getCost(), e.getValue().getEffect());
             }
@@ -126,8 +141,6 @@ public class UpgradeFragment extends Fragment {
         viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
     }
 
-
-
     //Volcado UI
     private void FormatUI(String name, String description, String id, int cost, int effect) {
 
@@ -139,10 +152,7 @@ public class UpgradeFragment extends Fragment {
         ));
         newLayout2.setOrientation(LinearLayout.HORIZONTAL);
         newLayout2.setPadding(0, dpToPx(10), 0, 0);
-
-        //Img Filter
-        //ImageView newImg = new ImageView(this);
-        //newImg = image.png;
+        newLayout2.setBackgroundColor(Color.parseColor("#F7EDE2"));
 
         //Título
         TextView newTitle = new TextView(context);
@@ -163,7 +173,6 @@ public class UpgradeFragment extends Fragment {
         //Nivel
         TextView newLevel = new TextView(context);
         LinearLayout.LayoutParams levelParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
@@ -174,23 +183,6 @@ public class UpgradeFragment extends Fragment {
         Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newLevel.setTypeface(typefaceLevel);
         newLevel.setTextColor(Color.BLUE);
-
-/*
-        //Descripción
-        TextView newDescription = new TextView(context);
-        LinearLayout.LayoutParams desParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        desParams.setMarginStart(dpToPx(30));
-        newDescription.setLayoutParams(titleParams);
-        newDescription.setText(description);
-        newDescription.setTextSize(20);
-        Typeface typefaceDes = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
-        newDescription.setTypeface(typefaceDes);
-        newDescription.setTextColor(ContextCompat.getColor(context, R.color.black));
-*/
 
         //Coste
         TextView newCost = new TextView(context);
@@ -207,7 +199,6 @@ public class UpgradeFragment extends Fragment {
         newCost.setTypeface(typefaceCost);
         newCost.setTextColor(Color.RED);
 
-
         //Effect
         TextView newEffect = new TextView(context);
         LinearLayout.LayoutParams costEfect = new LinearLayout.LayoutParams(
@@ -223,24 +214,23 @@ public class UpgradeFragment extends Fragment {
         newEffect.setTypeface(typefaceEffect);
         newEffect.setTextColor(Color.RED);
 
-
-
         //Button
         Button newButton = new Button(context);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        buttonParams.setMarginStart(dpToPx(30));
-        newButton.setLayoutParams(buttonParams); // Asignar parámetros al botón
+        buttonParams.setMargins(30, 0, 10, 0);
+        newButton.setLayoutParams(buttonParams);
         newButton.setText("Mejorar");
         newButton.setAllCaps(false);
-        newButton.setBackgroundColor(Color.CYAN);
+        newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
         newButton.setGravity(Gravity.END);
         newButton.setTextSize(20);
+        newButton.setTextColor(Color.parseColor("#F7EDE2"));
         Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newButton.setTypeface(typeface);
-        newButton.setTextColor(ContextCompat.getColor(context, R.color.black));
+        //newButton.setTextColor(ContextCompat.getColor(context, R.color.black));
 
         //FUNCINALIDAD
         newButton.setTag(R.id.cost_tag, cost);
@@ -249,11 +239,9 @@ public class UpgradeFragment extends Fragment {
         newButton.setOnClickListener(ButtonUpgrade);
 
 
-
-                //añadir
+        //añadir
         //newLayout2.addView(newImg);
         newLayout2.addView(newTitle);
-        //newLayout2.addView(newDescription);
         newLayout2.addView(newCost);
         newLayout2.addView(newEffect);
         newLayout2.addView(newLevel);

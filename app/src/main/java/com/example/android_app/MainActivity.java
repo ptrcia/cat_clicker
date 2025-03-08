@@ -31,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button buttonStart = findViewById(R.id.buttonStart);
-        Button buttonExit =  findViewById(R.id.buttonExit);
-        Button butttonContinue =  findViewById(R.id.buttonContinue);
+        Button buttonExit = findViewById(R.id.buttonExit);
+        Button butttonContinue = findViewById(R.id.buttonContinue);
         ImageButton buttonConfig = findViewById(R.id.buttonConfig);
-        ImageButton buttonInfo =  findViewById(R.id.buttonInfo);
+        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
 
         //Exit
         buttonExit.setOnClickListener(new OnClickListener() {
@@ -53,21 +53,80 @@ public class MainActivity extends AppCompatActivity {
                 alertDialogBuilder
                         .setMessage("¿quieres continuar igualmente?")
                         .setCancelable(false)
-                        .setPositiveButton("Si",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
                                 startActivity(new Intent(MainActivity.this, Game.class));
                             }
                         })
-                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         }).create().show();
             }
         });
 
+        //Continue
+        butttonContinue.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //CARGAR DATOS
+                startActivity(new Intent(MainActivity.this, Game.class));
+            }
+        });
+        //Salir
+        buttonExit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //GUARDAR DATOS
+                finish();
+                System.exit(0);
+            }
+        });
+
+        //Config
+        buttonConfig.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Abrir popup
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder.setTitle("Configuración");
+                alertDialogBuilder
+                        .setMessage("Ajustes de configuración")
+                        .setCancelable(false)
+                        .setPositiveButton("Borrar Datos", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //BORRAR DATOS
+                            }
+                        })
+                        .setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }).create().show();
+
+            }
+        });
+
+        //Volumen
+        buttonVolume.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (buttonVolume.isSelected()) {
+                    buttonVolume.setSelected(false);
+                    buttonVolume.setImageResource(R.drawable.mute);
+                    //mute
+                    //mediaPlayer.pause();
+                } else {
+                    buttonVolume.setSelected(true);
+                    buttonVolume.setImageResource(R.drawable.volume);
+                    //unmute
+                    //mediaPlayer.start();
+                }
+            }
+        });
+
+
     }
-
-
 }

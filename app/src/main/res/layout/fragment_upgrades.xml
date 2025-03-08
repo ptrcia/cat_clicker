@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:src="?attr/actionModeCloseDrawable"
-            android:textColor="@color/white">
+            >
         </ImageButton>
         <TextView
             android:id="@+id/title"
@@ -117,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/white">
+            android:background="#F7EDE2">
         </LinearLayout>
     </ScrollView>
 

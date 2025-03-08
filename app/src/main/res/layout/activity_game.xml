@@ -72,34 +72,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-        <TextView
-            android:id="@+id/clickValueText"
+            <TextView
+                android:id="@+id/clickValueText"
+                android:layout_marginTop="80dp"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_gravity="top"
+                android:text="clickValueText"
+                android:textSize="20sp"
+                android:fontFamily="@font/parkinsans_bold"
+                android:textColor="#8f2d56"
+                android:gravity="center">
+            </TextView>
+            <TextView
+            android:id="@+id/passiveValueText"
             android:layout_marginTop="80dp"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
+                android:layout_weight="1"
             android:layout_gravity="top"
-            android:text="clickValueText"
+            android:text="passiveValueText"
             android:textSize="20sp"
-            android:fontFamily="@font/parkinsans_bold"
+                android:fontFamily="@font/parkinsans_bold"
             android:textColor="#8f2d56"
             android:gravity="center">
-        </TextView>
-        <TextView
-        android:id="@+id/passiveValueText"
-        android:layout_marginTop="80dp"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-            android:layout_weight="1"
-        android:layout_gravity="top"
-        android:text="passiveValueText"
-        android:textSize="20sp"
-            android:fontFamily="@font/parkinsans_bold"
-        android:textColor="#8f2d56"
-        android:gravity="center">
-        </TextView>
+            </TextView>
         </LinearLayout>
-
 
 
         <ImageButton
@@ -108,9 +107,9 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/button_to_click_to_obtain_points"
             android:scaleType="centerCrop"
-            android:src="@drawable/heartpaw"
-            android:contentDescription="@string/button_to_click_to_obtain_points">
+            android:src="@drawable/heartpaw">
         </ImageButton>
     </FrameLayout>
     <!-- Lower bar -->
@@ -118,7 +117,7 @@
         android:id="@+id/linearBottom"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_gravity="bottom"
         android:background="#F6BD60"
         android:orientation="horizontal"
@@ -130,7 +129,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="@font/parkinsans_medium"
+            android:textSize="20sp"
+            android:fontFamily="@font/parkinsans_bold"
             android:contentDescription="Bonificadores que al adquirirlas, te suman valor automáticamente cada cierto tiempo"
             android:text="Mejoras pasivas"
             android:textColor="@color/white">
@@ -144,7 +144,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="@font/parkinsans_medium"
+            android:textSize="20sp"
+            android:fontFamily="@font/parkinsans_bold"
             android:contentDescription="Bonificadores que al adquirirlas, te suman valor por cada click que se realiza de manera manual"
             android:text="Mejoras activas"
             android:textColor="@color/white">
