@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.example.android_app.RoomDB.ClickUpgrade;
 import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -215,7 +217,7 @@ public class UpgradeFragment extends Fragment {
         newEffect.setTextColor(Color.RED);
 
         //Button
-        Button newButton = new Button(context);
+        Button newButton = new MaterialButton(context);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -225,12 +227,10 @@ public class UpgradeFragment extends Fragment {
         newButton.setText("Mejorar");
         newButton.setAllCaps(false);
         newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
-        newButton.setGravity(Gravity.END);
         newButton.setTextSize(20);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
         Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newButton.setTypeface(typeface);
-        //newButton.setTextColor(ContextCompat.getColor(context, R.color.black));
 
         //FUNCINALIDAD
         newButton.setTag(R.id.cost_tag, cost);
