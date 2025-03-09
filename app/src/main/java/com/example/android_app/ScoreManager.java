@@ -30,13 +30,13 @@ public class ScoreManager {
     //endregion
 
     public void ClickActive(){
-        Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
+        //Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
         score = clickValue + score;
         SetScore(score);
         Game.getInstance().UpdateScoreText();
     }
     public void ClickPassive(){
-        Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
+        //Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
         score = passiveValue + score;
         SetScore(score);
         Game.getInstance().UpdateScoreText();

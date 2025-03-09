@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class UpgradeFragment extends Fragment {
 
@@ -270,6 +271,14 @@ public class UpgradeFragment extends Fragment {
 
             if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(cost, effect);
             else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(cost, effect);
+
+            //Audio
+            if (!AudioManager.isMutedMusic()) {
+                Intent playIntent = new Intent(requireActivity(), AudioManager.class);
+                playIntent.setAction("playSFX");
+                playIntent.putExtra("resourceID", R.raw.purchase);
+                requireActivity().startService(playIntent);
+            }
         }
     };
 }

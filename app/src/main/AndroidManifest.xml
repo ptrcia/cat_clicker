@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android_app"
         tools:targetApi="31">
+
+        <service android:name=".AudioManager"
+            android:enabled="true"
+            android:exported="false"/>
+
         <activity
             android:name=".Game"
             android:exported="false" />

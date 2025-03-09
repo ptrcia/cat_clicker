@@ -1,9 +1,12 @@
 package com.example.android_app;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,6 +20,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
+    static boolean isMuted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
         Button butttonContinue = findViewById(R.id.buttonContinue);
         ImageButton buttonConfig = findViewById(R.id.buttonConfig);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+
+
+        //AUDIO
+        Intent playIntent = new Intent(this, AudioManager.class);
+        playIntent.setAction("playMusic");
+        startService(playIntent);
+        isMuted = false;
+        isMuted = AudioManager.isMutedMusic();
+
+
+
 
         //Exit
         buttonExit.setOnClickListener(new OnClickListener() {
@@ -90,43 +106,57 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Abrir popup
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertDialogBuilder.setTitle("Configuración");
-                alertDialogBuilder
-                        .setMessage("Ajustes de configuración")
-                        .setCancelable(false)
-                        .setPositiveButton("Borrar Datos", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //BORRAR DATOS
-                            }
-                        })
-                        .setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        }).create().show();
-
             }
         });
-
         //Volumen
+
         buttonVolume.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (buttonVolume.isSelected()) {
-                    buttonVolume.setSelected(false);
-                    buttonVolume.setImageResource(R.drawable.mute);
-                    //mute
-                    //mediaPlayer.pause();
-                } else {
-                    buttonVolume.setSelected(true);
+                Intent audioManager = new Intent(MainActivity.this, AudioManager.class);
+                isMuted = AudioManager.isMutedMusic();
+                Log.d("Clicker-> ", "isMuted antes de pulsar?->:   " + isMuted);
+
+
+                if(isMuted){
+                    //Queremos audio
+                    Log.d("Clicker-> ", "Queremos audio");
                     buttonVolume.setImageResource(R.drawable.volume);
-                    //unmute
-                    //mediaPlayer.start();
+                    audioManager.setAction("playMusic");
+                }else{
+                    //No queremos audio
+                    Log.d("Clicker-> ", "No queremos audio");
+                    buttonVolume.setImageResource(R.drawable.mute);
+                    audioManager.setAction("pauseMusic");
                 }
+                isMuted = !isMuted;
+                AudioManager.setMutedMusic(isMuted);
+                Log.d("Clicker-> ", "isMuted despues de pulsar?->:   " + isMuted);
+
+                startService(audioManager);
             }
         });
 
+    }
 
+    //Cuando queremos vovler a la actividad principal que se mantenga la configuracion del audio
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+
+        Intent playIntent = new Intent(this, AudioManager.class);
+        isMuted = AudioManager.isMutedMusic();
+        Log.d("Clicker-> ", "isMuted antes de pulsar? mAIN->:   " + isMuted);
+        if(isMuted){
+            buttonVolume.setImageResource(R.drawable.mute);
+            playIntent.setAction("pauseMusic");
+            startService(playIntent);
+        }else{
+            buttonVolume.setImageResource(R.drawable.volume);
+            playIntent.setAction("playMusic");
+            startService(playIntent);
+        }
     }
 }

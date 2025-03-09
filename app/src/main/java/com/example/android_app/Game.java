@@ -1,5 +1,8 @@
 package com.example.android_app;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,11 +22,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android_app.RoomDB.GameViewModel;
 
-
-
 public class Game extends AppCompatActivity {
 
     private static Game instance;
+    static boolean isMuted ;
+
     GameViewModel gameViewModel;
     TextView textScore;
     TextView clickValueText;
@@ -47,11 +50,24 @@ public class Game extends AppCompatActivity {
         Button buttonPassives = findViewById(R.id.buttonPassives);
         Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
+        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
         textScore = findViewById(R.id.scoreText);
         clickValueText = findViewById(R.id.clickValueText);
         passiveValueText = findViewById(R.id.passiveValueText);
         scoreManager = ScoreManager.getInstance();
 
+        //AUDIO
+        Intent playIntent = new Intent(this, AudioManager.class);
+        isMuted = AudioManager.isMutedMusic();
+        if(isMuted){
+            buttonVolume.setImageResource(R.drawable.mute);
+            playIntent.setAction("pauseMusic");
+            startService(playIntent);
+        }else{
+            buttonVolume.setImageResource(R.drawable.volume);
+            playIntent.setAction("playMusic");
+            startService(playIntent);
+        }
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
@@ -76,13 +92,53 @@ public class Game extends AppCompatActivity {
         buttonClickScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Audio
+                if(!AudioManager.isMutedMusic()){
+                    Intent playIntent = new Intent(Game.this, AudioManager.class);
+                    playIntent.setAction("playSFX");
+                    playIntent.putExtra("resourceID", R.raw.tap);
+                    startService(playIntent);
+                }
+
                 //Reference Script Score
                 Log.d("Clicker-> ", "Se ha hecho click");
                 scoreManager.ClickActive();
                 UpdateScoreText();
             }
         });
+
+        //Volumen
+        buttonVolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAudio(buttonVolume);
+            }
+        });
         //endregion
+    }
+
+
+    private void checkAudio(ImageButton buttonVolume){
+        Intent audioManager = new Intent(Game.this, AudioManager.class);
+        isMuted = AudioManager.isMutedMusic();
+        Log.d("Clicker-> ", "isMuted:   " + isMuted);
+
+        if(isMuted){
+            Log.d("Clicker-> ", "Queremos audio");
+            //Queremos audio
+            buttonVolume.setImageResource(R.drawable.volume);
+            audioManager.setAction("playMusic");
+        }else{
+            Log.d("Clicker-> ", "No queremos audio");
+            //No queremos audio
+            buttonVolume.setImageResource(R.drawable.mute);
+            audioManager.setAction("pauseMusic");
+        }
+        isMuted = !isMuted;
+        AudioManager.setMutedMusic(isMuted);
+        startService(audioManager);
+        Log.d("Clicker-> ", "isMuted despues de pulsar?->:   " + isMuted);
+
     }
 
     private void OpenFragment(String upgradeType){
@@ -98,8 +154,14 @@ public class Game extends AppCompatActivity {
     }
 
     public void UpdateScoreText(){
-        textScore.setText(scoreManager.getScore());
-        clickValueText.setText(scoreManager.getClickValueText() + "/click");
-        passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
+        //ejecutar en el hilo principal
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textScore.setText(scoreManager.getScore());
+                clickValueText.setText(scoreManager.getClickValueText() + "/click");
+                passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
+            }
+        });
     }
 }
