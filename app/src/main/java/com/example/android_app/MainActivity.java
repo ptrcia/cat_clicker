@@ -43,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         //AUDIO
-        Intent playIntent = new Intent(this, AudioManager.class);
+      /*  Intent playIntent = new Intent(this, AudioManager.class);
         playIntent.setAction("playMusic");
         startService(playIntent);
         isMuted = false;
-        isMuted = AudioManager.isMutedMusic();
+        isMuted = AudioManager.isMutedMusic();*/
 
 
 
