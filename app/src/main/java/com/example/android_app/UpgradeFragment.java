@@ -1,5 +1,6 @@
 package com.example.android_app;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,13 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
+
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,7 +37,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import android.view.View.OnTouchListener;
 
 public class UpgradeFragment extends Fragment {
 
@@ -79,16 +79,14 @@ public class UpgradeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 requireActivity().getSupportFragmentManager().popBackStack();
-                //Intent myIntent = new Intent(context, Game.class);
-                //startActivity(myIntent);
+
             }
         });
         //Boton de atras nativo
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                //Intent myIntent = new Intent(context, Game.class);
-                //startActivity(myIntent);
+
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     requireActivity().getSupportFragmentManager().popBackStack(); // Quita el fragmento de la pila
                 } else {
@@ -101,6 +99,32 @@ public class UpgradeFragment extends Fragment {
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
         title.setText("Mejora " + upgradeType);
+
+        //Metodo para gesto de hacia abajo
+        /*container.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    //animacion para bajar el tragmento
+                    v.animate()
+                            .translationY(1000f)
+                            .setDuration(500)
+                            .withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //y retroceder
+
+                                    requireActivity().getSupportFragmentManager().popBackStack(); //volver hacia atrás
+                                }
+                            })
+                            .start();
+                   // v.performClick(); //que no ionteractue con el cli
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });*/
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -269,16 +293,9 @@ public class UpgradeFragment extends Fragment {
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-            if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(cost, effect);
-            else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(cost, effect);
+            if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(), view,  cost, effect);
+            else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(),view, cost, effect);
 
-            //Audio
-            if (!AudioManager.isMutedMusic()) {
-                Intent playIntent = new Intent(requireActivity(), AudioManager.class);
-                playIntent.setAction("playSFX");
-                playIntent.putExtra("resourceID", R.raw.purchase);
-                requireActivity().startService(playIntent);
-            }
         }
     };
 }

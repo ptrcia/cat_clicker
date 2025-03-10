@@ -1,7 +1,15 @@
 package com.example.android_app;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Debug;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 
 public class ScoreManager {
 
@@ -42,7 +50,7 @@ public class ScoreManager {
         Game.getInstance().UpdateScoreText();
     }
 
-    public void applyActiveUpgrade(int cost, int effect){
+    public void applyActiveUpgrade(Context context, View button, int cost, int effect){
         if(score >= cost){
             score -= cost;
             clickValue += effect;
@@ -50,11 +58,16 @@ public class ScoreManager {
             Log.d("Clicker-> ", "Score->" + score);
             Log.d("Clicker-> ", "ClickValue->" + clickValue);
             Game.getInstance().UpdateScoreText();
+            //Audio
+            checkAudio(context);
+
         }else{
             Log.d("Clicker-> ", "No tienes suficiente score");
+            shakeAnimation(button);
+
         }
     }
-    public void applyPassiveUpgrade(int cost, int effect){
+    public void applyPassiveUpgrade(Context context, View button, int cost, int effect){
         if(score >= cost){
             score -= cost;
             passiveValue += effect;
@@ -63,8 +76,32 @@ public class ScoreManager {
             Log.d("Clicker-> ", "Score->" + score);
             Log.d("Clicker-> ", "PassiveValue->" + passiveValue);
             Game.getInstance().UpdateScoreText();
+            //Audio
+            checkAudio(context);
         }else{
             Log.d("Clicker-> ", "No tienes suficiente score");
+            //Animacion de que no
+            shakeAnimation(button);
+        }
+
+
+    }
+    void shakeAnimation(View button){
+        //Animacion de que no
+        Animation shake = new TranslateAnimation(0, 10, 0, 0);
+        shake.setDuration(80);
+        shake.setRepeatCount(5);
+        shake.setRepeatMode(Animation.REVERSE);
+        button.startAnimation(shake);
+    }
+
+    void checkAudio(Context context){
+        //Hacer sonar
+        if (!AudioManager.isMutedMusic()) {
+            Intent playIntent = new Intent(context, AudioManager.class);
+            playIntent.setAction("playSFX");
+            playIntent.putExtra("resourceID", R.raw.purchase);
+            context.startService(playIntent);
         }
     }
 
@@ -72,10 +109,10 @@ public class ScoreManager {
     public void setPassiveValue(int passiveValue){
         this.passiveValue = passiveValue;
     }
-
     public int getPassiveValue(){
         return passiveValue;
     }
+
     public void SetScore(int score){
         this.score = score;
     }

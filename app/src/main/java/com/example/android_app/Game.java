@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -80,15 +81,40 @@ public class Game extends AppCompatActivity {
         buttonActives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenFragment("Active");
+                View container = findViewById(R.id.container_layout);
+                OpenFragment("Active", container);
             }
         });
         buttonPassives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenFragment("Passive");
+                View container = findViewById(R.id.container_layout);
+                OpenFragment("Passive", container);
             }
         });
+
+        /*buttonActives.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    View container = findViewById(R.id.container_layout);
+                    OpenFragment("Active", container);
+                }
+                return false;
+            }
+        });
+        buttonPassives.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    View container = findViewById(R.id.container_layout);
+
+                    OpenFragment("Passive", container);
+                }
+                return false;
+            }
+        });*/
+
         buttonClickScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +125,14 @@ public class Game extends AppCompatActivity {
                     playIntent.putExtra("resourceID", R.raw.tap);
                     startService(playIntent);
                 }
+
+                //Animación
+                buttonClickScore.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    }
+                }).start();
 
                 //Reference Script Score
                 Log.d("Clicker-> ", "Se ha hecho click");
@@ -141,7 +175,7 @@ public class Game extends AppCompatActivity {
 
     }
 
-    private void OpenFragment(String upgradeType){
+    private void OpenFragment(String upgradeType, View container){
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
 
@@ -151,6 +185,21 @@ public class Game extends AppCompatActivity {
         transaction.replace(R.id.container_layout, fragment);
         transaction.addToBackStack(null); // Añadir a la pila de retroceso
         transaction.commit();
+
+        /*container.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                container.animate()
+                        .translationY(0f)
+                        .setDuration(500)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                            }
+                        })
+                        .start();
+            }
+        }, 100);*/
     }
 
     public void UpdateScoreText(){

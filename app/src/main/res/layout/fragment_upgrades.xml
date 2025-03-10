@@ -30,7 +30,6 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_gravity="center"
-
             android:textSize="30sp">
         </TextView>
     </LinearLayout>
