@@ -34,23 +34,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
         Button buttonStart = findViewById(R.id.buttonStart);
         Button buttonExit = findViewById(R.id.buttonExit);
         Button butttonContinue = findViewById(R.id.buttonContinue);
         ImageButton buttonConfig = findViewById(R.id.buttonConfig);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
-
-
-        //AUDIO
-      /*  Intent playIntent = new Intent(this, AudioManager.class);
-        playIntent.setAction("playMusic");
-        startService(playIntent);
-        isMuted = false;
-        isMuted = AudioManager.isMutedMusic();*/
-
-
-
 
         //Exit
         buttonExit.setOnClickListener(new OnClickListener() {
@@ -60,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
+
         //New game
         buttonStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Game.class));
             }
         });
+
         //Salir
         buttonExit.setOnClickListener(new OnClickListener() {
             @Override
@@ -108,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 //Abrir popup
             }
         });
-        //Volumen
 
+        //Volumen
         buttonVolume.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,10 +126,11 @@ public class MainActivity extends AppCompatActivity {
                 startService(audioManager);
             }
         });
-
     }
 
     //Cuando queremos vovler a la actividad principal que se mantenga la configuracion del audio
+    //Lo hagoa qui y no en el lifecycle porque necesito cambiar la imagen
+
     @Override
     protected void onResume() {
         super.onResume();

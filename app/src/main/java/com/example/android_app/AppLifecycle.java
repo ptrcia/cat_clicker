@@ -18,29 +18,27 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-        //checkMutedMusic();
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-        //checkMutedMusic();
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        checkMutedMusic();
+        //checkMutedMusic();
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-
+        Intent playIntent = new Intent(this, AudioManager.class);
+        playIntent.setAction("pauseMusic");
+        startService(playIntent);
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-        Intent playIntent = new Intent(this, AudioManager.class);
-        playIntent.setAction("pauseMusic");
-        startService(playIntent);
+
     }
 
     @Override
