@@ -50,8 +50,7 @@ public class ScoreManager {
         Game.getInstance().UpdateScoreText();
     }
 
-    public void applyActiveUpgrade(Context context, View button, int cost, int effect){
-        if(score >= cost){
+    public void applyActiveUpgrade(Context context , int cost, int effect){
             score -= cost;
             clickValue += effect;
             Log.d("Clicker-> ", "Has comprado la mejora");
@@ -60,15 +59,8 @@ public class ScoreManager {
             Game.getInstance().UpdateScoreText();
             //Audio
             checkAudio(context);
-
-        }else{
-            Log.d("Clicker-> ", "No tienes suficiente score");
-            shakeAnimation(button);
-
-        }
     }
-    public void applyPassiveUpgrade(Context context, View button, int cost, int effect){
-        if(score >= cost){
+    public void applyPassiveUpgrade(Context context , int cost, int effect){
             score -= cost;
             passiveValue += effect;
 
@@ -78,21 +70,6 @@ public class ScoreManager {
             Game.getInstance().UpdateScoreText();
             //Audio
             checkAudio(context);
-        }else{
-            Log.d("Clicker-> ", "No tienes suficiente score");
-            //Animacion de que no
-            shakeAnimation(button);
-        }
-
-
-    }
-    void shakeAnimation(View button){
-        //Animacion de que no
-        Animation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(80);
-        shake.setRepeatCount(5);
-        shake.setRepeatMode(Animation.REVERSE);
-        button.startAnimation(shake);
     }
 
     void checkAudio(Context context){

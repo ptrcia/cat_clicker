@@ -19,5 +19,9 @@ public interface UpgradesUserDAO {
     @Query("SELECT userLevel FROM user_upgrades WHERE idUpgrades = :idUpgrade")
     String getUserLevel(String idUpgrade);
 
+    @Query("UPDATE user_upgrades SET userLevel = :level WHERE idUpgrades = :idUpgrade")
+    void updateUserLevel(String idUpgrade, String level);
 
+    @Query("UPDATE user_upgrades SET userLevel = 0")
+    void resetUserUpgrades();
 }

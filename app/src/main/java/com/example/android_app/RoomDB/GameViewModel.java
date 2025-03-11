@@ -25,4 +25,17 @@ public class GameViewModel extends AndroidViewModel {
 
         });
     }
+
+    //resetar
+    public void resetUserStats() {
+        userRepository.resetUserStats();
+    }
+
+    public void resetUserUpgrades(){
+        userRepository.resetUserUpgrades();
+    }
+
+
+
+
 }

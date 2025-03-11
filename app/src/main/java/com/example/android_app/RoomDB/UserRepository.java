@@ -61,6 +61,24 @@ public class UserRepository{
             callback.onSuccess(upgradesUserDAO.getUserLevel(idUpgrades));
         });
     }
+    //actualizar las mejoras del usuario
+    public void updateUserLevel(String idUpgrade, String level) {
+        executorService.execute(() -> {
+            upgradesUserDAO.updateUserLevel(idUpgrade, level);
+        });
+    }
+
+    //resetear  para mnueva partida
+    public void resetUserStats() {
+        executorService.execute(() -> {
+            userStatsDAO.resetUserStats("User1");
+        });
+    }
+    public void resetUserUpgrades() {
+        executorService.execute(()->{
+            upgradesUserDAO.resetUserUpgrades();
+        });
+    }
 
     public void upgradeUser(){
         executorService.execute(() -> {

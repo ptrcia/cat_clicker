@@ -18,10 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.android_app.RoomDB.GameViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     static boolean isMuted = false;
+    GameViewModel gameViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +44,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton buttonConfig = findViewById(R.id.buttonConfig);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
 
-        //Exit
-        buttonExit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                System.exit(0);
-            }
-        });
-
+        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         //New game
         buttonStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -61,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
+                                gameViewModel.resetUserStats();
+                                gameViewModel.resetUserUpgrades();
                                 startActivity(new Intent(MainActivity.this, Game.class));
                             }
                         })

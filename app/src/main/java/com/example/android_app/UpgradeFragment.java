@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 public class UpgradeFragment extends Fragment {
 
@@ -152,10 +155,11 @@ public class UpgradeFragment extends Fragment {
                     return Integer.compare(lastDigit2, lastDigit1);
                 }
             });
+            //container.removeAllViews();//limpiar la vista
             //para la UI
             for (Map.Entry<ClickUpgrade, Level> e : sortedUpgrades) {
-                Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " + e.getKey().getId() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost() + ", Effect: " + e.getValue().getEffect());
-                FormatUI(e.getKey().getName(), e.getKey().getDescription(), e.getKey().getId(), e.getValue().getCost(), e.getValue().getEffect());
+                Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " +  e.getValue().getIdLevel() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost() + ", Effect: " + e.getValue().getEffect());
+                FormatUI(e.getKey().getName(), e.getKey().getDescription(),e.getKey().getId(),  e.getValue().getIdLevel(), e.getValue().getCost(), e.getValue().getEffect());
             }
         });
 
@@ -169,7 +173,7 @@ public class UpgradeFragment extends Fragment {
     }
 
     //Volcado UI
-    private void FormatUI(String name, String description, String id, int cost, int effect) {
+    private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, int cost, int effect) {
 
         //Layout
         LinearLayout newLayout2 = new LinearLayout(context);
@@ -205,7 +209,7 @@ public class UpgradeFragment extends Fragment {
         );
         levelParams.setMarginStart(dpToPx(30));
         newLevel.setLayoutParams(titleParams);
-        newLevel.setText(String.valueOf(id));
+        newLevel.setText(String.valueOf(idUserLevel));
         newLevel.setTextSize(20);
         Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newLevel.setTypeface(typefaceLevel);
@@ -260,6 +264,9 @@ public class UpgradeFragment extends Fragment {
         //FUNCINALIDAD
         newButton.setTag(R.id.cost_tag, cost);
         newButton.setTag(R.id.effect_tag, effect);
+        newButton.setTag(R.id.idUpgrade_tag, idUpgrade);
+        newButton.setTag(R.id.idUserLevel_tag, idUserLevel);
+
         //EL PULSAR
         newButton.setOnClickListener(ButtonUpgrade);
 
@@ -275,9 +282,8 @@ public class UpgradeFragment extends Fragment {
 
         // Añadir el nuevo LinearLayout al contenedor
         container.addView(newLayout2, 0);
-        Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + id + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
+        Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + idUserLevel + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
     }
-
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
@@ -290,14 +296,49 @@ public class UpgradeFragment extends Fragment {
 
             int cost = (int) view.getTag(R.id.cost_tag);
             int effect = (int) view.getTag(R.id.effect_tag);
+            String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
+            String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-            if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(), view,  cost, effect);
-            else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(),view, cost, effect);
+            Toast.makeText(
+                    context,
+                    userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            if(userHasEnoughScore(cost)){
+                if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(),  cost, effect);
+                else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(), cost, effect);
+
+                //Poner esa mejora al nivel siguiente
+                viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
+
+                synchronized (container) {
+                    container.removeAllViews();//eliminar las vistas
+                }
+
+                    //container.removeAllViews();
+                viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
+            }else{
+                shakeAnimation(view);
+            }
 
         }
     };
+    void shakeAnimation(View button){
+        //Animacion de que no
+        Animation shake = new TranslateAnimation(0, 10, 0, 0);
+        shake.setDuration(70);
+        shake.setRepeatCount(7);
+        shake.setRepeatMode(Animation.REVERSE);
+        button.startAnimation(shake);
+    }
+
+    private boolean userHasEnoughScore(int cost){
+        int score = Integer.parseInt(ScoreManager.getInstance().getScore());
+        return score >= cost;
+    }
 }
 
 

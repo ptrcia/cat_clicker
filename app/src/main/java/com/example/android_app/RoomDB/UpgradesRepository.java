@@ -57,12 +57,13 @@ public class UpgradesRepository {
         });
     }
 
-
     public void getLevelForUpgradeByUserLevel(@NotNull String idUpgrade, String level, BaseCallback<Level> callback) {
         executorService.execute(()-> {
             callback.onSuccess(levelDAO.getLevelForUpgradeByLevel(idUpgrade, level));
         });
     }
+
+
 
     public void upgradesTable() {
 

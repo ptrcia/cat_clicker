@@ -2,14 +2,9 @@ package com.example.android_app.RoomDB;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-
 import android.app.Application;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +22,12 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
         userRepository = new UserRepository(application);
     }
 
-//region Metodo
+    public void updateUserLevel(String idUpgrade, String level, String type, String userId){
+        Log.d("Clicker->", "SE AH MEJORADO EL idUpgrade: " + idUpgrade + " al level: " + level);
+        userRepository.updateUserLevel(idUpgrade, level);
+    }
 
+//region Metodo actualizar mejoras
     public void getUpgradesTypeUserLevel (String type, String userId){
         try {
 
@@ -48,7 +47,7 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                                 //hay un errror en el parse int porque currentlevel es null
                                 String currentLevelOfUpgrade = currentLevel; //es redundante
                                 int nextLevel = Integer.parseInt(currentLevelOfUpgrade) + 1; //obtenermos el siguiente nivel
-
+                                Log.d("Clicker->", "Siguiente nivel de la mejora " + idUpgrades + ": " + nextLevel);
 
                                 upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel), new BaseCallback<Level>() {
                                     @Override
