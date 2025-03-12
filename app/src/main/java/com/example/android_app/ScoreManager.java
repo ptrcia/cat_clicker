@@ -19,13 +19,12 @@ public class ScoreManager {
     private String scoreText;
     private String clickValueText;
     private String passiveValueText;
-    private PassiveTimer passiveTimer;
 
     //region Instance
     private static ScoreManager instance;
 
     private ScoreManager() {
-        passiveTimer = new PassiveTimer(this);
+        PassiveTimer passiveTimer = new PassiveTimer(this);
         passiveTimer.start();
     }
 
@@ -38,13 +37,11 @@ public class ScoreManager {
     //endregion
 
     public void ClickActive(){
-        //Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
         score = clickValue + score;
         SetScore(score);
         Game.getInstance().UpdateScoreText();
     }
     public void ClickPassive(){
-        //Log.d("Clicker-> ", "Ha entrado en el método. Score->" + score);
         score = passiveValue + score;
         SetScore(score);
         Game.getInstance().UpdateScoreText();
@@ -83,19 +80,15 @@ public class ScoreManager {
     }
 
     //region Getter y Setters
-    public void setPassiveValue(int passiveValue){
-        this.passiveValue = passiveValue;
-    }
+
     public int getPassiveValue(){
         return passiveValue;
     }
-
     public void SetScore(int score){
         this.score = score;
     }
-    public String getScore(){
-        scoreText = String.valueOf(score);
-        return scoreText;
+    public int getScore(){
+        return score;
     }
     public String getClickValueText(){
         clickValueText = String.valueOf(clickValue);
@@ -104,6 +97,9 @@ public class ScoreManager {
     public String getPassiveValueText(){
         passiveValueText = String.valueOf(passiveValue);
         return passiveValueText;
+    }
+    public int getClickValue() {
+        return clickValue;
     }
 
     //endregion

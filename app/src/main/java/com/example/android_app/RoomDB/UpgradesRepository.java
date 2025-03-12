@@ -63,6 +63,13 @@ public class UpgradesRepository {
         });
     }
 
+    //Obtener todos los upgrades
+    public void getAllUpgrades(BaseCallback<List<ClickUpgrade>> callback) {
+        executorService.execute(() -> {
+            callback.onSuccess(clickUpgradeDAO.getAllUpgrades());
+        });
+    }
+
 
 
     public void upgradesTable() {

@@ -35,6 +35,14 @@ public class GameViewModel extends AndroidViewModel {
         userRepository.resetUserUpgrades();
     }
 
+    //guardar los datos
+    public void updateUserStats(int score, int pcu, int acu) {
+        userRepository.updateUserStats(score, pcu, acu);
+    }
+    public void updateUserLevel(String idUpgrade, String level) {
+        userRepository.updateUserLevel(idUpgrade, level);
+    }
+
 
 
 

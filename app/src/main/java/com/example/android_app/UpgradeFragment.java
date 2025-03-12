@@ -52,6 +52,10 @@ public class UpgradeFragment extends Fragment {
     String userId = "User1";
     String upgradeType;
 
+    String userLevel ="0";
+    String idUpgrade ="";
+
+
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeTypeInput) {
@@ -155,6 +159,7 @@ public class UpgradeFragment extends Fragment {
                     return Integer.compare(lastDigit2, lastDigit1);
                 }
             });
+
             //container.removeAllViews();//limpiar la vista
             //para la UI
             for (Map.Entry<ClickUpgrade, Level> e : sortedUpgrades) {
@@ -165,6 +170,20 @@ public class UpgradeFragment extends Fragment {
 
        return rootView;
     }
+    //region Getter y Setters
+    public String getUserLevel(){
+        return userLevel;
+    }
+    public void setUserLevel(String level){
+        userLevel = level;
+    }
+    public String getIdUpgrade(){
+        return idUpgrade;
+    }
+    public void setIdUpgrade(String upgrade){
+        this.idUpgrade = idUpgrade;
+    }
+    //endregion
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -301,17 +320,22 @@ public class UpgradeFragment extends Fragment {
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-            Toast.makeText(
+           /* Toast.makeText(
                     context,
                     userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
                     Toast.LENGTH_SHORT
-            ).show();
+            ).show();*/
 
             if(userHasEnoughScore(cost)){
                 if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(),  cost, effect);
                 else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(), cost, effect);
 
                 //Poner esa mejora al nivel siguiente
+
+                //Tengo muchas dudas sobre si implementar esto o hacer las consultas.
+                //setUserLevel(idUserLevel);
+                //setIdUpgrade(idUpgrade);
+
                 viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
 
                 synchronized (container) {
@@ -336,7 +360,7 @@ public class UpgradeFragment extends Fragment {
     }
 
     private boolean userHasEnoughScore(int cost){
-        int score = Integer.parseInt(ScoreManager.getInstance().getScore());
+        int score = ScoreManager.getInstance().getScore();
         return score >= cost;
     }
 }

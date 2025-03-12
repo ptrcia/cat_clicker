@@ -61,12 +61,7 @@ public class UserRepository{
             callback.onSuccess(upgradesUserDAO.getUserLevel(idUpgrades));
         });
     }
-    //actualizar las mejoras del usuario
-    public void updateUserLevel(String idUpgrade, String level) {
-        executorService.execute(() -> {
-            upgradesUserDAO.updateUserLevel(idUpgrade, level);
-        });
-    }
+
 
     //resetear  para mnueva partida
     public void resetUserStats() {
@@ -77,6 +72,19 @@ public class UserRepository{
     public void resetUserUpgrades() {
         executorService.execute(()->{
             upgradesUserDAO.resetUserUpgrades();
+        });
+    }
+
+    //Guardar info de la partida
+    public void updateUserStats(int score, int pcu, int acu) {
+        executorService.execute(() -> {
+            userStatsDAO.updateUserStats(score, pcu, acu, "User1");
+        });
+    }
+    //actualizar las mejoras del usuario
+    public void updateUserLevel(String idUpgrade, String level) {
+        executorService.execute(() -> {
+            upgradesUserDAO.updateUserLevel(idUpgrade, level);
         });
     }
 

@@ -8,7 +8,15 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.android_app.RoomDB.GameViewModel;
+import com.example.android_app.RoomDB.UpgradesUser;
+
 public class AppLifecycle extends Application implements Application.ActivityLifecycleCallbacks {
+
+    GameViewModel gameViewModel;
+    ScoreManager scoreManager;
+    UpgradesUser upgrades;
+    UpgradeFragment upgradeFragment;
 
     @Override
     public void onCreate() {
@@ -22,6 +30,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
+
     }
 
     @Override
@@ -49,6 +58,13 @@ public class AppLifecycle extends Application implements Application.ActivityLif
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
 
+        //guardo los datos del usuario
+        //los datos de llos niveles a los que tiene cada mejora el ussuario se guardan cada vez que compro una mejora
+        int pcu = scoreManager.getPassiveValue();
+        int acu = scoreManager.getClickValue();
+        int score = scoreManager.getScore();
+
+        gameViewModel.updateUserStats(score, pcu, acu);
     }
 
     private void checkMutedMusic(){

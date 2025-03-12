@@ -78,4 +78,5 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
             Log.d("Clicker->", "Error al obtener las mejoras por tipo: " + e.getMessage());
         }
     }
+
 }

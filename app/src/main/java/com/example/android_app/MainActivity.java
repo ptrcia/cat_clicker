@@ -1,31 +1,30 @@
 package com.example.android_app;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
-
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.android_app.RoomDB.GameViewModel;
+import com.example.android_app.RoomDB.MainActivityViewModel;
+
 
 public class MainActivity extends AppCompatActivity {
 
     static boolean isMuted = false;
     GameViewModel gameViewModel;
+    MainActivityViewModel mainActivityViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
         ImageButton buttonConfig = findViewById(R.id.buttonConfig);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
 
+
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         //New game
         buttonStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -57,8 +58,11 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
-                                gameViewModel.resetUserStats();
-                                gameViewModel.resetUserUpgrades();
+
+                                mainActivityViewModel.resetUserStats();
+                                mainActivityViewModel.resetUserUpgrades();
+                                //gameViewModel.resetUserStats();
+                                //gameViewModel.resetUserUpgrades();
                                 startActivity(new Intent(MainActivity.this, Game.class));
                             }
                         })
@@ -148,4 +152,5 @@ public class MainActivity extends AppCompatActivity {
             startService(playIntent);
         }
     }
+
 }
