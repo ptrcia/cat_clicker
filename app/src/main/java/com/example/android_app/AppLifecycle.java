@@ -15,13 +15,14 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     GameViewModel gameViewModel;
     ScoreManager scoreManager;
-    UpgradesUser upgrades;
-    UpgradeFragment upgradeFragment;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         registerActivityLifecycleCallbacks(this);
+        gameViewModel = new GameViewModel(this);
+        scoreManager = ScoreManager.getInstance();
     }
 
     @Override
@@ -47,7 +48,11 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
+        int pcu = scoreManager.getPassiveValue();
+        int acu = scoreManager.getClickValue();
+        int score = scoreManager.getScore();
 
+        gameViewModel.updateUserStats(score, pcu, acu);
     }
 
     @Override
@@ -60,6 +65,8 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
         //guardo los datos del usuario
         //los datos de llos niveles a los que tiene cada mejora el ussuario se guardan cada vez que compro una mejora
+        //control null
+
         int pcu = scoreManager.getPassiveValue();
         int acu = scoreManager.getClickValue();
         int score = scoreManager.getScore();

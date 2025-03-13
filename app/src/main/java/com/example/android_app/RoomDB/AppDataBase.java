@@ -70,6 +70,7 @@ public abstract class AppDataBase extends RoomDatabase {
     }
     //endregion
 
+
     private static void initData(Context context) {
         AppDataBase db = getDatabase(context);
         ClickUpgradeDAO clickUpgradeDAO = db.clickUpgradeDAO();

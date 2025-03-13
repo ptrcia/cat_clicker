@@ -21,7 +21,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.android_app.RoomDB.BaseCallback;
 import com.example.android_app.RoomDB.GameViewModel;
+import com.example.android_app.RoomDB.UserStats;
 
 public class Game extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class Game extends AppCompatActivity {
     TextView clickValueText;
     TextView passiveValueText;
     ScoreManager scoreManager;
+    String user = "User1";
     public static Game getInstance() {
         return instance;
     }
@@ -73,9 +76,24 @@ public class Game extends AppCompatActivity {
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
 
+        //Coger los datos de la base de datos
         gameViewModel.userStatsLiveData.observe(this, userStats -> {
-            textScore.setText(userStats.getTotalScore());
+            if (userStats != null) {
+                Log.d("Clicker->", " OBSERVE UserStats: Passive " + userStats.getPcuTotal() + " Active " + userStats.getAcuTotal() + " Score " + userStats.getTotalScore());
+                scoreManager.setClickValue(userStats.getAcuTotal());
+                scoreManager.setPassiveValue(userStats.getPcuTotal());
+                scoreManager.setScore(userStats.getTotalScore());
+                UpdateScoreText();
+            } else {
+                Log.e("Clicker->", "UserStats is null");
+            }
         });
+        Log.d("Clicker->" ,"Calling getUserStats for userId: " + user);
+
+        gameViewModel.getUserStats(user);
+        Log.d("Clicker->", "UserStats: Passive" +scoreManager.getPassiveValue() +" Active "+ scoreManager.getClickValue() + " Score " + scoreManager.getScore());
+
+
 
         //region Botones
         buttonActives.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +225,7 @@ public class Game extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textScore.setText(scoreManager.getScore());
+                textScore.setText(String.valueOf(scoreManager.getScore()));
                 clickValueText.setText(scoreManager.getClickValueText() + "/click");
                 passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
             }

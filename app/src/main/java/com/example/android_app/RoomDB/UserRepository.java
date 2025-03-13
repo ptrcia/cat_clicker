@@ -50,6 +50,8 @@ public class UserRepository{
     //endregion
 
     // Obtener estadísticas del usuario por ID
+    //coger los datos al inicializar
+
     public void getUserStats(String userId, BaseCallback<UserStats> callback) {
         executorService.execute(()->{
             callback.onSuccess(userStatsDAO.getUserStatsById(userId));
@@ -61,7 +63,6 @@ public class UserRepository{
             callback.onSuccess(upgradesUserDAO.getUserLevel(idUpgrades));
         });
     }
-
 
     //resetear  para mnueva partida
     public void resetUserStats() {

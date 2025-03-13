@@ -24,4 +24,6 @@ public interface UpgradesUserDAO {
 
     @Query("UPDATE user_upgrades SET userLevel = 0")
     void resetUserUpgrades();
+
+
 }

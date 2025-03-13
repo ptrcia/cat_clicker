@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.android_app.RoomDB.GameViewModel;
 import com.example.android_app.RoomDB.MainActivityViewModel;
+import com.example.android_app.RoomDB.UserStats;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+
+
+
         //New game
         buttonStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -58,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
-
                                 mainActivityViewModel.resetUserStats();
-                                mainActivityViewModel.resetUserUpgrades();
-                                //gameViewModel.resetUserStats();
-                                //gameViewModel.resetUserUpgrades();
+                                Log.d("Clicker->", "Reseteando UserStats...");
+                                Log.d("Clicker->", "Reseteando UserUpgrades...");
+
                                 startActivity(new Intent(MainActivity.this, Game.class));
                             }
                         })
@@ -79,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //CARGAR DATOS
+               String user = "User1";
+
+               //en plan esto no siurve para nada
+                //mainActivityViewModel.getUserStats(user);
+
+                //mainActivityViewModel.getUpgradesUser();
                 startActivity(new Intent(MainActivity.this, Game.class));
             }
         });

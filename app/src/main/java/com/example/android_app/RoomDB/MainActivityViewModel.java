@@ -3,8 +3,11 @@ package com.example.android_app.RoomDB;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
+
+
 
 public class MainActivityViewModel extends AndroidViewModel {
     private final UpgradesRepository upgradesRepository;
@@ -14,8 +17,11 @@ public class MainActivityViewModel extends AndroidViewModel {
         super(application);
         upgradesRepository = new UpgradesRepository(application);
         userRepository = new UserRepository(application);
-    }
 
+    }
+   // public final MutableLiveData<UserStats> userStatsLiveData = new MutableLiveData<>();
+
+/*
 
     //resetar al clicar on start y darle a si al diálogo
     public void resetUserStats() {
@@ -23,6 +29,16 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
     public void resetUserUpgrades(){
         userRepository.resetUserUpgrades();
+    }
+*/
+
+    // Resetear datos del usuario
+    public void resetUserStats() {
+        userRepository.resetUserStats();
+        userRepository.resetUserUpgrades();
+
+        // Después de resetear, recargar los datos del usuario
+        getUserStats("User1");
     }
 
     //cargar datos
@@ -35,12 +51,5 @@ public class MainActivityViewModel extends AndroidViewModel {
 
         });
     }
-    public void getUpgradesUser() {
-        upgradesRepository.getAllUpgrades(new BaseCallback<List<UpgradesUser>>(){
-            @Override
-            public void onSuccess(List<UpgradesUser> upgradesUsers) {
-                //upgradesUserLiveData.postValue(upgradesUsers);
-            }
-        });
-    }
+
 }

@@ -12,6 +12,7 @@ public interface UserStatsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UserStats userStats);
 
+    //coger los datos al inicializar
     @Query("SELECT * FROM user_stats")
     List<UserStats> getAllUserStats();
 
@@ -23,4 +24,7 @@ public interface UserStatsDAO {
 
     @Query("UPDATE user_stats SET totalScore  = :score, pcuTotal = :pcu, acuTotal = :acu WHERE id = :id")
     void updateUserStats(int score, int pcu, int acu, String id);
+
+
+
 }

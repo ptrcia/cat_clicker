@@ -1,6 +1,7 @@
 package com.example.android_app.RoomDB;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -17,24 +18,20 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void getUserStats(String userId) {
+        Log.d("Clicker->", "GameViewModel////getUserStats called for userId: " + userId);
+
         userRepository.getUserStats(userId, new BaseCallback<UserStats>(){
             @Override
             public void onSuccess(UserStats userStats) {
+                Log.d("Clicker->", "GameViewModel///UserStats received: " +
+                        "Passive: " + userStats.getPcuTotal() +
+                        ", Active: " + userStats.getAcuTotal() +
+                        ", Score: " + userStats.getTotalScore());
                 userStatsLiveData.postValue(userStats);
             }
 
         });
     }
-
-    //resetar
-    public void resetUserStats() {
-        userRepository.resetUserStats();
-    }
-
-    public void resetUserUpgrades(){
-        userRepository.resetUserUpgrades();
-    }
-
     //guardar los datos
     public void updateUserStats(int score, int pcu, int acu) {
         userRepository.updateUserStats(score, pcu, acu);
@@ -42,8 +39,4 @@ public class GameViewModel extends AndroidViewModel {
     public void updateUserLevel(String idUpgrade, String level) {
         userRepository.updateUserLevel(idUpgrade, level);
     }
-
-
-
-
 }

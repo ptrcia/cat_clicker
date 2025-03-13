@@ -28,7 +28,7 @@ public class ScoreManager {
         passiveTimer.start();
     }
 
-    public static ScoreManager getInstance() {
+    public static synchronized ScoreManager getInstance() {
         if (instance == null) {
             instance = new ScoreManager();
         }
@@ -38,13 +38,18 @@ public class ScoreManager {
 
     public void ClickActive(){
         score = clickValue + score;
-        SetScore(score);
+        setScore(score);
         Game.getInstance().UpdateScoreText();
     }
     public void ClickPassive(){
         score = passiveValue + score;
-        SetScore(score);
-        Game.getInstance().UpdateScoreText();
+        setScore(score);
+        if (Game.getInstance() != null) {
+            Game.getInstance().UpdateScoreText();
+        } else {
+            Log.e("Clicker->", "Game instance is null");
+        }
+        //Game.getInstance().UpdateScoreText();
     }
 
     public void applyActiveUpgrade(Context context , int cost, int effect){
@@ -53,7 +58,15 @@ public class ScoreManager {
             Log.d("Clicker-> ", "Has comprado la mejora");
             Log.d("Clicker-> ", "Score->" + score);
             Log.d("Clicker-> ", "ClickValue->" + clickValue);
+        Log.d("Clicker->", "Game instance: " + Game.getInstance());
+
+        if (Game.getInstance() != null) {
             Game.getInstance().UpdateScoreText();
+        } else {
+            Log.e("Clicker->", "Game instance is null");
+        }
+
+        //Game.getInstance().UpdateScoreText();
             //Audio
             checkAudio(context);
     }
@@ -84,7 +97,7 @@ public class ScoreManager {
     public int getPassiveValue(){
         return passiveValue;
     }
-    public void SetScore(int score){
+    public void setScore(int score){
         this.score = score;
     }
     public int getScore(){
@@ -100,6 +113,14 @@ public class ScoreManager {
     }
     public int getClickValue() {
         return clickValue;
+    }
+
+    public void setClickValue(int clickValue) {
+        this.clickValue = clickValue;
+    }
+
+    public void setPassiveValue(int passiveValue) {
+        this.passiveValue = passiveValue;
     }
 
     //endregion
