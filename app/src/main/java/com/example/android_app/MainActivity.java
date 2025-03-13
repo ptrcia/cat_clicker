@@ -17,8 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.android_app.RoomDB.GameViewModel;
 import com.example.android_app.RoomDB.MainActivityViewModel;
-import com.example.android_app.RoomDB.UserStats;
-
 
 public class MainActivity extends AppCompatActivity {
 

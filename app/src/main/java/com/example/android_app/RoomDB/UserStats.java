@@ -16,8 +16,6 @@ public class UserStats {
     int pcuTotal;   // suma total de todos los upgrades pasivos
     int acuTotal;  // suma total de todos los upgrades activos
 
-
-
     public UserStats( @NotNull String id, String name ,int totalScore, int pcuTotal, int acuTotal ) {
         this.name = name;
         this.totalScore = totalScore;

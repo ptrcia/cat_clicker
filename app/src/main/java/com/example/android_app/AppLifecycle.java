@@ -3,13 +3,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.android_app.RoomDB.GameViewModel;
-import com.example.android_app.RoomDB.UpgradesUser;
 
 public class AppLifecycle extends Application implements Application.ActivityLifecycleCallbacks {
 

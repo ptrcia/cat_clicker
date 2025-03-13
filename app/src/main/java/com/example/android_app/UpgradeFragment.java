@@ -39,6 +39,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
@@ -201,15 +203,18 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         newLayout2.setOrientation(LinearLayout.HORIZONTAL);
-        newLayout2.setPadding(0, dpToPx(10), 0, 0);
+        newLayout2.setPadding(0, dpToPx(10), 0, dpToPx(0));
         newLayout2.setBackgroundColor(Color.parseColor("#F7EDE2"));
 
         //Título
         TextView newTitle = new TextView(context);
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
                 //(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                //ViewGroup.LayoutParams.WRAP_CONTENT,
+                0,
+                //LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
         );
         titleParams.setMarginStart(dpToPx(10));
         titleParams.setMarginEnd(dpToPx(10));
@@ -223,59 +228,74 @@ public class UpgradeFragment extends Fragment {
         //Nivel
         TextView newLevel = new TextView(context);
         LinearLayout.LayoutParams levelParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                //ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                //LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
         );
         levelParams.setMarginStart(dpToPx(30));
-        newLevel.setLayoutParams(titleParams);
+        newLevel.setLayoutParams(levelParams);
         newLevel.setText(String.valueOf(idUserLevel));
         newLevel.setTextSize(20);
         Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newLevel.setTypeface(typefaceLevel);
-        newLevel.setTextColor(Color.BLUE);
+        newLevel.setTextColor(Color.BLACK);
 
         //Coste
         TextView newCost = new TextView(context);
         LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                //ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                //LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
         );
         costParams.setMarginStart(dpToPx(30));
-        newCost.setLayoutParams(titleParams);
-        newCost.setText(String.valueOf(cost));
+        newCost.setLayoutParams(costParams);
+        newCost.setText(NumberFormatter.formatNumber(cost));
+        //newCost.setText(String.valueOf(cost));
         newCost.setTextSize(20);
         Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newCost.setTypeface(typefaceCost);
-        newCost.setTextColor(Color.RED);
+        newCost.setTextColor(Color.parseColor("#8f2d56"));
 
         //Effect
         TextView newEffect = new TextView(context);
-        LinearLayout.LayoutParams costEfect = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams effectParams = new LinearLayout.LayoutParams(
                 //dpToPx(300),
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                //ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                //LinearLayout.LayoutParams.WRAP_CONTENT,
+
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
         );
-        costEfect.setMarginStart(dpToPx(30));
-        newEffect.setLayoutParams(titleParams);
-        newEffect.setText(String.valueOf(effect));
+        effectParams.setMarginStart(dpToPx(30));
+        newEffect.setLayoutParams(effectParams);
+        if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
+        else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
+        //newEffect.setText(String.valueOf(effect));
         newEffect.setTextSize(20);
         Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newEffect.setTypeface(typefaceEffect);
-        newEffect.setTextColor(Color.RED);
+        newEffect.setTextColor(Color.parseColor("#8f2d56"));
 
         //Button
         Button newButton = new MaterialButton(context);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+               // LinearLayout.LayoutParams.WRAP_CONTENT,
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                2f
+
         );
-        buttonParams.setMargins(30, 0, 10, 0);
+        buttonParams.setMargins(0, 0, 10, 0);
         newButton.setLayoutParams(buttonParams);
         newButton.setText("Mejorar");
         newButton.setAllCaps(false);
         newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
-        newButton.setTextSize(20);
+        newButton.setTextSize(15);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
         Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newButton.setTypeface(typeface);
@@ -303,6 +323,8 @@ public class UpgradeFragment extends Fragment {
         container.addView(newLayout2, 0);
         Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + idUserLevel + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
     }
+
+
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);

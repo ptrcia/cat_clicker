@@ -1,15 +1,9 @@
 package com.example.android_app;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
+
 import android.content.Context;
 import android.content.Intent;
-import android.os.Debug;
 import android.util.Log;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 
 public class ScoreManager {
 

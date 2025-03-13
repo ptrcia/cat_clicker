@@ -225,9 +225,21 @@ public class Game extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                String formattedScore = NumberFormatter.formatNumber(scoreManager.getScore());
+                textScore.setText(formattedScore);
+
+                String formattedClickValue = NumberFormatter.formatNumber(scoreManager.getClickValue());
+                clickValueText.setText(formattedClickValue + "/click");
+
+                String formattedPassiveValue = NumberFormatter.formatNumber(scoreManager.getPassiveValue());
+                passiveValueText.setText(formattedPassiveValue + "/s");
+
+               /*
                 textScore.setText(String.valueOf(scoreManager.getScore()));
                 clickValueText.setText(scoreManager.getClickValueText() + "/click");
                 passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
+                */
+
             }
         });
     }

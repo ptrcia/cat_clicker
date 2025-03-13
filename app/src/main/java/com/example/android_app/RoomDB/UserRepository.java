@@ -1,13 +1,8 @@
 package com.example.android_app.RoomDB;
 import android.app.Application;
 import android.util.Log;
-
-import androidx.lifecycle.LiveData;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-
-import javax.security.auth.callback.Callback;
 
 public class UserRepository{
     private final UserStatsDAO userStatsDAO;
