@@ -39,17 +39,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="#8f2d56">
-        <TextView
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Nombre"
-            android:textSize="20sp"
-            android:layout_marginHorizontal="10dp">
-        </TextView>
+
         <Space
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="1dp"
             android:layout_weight="1" >
         </Space>
@@ -95,14 +87,7 @@
             android:layout_weight="1" >
         </Space>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="10dp"
-            android:text="                     "
-            android:textSize="20sp">
-        </TextView>
+
 
     </LinearLayout>
 

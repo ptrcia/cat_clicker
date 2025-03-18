@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +26,9 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.example.android_app.RoomDB.ClickUpgrade;
@@ -107,7 +110,8 @@ public class UpgradeFragment extends Fragment {
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-        title.setText("Mejora " + upgradeType);
+       if(upgradeType.equals("Active")) title.setText("Mejoras activas");
+       else if(upgradeType.equals("Passive")) title.setText("Mejoras pasivas");
 
         //Metodo para gesto de hacia abajo
         /*container.setOnTouchListener(new OnTouchListener() {
@@ -194,25 +198,88 @@ public class UpgradeFragment extends Fragment {
     }
 
     //Volcado UI
+    int textSize=17;
     private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, int cost, int effect) {
 
-        //Layout
-        LinearLayout newLayout2 = new LinearLayout(context);
-        newLayout2.setLayoutParams(new LinearLayout.LayoutParams(
+
+    //Main Layout
+        LinearLayout mainLayout = new LinearLayout(context);
+        mainLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
-        newLayout2.setOrientation(LinearLayout.HORIZONTAL);
-        newLayout2.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        newLayout2.setBackgroundColor(Color.parseColor("#F7EDE2"));
+        mainLayout.setOrientation(LinearLayout.HORIZONTAL);
+        mainLayout.setPadding(0, dpToPx(10), 0, dpToPx(0));
+
+        //Layout vertical para la imagen
+        LinearLayout verticalLayoutImg = new LinearLayout(context);
+        verticalLayoutImg.setLayoutParams(new LinearLayout.LayoutParams(
+                0, // Ancho proporcional
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+        ));
+        verticalLayoutImg.setOrientation(LinearLayout.VERTICAL);
+        verticalLayoutImg.setPadding(0, dpToPx(10), 0, dpToPx(0));
+        verticalLayoutImg.setBackgroundColor(Color.parseColor("#F7EDE2"));
+
+        //Layout vertical para el texto y el botón
+        LinearLayout verticalLayoutTextButton = new LinearLayout(context);
+        verticalLayoutTextButton.setLayoutParams(new LinearLayout.LayoutParams(
+                0, // Ancho proporcional
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                4f
+        ));
+        verticalLayoutTextButton.setOrientation(LinearLayout.VERTICAL);
+        verticalLayoutTextButton.setPadding(0, dpToPx(10), 0, dpToPx(0));
+        verticalLayoutTextButton.setBackgroundColor(Color.parseColor("#F7EDE2"));
+
+
+        //Layout horizontal para el texto
+        LinearLayout horizontalLayoutText = new LinearLayout(context);
+        horizontalLayoutText.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        horizontalLayoutText.setPadding(0, dpToPx(10), 0, dpToPx(0));
+        horizontalLayoutText.setOrientation(LinearLayout.HORIZONTAL);
+
+        //Layout horizontal para el botón
+        LinearLayout horizontalLayoutButton = new LinearLayout(context);
+        horizontalLayoutButton.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        horizontalLayoutButton.setPadding(0, dpToPx(10), 0, dpToPx(0));
+        horizontalLayoutButton.setOrientation(LinearLayout.HORIZONTAL);
+        horizontalLayoutButton.setGravity(Gravity.END);
+
+//Espacio para separar
+        Space space = new Space(context);
+        space.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+        ));
+
+        //Imagen
+        ImageView newImg = new ImageView(context);
+        LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
+                /*0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f*/
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        newImg.setLayoutParams(imgParams);
+        newImg.setImageResource(R.drawable.pawpressed);
+        newImg.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+        newImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
 
         //Título
         TextView newTitle = new TextView(context);
         LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
-                //(300),
-                //ViewGroup.LayoutParams.WRAP_CONTENT,
                 0,
-                //LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
@@ -220,85 +287,75 @@ public class UpgradeFragment extends Fragment {
         titleParams.setMarginEnd(dpToPx(10));
         newTitle.setLayoutParams(titleParams);
         newTitle.setText(name);
-        newTitle.setTextSize(20);
+        newTitle.setTextSize(textSize);
         Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newTitle.setTypeface(typefaceTitle);
         newTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
+        newTitle.setGravity(Gravity.START);
 
         //Nivel
         TextView newLevel = new TextView(context);
         LinearLayout.LayoutParams levelParams = new LinearLayout.LayoutParams(
-                //ViewGroup.LayoutParams.MATCH_PARENT,
                 0,
-                //LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
-        levelParams.setMarginStart(dpToPx(30));
         newLevel.setLayoutParams(levelParams);
         newLevel.setText(String.valueOf(idUserLevel));
-        newLevel.setTextSize(20);
-        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        newLevel.setTextSize(textSize);
+        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
         newLevel.setTypeface(typefaceLevel);
         newLevel.setTextColor(Color.BLACK);
+        newLevel.setGravity(Gravity.CENTER);
 
         //Coste
         TextView newCost = new TextView(context);
         LinearLayout.LayoutParams costParams = new LinearLayout.LayoutParams(
-                //ViewGroup.LayoutParams.MATCH_PARENT,
                 0,
-                //LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
-        costParams.setMarginStart(dpToPx(30));
         newCost.setLayoutParams(costParams);
         newCost.setText(NumberFormatter.formatNumber(cost));
-        //newCost.setText(String.valueOf(cost));
-        newCost.setTextSize(20);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        newCost.setTextSize(textSize);
+        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
         newCost.setTypeface(typefaceCost);
         newCost.setTextColor(Color.parseColor("#8f2d56"));
+        newCost.setGravity(Gravity.CENTER);
 
         //Effect
         TextView newEffect = new TextView(context);
         LinearLayout.LayoutParams effectParams = new LinearLayout.LayoutParams(
-                //dpToPx(300),
-                //ViewGroup.LayoutParams.MATCH_PARENT,
                 0,
-                //LinearLayout.LayoutParams.WRAP_CONTENT,
-
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
-        effectParams.setMarginStart(dpToPx(30));
         newEffect.setLayoutParams(effectParams);
         if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
         else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
-        //newEffect.setText(String.valueOf(effect));
-        newEffect.setTextSize(20);
+        newEffect.setTextSize(textSize);
         Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
         newEffect.setTypeface(typefaceEffect);
         newEffect.setTextColor(Color.parseColor("#8f2d56"));
+        newEffect.setGravity(Gravity.CENTER);
 
         //Button
         Button newButton = new MaterialButton(context);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-               // LinearLayout.LayoutParams.WRAP_CONTENT,
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                2f
-
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        buttonParams.setMargins(0, 0, 10, 0);
+        buttonParams.setMargins(0, 0, dpToPx(10),0);
+        newButton.setWidth(dpToPx(150));
         newButton.setLayoutParams(buttonParams);
         newButton.setText("Mejorar");
         newButton.setAllCaps(false);
         newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
-        newButton.setTextSize(15);
+        newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
         newButton.setTypeface(typeface);
+        newButton.setGravity(Gravity.CENTER);
 
         //FUNCINALIDAD
         newButton.setTag(R.id.cost_tag, cost);
@@ -311,16 +368,26 @@ public class UpgradeFragment extends Fragment {
 
 
         //añadir
-        //newLayout2.addView(newImg);
-        newLayout2.addView(newTitle);
-        newLayout2.addView(newCost);
-        newLayout2.addView(newEffect);
-        newLayout2.addView(newLevel);
-        newLayout2.addView(newButton);
 
+        verticalLayoutImg.addView(newImg);
+
+        //horizontalLayoutText.addView(space);
+        horizontalLayoutText.addView(newTitle);
+        horizontalLayoutText.addView(newCost);
+        horizontalLayoutText.addView(newEffect);
+        horizontalLayoutText.addView(newLevel);
+
+        //horizontalLayoutButton.addView(spaceButton);
+        horizontalLayoutButton.addView(newButton);
+
+        verticalLayoutTextButton.addView(horizontalLayoutText);
+        verticalLayoutTextButton.addView(horizontalLayoutButton);
+
+        mainLayout.addView(verticalLayoutImg);
+        mainLayout.addView(verticalLayoutTextButton);
 
         // Añadir el nuevo LinearLayout al contenedor
-        container.addView(newLayout2, 0);
+        container.addView(mainLayout, 0);
         Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + idUserLevel + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
     }
 
@@ -363,8 +430,6 @@ public class UpgradeFragment extends Fragment {
                 synchronized (container) {
                     container.removeAllViews();//eliminar las vistas
                 }
-
-                    //container.removeAllViews();
                 viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
             }else{
                 shakeAnimation(view);
@@ -373,7 +438,6 @@ public class UpgradeFragment extends Fragment {
         }
     };
     void shakeAnimation(View button){
-        //Animacion de que no
         Animation shake = new TranslateAnimation(0, 10, 0, 0);
         shake.setDuration(70);
         shake.setRepeatCount(7);
