@@ -11,6 +11,23 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     GameViewModel gameViewModel;
     ScoreManager scoreManager;
+    GyroscopeManager gyroscopeManager;
+
+    /*
+    *
+    * String lastCloseTime = sharedPreferences.getString("last_close_time", null);
+if (lastCloseTime != null) {
+    Duration duration = Duration.between(
+        Instant.parse(lastCloseTime),  // Último tiempo registrado.
+        Instant.now()                 // Momento actual.
+    );
+    long elapsedTimeMillis = duration.toMillis();
+    Log.d("ElapsedTime", "Tiempo transcurrido: " + elapsedTimeMillis + " ms");
+}
+// Guardar el momento actual para futuros cálculos.
+sharedPreferences.edit().putString("last_close_time", Instant.now().toString()).apply();
+*/
+
 
 
     @Override
@@ -19,6 +36,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         registerActivityLifecycleCallbacks(this);
         gameViewModel = new GameViewModel(this);
         scoreManager = ScoreManager.getInstance();
+        gyroscopeManager = new GyroscopeManager(getApplicationContext()); // Asegúrate de pasar un contexto válido
     }
 
     @Override
@@ -32,11 +50,18 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        //checkMutedMusic();
+        if (gyroscopeManager != null) {
+            gyroscopeManager.startListening(); // Empieza a escuchar el giroscopio
+        }
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
+
+        if (gyroscopeManager != null) {
+            gyroscopeManager.stopListening(); // Detén la escucha para ahorrar recursos
+        }
+
         Intent playIntent = new Intent(this, AudioManager.class);
         playIntent.setAction("pauseMusic");
         startService(playIntent);

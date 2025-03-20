@@ -60,7 +60,7 @@ public class UpgradeFragment extends Fragment {
     String userLevel ="0";
     String idUpgrade ="";
 
-
+    ImageView image;
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeTypeInput) {
@@ -271,7 +271,8 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         newImg.setLayoutParams(imgParams);
-        newImg.setImageResource(R.drawable.pawpressed);
+        changeImg(idUserLevel, newImg);
+        //newImg.setImageResource(R.drawable.upgradecat0);
         newImg.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
         newImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -288,7 +289,7 @@ public class UpgradeFragment extends Fragment {
         newTitle.setLayoutParams(titleParams);
         newTitle.setText(name);
         newTitle.setTextSize(textSize);
-        Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.cleanow);
         newTitle.setTypeface(typefaceTitle);
         newTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
         newTitle.setGravity(Gravity.START);
@@ -301,9 +302,9 @@ public class UpgradeFragment extends Fragment {
                 1f
         );
         newLevel.setLayoutParams(levelParams);
-        newLevel.setText(String.valueOf(idUserLevel));
+        newLevel.setText(idUserLevel);
         newLevel.setTextSize(textSize);
-        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
+        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.glina_script);
         newLevel.setTypeface(typefaceLevel);
         newLevel.setTextColor(Color.BLACK);
         newLevel.setGravity(Gravity.CENTER);
@@ -318,7 +319,7 @@ public class UpgradeFragment extends Fragment {
         newCost.setLayoutParams(costParams);
         newCost.setText(NumberFormatter.formatNumber(cost));
         newCost.setTextSize(textSize);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
+        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.glina_script);
         newCost.setTypeface(typefaceCost);
         newCost.setTextColor(Color.parseColor("#8f2d56"));
         newCost.setGravity(Gravity.CENTER);
@@ -334,7 +335,7 @@ public class UpgradeFragment extends Fragment {
         if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
         else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
         newEffect.setTextSize(textSize);
-        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.parkinsans_regular);
+        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.glina_script);
         newEffect.setTypeface(typefaceEffect);
         newEffect.setTextColor(Color.parseColor("#8f2d56"));
         newEffect.setGravity(Gravity.CENTER);
@@ -348,12 +349,12 @@ public class UpgradeFragment extends Fragment {
         buttonParams.setMargins(0, 0, dpToPx(10),0);
         newButton.setWidth(dpToPx(150));
         newButton.setLayoutParams(buttonParams);
-        newButton.setText("Mejorar");
+        newButton.setText("mejorar");
         newButton.setAllCaps(false);
         newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.parkinsans_bold);
+        Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
         newButton.setTypeface(typeface);
         newButton.setGravity(Gravity.CENTER);
 
@@ -362,6 +363,7 @@ public class UpgradeFragment extends Fragment {
         newButton.setTag(R.id.effect_tag, effect);
         newButton.setTag(R.id.idUpgrade_tag, idUpgrade);
         newButton.setTag(R.id.idUserLevel_tag, idUserLevel);
+        newButton.setTag(R.id.img_tag, newImg);
 
         //EL PULSAR
         newButton.setOnClickListener(ButtonUpgrade);
@@ -406,6 +408,7 @@ public class UpgradeFragment extends Fragment {
             int effect = (int) view.getTag(R.id.effect_tag);
             String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
             String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
+            ImageView img = (ImageView) view.getTag(R.id.img_tag);
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
@@ -431,12 +434,32 @@ public class UpgradeFragment extends Fragment {
                     container.removeAllViews();//eliminar las vistas
                 }
                 viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
+
+                //Animación de caer gatitos
+                Game.getInstance().addImage(context, idUserLevel);
+
+
             }else{
                 shakeAnimation(view);
             }
+            //Método para la animacion
+
+            if (img == null) {
+                Log.e("ButtonUpgrade", "La ImageView asociada al botón es null. Revisa el ID o la asociación.");
+                return; // Detener si no hay imagen asociada
+            }
+
 
         }
     };
+
+    public ImageView getImage(){
+    return image;
+    }
+    public void setImage(ImageView img){
+        image = img;
+    }
+
     void shakeAnimation(View button){
         Animation shake = new TranslateAnimation(0, 10, 0, 0);
         shake.setDuration(70);
@@ -448,6 +471,68 @@ public class UpgradeFragment extends Fragment {
     private boolean userHasEnoughScore(int cost){
         int score = ScoreManager.getInstance().getScore();
         return score >= cost;
+    }
+
+    void changeImg(String idUserLevel, ImageView image){
+        switch (idUserLevel){
+            case "1":
+                image.setImageResource(R.drawable.upgradecat1);
+                break;
+            case  "2":
+                image.setImageResource(R.drawable.upgradecat2);
+                break;
+            case"3":
+                image.setImageResource(R.drawable.upgradecat3);
+                break;
+            case "4":
+                image.setImageResource(R.drawable.upgradecat4);
+                break;
+            case "5":
+                image.setImageResource(R.drawable.upgradecat5);
+                break;
+            case "6":
+                image.setImageResource(R.drawable.upgradecat6);
+                break;
+            case "7":
+                image.setImageResource(R.drawable.upgradecat7);
+                break;
+            case "8":
+                image.setImageResource(R.drawable.upgradecat8);
+                break;
+            case "9":
+                image.setImageResource(R.drawable.upgradecat9);
+                break;
+            case "10":
+                image.setImageResource(R.drawable.upgradecat10);
+                break;
+            case "11":
+                image.setImageResource(R.drawable.upgradecat11);
+                break;
+            case "12":
+                image.setImageResource(R.drawable.upgradecat12);
+                break;
+            case "13":
+                image.setImageResource(R.drawable.upgradecat13);
+                break;
+            case "14":
+                image.setImageResource(R.drawable.upgradecat14);
+                break;
+            case "15":
+                image.setImageResource(R.drawable.upgradecat15);
+                break;
+            case "16":
+                 image.setImageResource(R.drawable.upgradecat16);
+                 break;
+            case "17":
+                image.setImageResource(R.drawable.upgradecat17);
+                break;
+            case "18":
+                image.setImageResource(R.drawable.upgradecat18);
+                break;
+            default:
+                image.setImageResource(R.drawable.caticon); // Imagen por defecto
+                break;
+        }
     }
 }
 

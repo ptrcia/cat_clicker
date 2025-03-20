@@ -4,4 +4,5 @@
     <item name="effect_tag" type="id" />
     <item name="idUpgrade_tag" type="id" />
     <item name="idUserLevel_tag" type="id" />
+    <item name="img_tag" type="id" />
 </resources>

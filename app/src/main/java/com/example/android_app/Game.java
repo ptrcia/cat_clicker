@@ -1,5 +1,8 @@
 package com.example.android_app;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,8 +10,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -29,12 +38,14 @@ public class Game extends AppCompatActivity {
 
     private static Game instance;
     static boolean isMuted ;
-
+    private GyroscopeManager gyroscopeManager;
+    private ImageView currentImage;
     GameViewModel gameViewModel;
     TextView textScore;
     TextView clickValueText;
     TextView passiveValueText;
     ScoreManager scoreManager;
+    FrameLayout mainLayout;
     String user = "User1";
     public static Game getInstance() {
         return instance;
@@ -55,12 +66,13 @@ public class Game extends AppCompatActivity {
         Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+        mainLayout = findViewById(R.id.mainLayout);
         textScore = findViewById(R.id.scoreText);
         clickValueText = findViewById(R.id.clickValueText);
         passiveValueText = findViewById(R.id.passiveValueText);
         scoreManager = ScoreManager.getInstance();
 
-        //AUDIO
+        //region Audio
         Intent playIntent = new Intent(this, AudioManager.class);
         isMuted = AudioManager.isMutedMusic();
         if(isMuted){
@@ -72,6 +84,10 @@ public class Game extends AppCompatActivity {
             playIntent.setAction("playMusic");
             startService(playIntent);
         }
+        //endregion
+
+        //Giroscopio
+        gyroscopeManager = new GyroscopeManager(this);
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
@@ -92,8 +108,6 @@ public class Game extends AppCompatActivity {
 
         gameViewModel.getUserStats(user);
         Log.d("Clicker->", "UserStats: Passive" +scoreManager.getPassiveValue() +" Active "+ scoreManager.getClickValue() + " Score " + scoreManager.getScore());
-
-
 
         //region Botones
         buttonActives.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +182,69 @@ public class Game extends AppCompatActivity {
         });
         //endregion
     }
+    //region Imagen
 
+    //imgLayout
+    public void addImage(Context context, String id){
+        ImageView newImage = new ImageView(context);
+        newImage.setLayoutParams(new FrameLayout.LayoutParams(
+                100, // Ancho
+                100  // Alto
+        ));
+        String resourceName = "upgradecat" + id;
+        int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
+        newImage.setImageResource(resourceId); // Imagen del gatito (reemplaza con tu recurso)
+        newImage.setX((float) (Math.random() * (mainLayout.getWidth() - 100))); // Posición aleatoria en eje X
+        newImage.setY(-100);
+
+
+        mainLayout.addView(newImage);
+
+        StartFallAnimation(newImage, mainLayout);
+        //Log.d("addImage", "Imagen añadida al contenedor. Coordenadas iniciales - X: " + img.getX() + ", Y: " + img.getY());
+        //SphereImages(img);
+    }
+
+    private void StartFallAnimation(ImageView img, ViewGroup container){
+        float targetY = container.getHeight() - img.getHeight()-86;
+        ObjectAnimator fall = ObjectAnimator.ofFloat(img, "translationY", targetY);
+        fall.setDuration(3000); // Duración de la caída en milisegundos
+        fall.setInterpolator(new AccelerateInterpolator());
+
+        fall.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.d("FallAnimation", "Imagen llegó al fondo. Coordenadas - X: " + img.getX() + ", Y: " + img.getY());
+            }
+        });
+        fall.start();
+        //        gyroscopeManager.startListening();
+    }
+    public void GyroPosition( float x, float y){
+
+        if (currentImage == null) {
+            //Log.e("GyroPosition", "currentImage es null. Asegúrate de llamar a setCurrentImage() antes.");
+            return; // No hacer nada si la imagen no está configurada
+        }
+
+        if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {return; }
+        //Log.d("Gyro", "Valor x "+ x+"  Valor y: "+ y);
+
+        float currentX = getCurrentImage().getTranslationX();
+        float currentY = getCurrentImage().getTranslationY();
+        Log.d("GyroPosition", "Posición actual - X: " + currentX + ", Y: " + currentY);
+
+        float toX = currentX+(x*50);
+        float toY = currentY+(y*50);
+
+        getCurrentImage().setTranslationX(toX);
+        getCurrentImage().setTranslationY(toY);
+        Log.d("GyroPosition", "Nueva posición establecida - X: " + toX + ", Y: " + toY);
+    }
+
+
+    
+    //endregion
 
     private void checkAudio(ImageButton buttonVolume){
         Intent audioManager = new Intent(Game.this, AudioManager.class);
@@ -234,13 +310,15 @@ public class Game extends AppCompatActivity {
                 String formattedPassiveValue = NumberFormatter.formatNumber(scoreManager.getPassiveValue());
                 passiveValueText.setText(formattedPassiveValue + "/s");
 
-               /*
-                textScore.setText(String.valueOf(scoreManager.getScore()));
-                clickValueText.setText(scoreManager.getClickValueText() + "/click");
-                passiveValueText.setText(scoreManager.getPassiveValueText() + "/s");
-                */
 
             }
         });
     }
+    public void setCurrentImage(ImageView img) {
+        this.currentImage = img;
+    }
+    public ImageView getCurrentImage(){
+        return currentImage;
+    }
+
 }

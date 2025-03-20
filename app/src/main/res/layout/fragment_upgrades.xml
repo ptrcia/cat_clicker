@@ -30,6 +30,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_gravity="center"
+            android:textAllCaps="true"
+            android:fontFamily="@font/glina_script"
             android:textSize="30sp">
         </TextView>
     </LinearLayout>
