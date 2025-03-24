@@ -36,7 +36,7 @@ public class GyroscopeManager implements SensorEventListener {
 
            if (Game.getInstance() != null) {
 
-               Game.getInstance().GyroPosition(x, y);
+               //Game.getInstance().GyroPosition(x, y);
             } else {
                 Log.e("GyroscopeManager", "Game instance is null!");
             }

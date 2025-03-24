@@ -70,7 +70,6 @@ public abstract class AppDataBase extends RoomDatabase {
     }
     //endregion
 
-
     private static void initData(Context context) {
         AppDataBase db = getDatabase(context);
         ClickUpgradeDAO clickUpgradeDAO = db.clickUpgradeDAO();
@@ -234,7 +233,7 @@ public abstract class AppDataBase extends RoomDatabase {
         List<ClickUpgrade> activeUpgrades = new ArrayList<>();
         List<ClickUpgrade> passiveUpgrades = new ArrayList<>();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 18; i++) {
             activeUpgrades.add(new ClickUpgrade("ua_" + i, "Mejora" + i, 0, "", "Active"));
             passiveUpgrades.add(new ClickUpgrade("up_" + i, "Mejora" + i, 0, "", "Passive"));
         }
@@ -244,21 +243,30 @@ public abstract class AppDataBase extends RoomDatabase {
 
         //Cálculo de coste y efecto exponencial
 
-        double baseCost = 10;
-        double growthRate = 10;
-        double upgradeMultiplier = 6;
-        double effectMultiplier = 0.4;
+        double baseCost = 100; //coste de base
+        double growthRate = 1.2; //crecimiento exponencial
+        double upgradeMultiplier = 10; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double effectMultiplier = 0.2; //el efecto asociado al coste, 0.4 es un 40%
+
+        double baseCostP = 1000; //coste de base
+        double growthRateP = 1.5; //crecimiento exponencial
+        double upgradeMultiplierP = 100; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double effectMultiplierP = 0.5; //el efecto asociado al coste, 0.4 es un 40%
 
 //Niveles de las mejoras
         List<Level> levels = new ArrayList<>();
 
-        for (int i = 1; i <= 5; i++) { // mejora
+        for (int i = 1; i <= 18; i++) { // mejora
             for (int j = 1; j <= 3; j++) { //  nivel
+
                 double cost = baseCost * Math.pow(growthRate, (i - 1)) * Math.pow(upgradeMultiplier, (j - 1));
                 double effect = cost * effectMultiplier;
-
                 levels.add(new Level("levelA" + i + "_" + j, "ua_" + i, String.valueOf(j), (int)cost, (int) effect));
-                levels.add(new Level("levelP" + i + "_" + j, "up_" + i, String.valueOf(j), (int) cost, (int) effect));
+
+
+                double costPassive = baseCostP * Math.pow(growthRateP, (i - 1)) * Math.pow(upgradeMultiplierP, (j - 1));
+                double effectPassive = costPassive * effectMultiplierP;
+                levels.add(new Level("levelP" + i + "_" + j, "up_" + i, String.valueOf(j), (int) costPassive, (int) effectPassive));
             }
         }
         levelDAO.insertAll(levels);
@@ -270,7 +278,7 @@ public abstract class AppDataBase extends RoomDatabase {
         userStatsDAO.insert(userStats);
 
         // Lista de mejoras adquiridas por el usuario
-        List<UpgradesUser> upgradesUsers = Arrays.asList(
+        /*List<UpgradesUser> upgradesUsers = Arrays.asList(
                 new UpgradesUser("upgradeuserActive_1", "ua_1", "0", "User1"),
                 new UpgradesUser("upgradeuserActive_2", "ua_2", "0", "User1"),
                 new UpgradesUser("upgradeuserActive_3", "ua_3", "0", "User1"),
@@ -284,7 +292,14 @@ public abstract class AppDataBase extends RoomDatabase {
                 new UpgradesUser("upgradeuserPassive_4", "up_4", "0", "User1"),
                 new UpgradesUser("upgradeuserPassive_5", "up_5", "0", "User1")
 
-        );
+        );*/
+
+        List<UpgradesUser> upgradesUsers = new ArrayList<>();
+
+        for (int i = 1; i <= 18; i++) {
+            upgradesUsers.add(new UpgradesUser("upgradeuserActive_" + i, "ua_" + i, "0", "User1"));
+            upgradesUsers.add(new UpgradesUser("upgradeuserPassive_" + i, "up_" + i, "0", "User1"));
+        }
         upgradesUserDAO.insertAll(upgradesUsers);
 
     }

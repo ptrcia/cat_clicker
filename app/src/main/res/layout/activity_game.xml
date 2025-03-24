@@ -117,8 +117,8 @@
             android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:contentDescription="@string/button_to_click_to_obtain_points"
-            android:scaleType="centerCrop">
-            <!--android:src="@drawable/heartpaw">-->
+            android:scaleType="centerCrop"
+            android:src="@drawable/heartpaw">
         </ImageButton>
     </FrameLayout>
     <!-- Lower bar -->

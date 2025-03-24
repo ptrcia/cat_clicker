@@ -162,7 +162,7 @@ public class Game extends AppCompatActivity {
                 buttonClickScore.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
                     }
                 }).start();
 
@@ -218,32 +218,71 @@ public class Game extends AppCompatActivity {
             }
         });
         fall.start();
-        //        gyroscopeManager.startListening();
+        gyroscopeManager.startListening();
     }
+    /*
     public void GyroPosition( float x, float y){
 
-        if (currentImage == null) {
-            //Log.e("GyroPosition", "currentImage es null. Asegúrate de llamar a setCurrentImage() antes.");
-            return; // No hacer nada si la imagen no está configurada
+        if (currentImage == null) {return;  }
+        for (int i = 0; i < mainLayout.getChildCount(); i++) {
+            View child = mainLayout.getChildAt(i);
+            if (child instanceof ImageView) {
+                float currentX = child.getX();
+                float currentY = child.getY();
+                Log.d("GyroPosition", "Posición anterior - X: " + currentX + ", Y: " + currentY);
+
+                // Ajustar las posiciones según el giro
+                float newX = currentX + (x * 5); // Escala de movimiento horizontal
+                float newY = currentY - (y * 5); // Escala de movimiento vertical
+
+                // Evitar que las imágenes salgan fuera del contenedor
+                newX = Math.max(0, Math.min(newX, mainLayout.getWidth() - child.getWidth()));
+                newY = Math.max(0, Math.min(newY, mainLayout.getHeight() - child.getHeight()));
+
+                child.setX(newX);
+                child.setY(newY);
+                Log.d("GyroPosition", "Nueva posición establecida - X: " + newX + ", Y: " + newY);
+
+            }
         }
-
-        if (Math.abs(x) < 0.1 && Math.abs(y) < 0.1) {return; }
-        //Log.d("Gyro", "Valor x "+ x+"  Valor y: "+ y);
-
-        float currentX = getCurrentImage().getTranslationX();
-        float currentY = getCurrentImage().getTranslationY();
-        Log.d("GyroPosition", "Posición actual - X: " + currentX + ", Y: " + currentY);
-
-        float toX = currentX+(x*50);
-        float toY = currentY+(y*50);
-
-        getCurrentImage().setTranslationX(toX);
-        getCurrentImage().setTranslationY(toY);
-        Log.d("GyroPosition", "Nueva posición establecida - X: " + toX + ", Y: " + toY);
+        updatePhysics();
     }
 
+    private void updatePhysics() {
+        for (int i = 0; i < mainLayout.getChildCount(); i++) {
+            ImageView img1 = (ImageView) mainLayout.getChildAt(i);
 
-    
+            // Verificar colisiones
+            for (int j = i + 1; j < mainLayout.getChildCount(); j++) {
+                ImageView img2 = (ImageView) mainLayout.getChildAt(j);
+                if (checkCollision(img1, img2)) {
+                    Log.d("Collision", "Colisión detectada entre imágenes.");
+                    // Ajustar posiciones o simular rebotes aquí
+                    simulateBounce(img1, img2);
+                }
+            }
+        }
+    }
+    private boolean checkCollision(ImageView img1, ImageView img2){
+        float x1 = img1.getX();
+        float y1 = img1.getY();
+        float x2 = img2.getX();
+        float y2 = img2.getY();
+        return (x1 < x2 + img2.getWidth() &&
+                x1 + img1.getWidth() > x2 &&
+                y1 < y2 + img2.getHeight() &&
+                y1 + img1.getHeight() > y2);
+    }
+    private void simulateBounce(ImageView img1, ImageView img2) {
+        // Movimiento inverso en el eje X
+        img1.setX(img1.getX() - 10);
+        img2.setX(img2.getX() + 10);
+
+        // Animación sutil para representar el rebote
+        img1.animate().scaleX(1.1f).scaleY(1.1f).setDuration(100).withEndAction(() -> {
+            img1.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100);
+        });
+    }*/
     //endregion
 
     private void checkAudio(ImageButton buttonVolume){

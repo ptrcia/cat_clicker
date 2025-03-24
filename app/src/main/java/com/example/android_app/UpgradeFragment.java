@@ -202,6 +202,7 @@ public class UpgradeFragment extends Fragment {
     private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, int cost, int effect) {
 
 
+
     //Main Layout
         LinearLayout mainLayout = new LinearLayout(context);
         mainLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -271,8 +272,12 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         newImg.setLayoutParams(imgParams);
-        changeImg(idUserLevel, newImg);
-        //newImg.setImageResource(R.drawable.upgradecat0);
+
+        //Sacamos el valor numérico del id
+        String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
+        System.out.println(numberId);
+        changeImg(numberId, newImg);
+
         newImg.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
         newImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -408,7 +413,7 @@ public class UpgradeFragment extends Fragment {
             int effect = (int) view.getTag(R.id.effect_tag);
             String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
             String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
-            ImageView img = (ImageView) view.getTag(R.id.img_tag);
+            //ImageView img = (ImageView) view.getTag(R.id.img_tag);
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
@@ -423,11 +428,6 @@ public class UpgradeFragment extends Fragment {
                 else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(), cost, effect);
 
                 //Poner esa mejora al nivel siguiente
-
-                //Tengo muchas dudas sobre si implementar esto o hacer las consultas.
-                //setUserLevel(idUserLevel);
-                //setIdUpgrade(idUpgrade);
-
                 viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
 
                 synchronized (container) {
@@ -437,19 +437,13 @@ public class UpgradeFragment extends Fragment {
 
                 //Animación de caer gatitos
                 Game.getInstance().addImage(context, idUserLevel);
-
-
             }else{
                 shakeAnimation(view);
             }
-            //Método para la animacion
-
-            if (img == null) {
+            /*if (img == null) {
                 Log.e("ButtonUpgrade", "La ImageView asociada al botón es null. Revisa el ID o la asociación.");
                 return; // Detener si no hay imagen asociada
-            }
-
-
+            }*/
         }
     };
 
