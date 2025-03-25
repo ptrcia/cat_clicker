@@ -10,6 +10,7 @@ public class NumberFormatter {
         }
 
         final String[] letters = new String[]{"", "K", "M", "B", "T"};
+        //        final String[] letters = new String[]{"", "K", "M", "B", "T"};
         int index = 0;
 
         double result = number;
@@ -18,7 +19,7 @@ public class NumberFormatter {
             index++;
         }
 
-         return  String.format(Locale.US, "%.1f%s", result, letters[index]);
+         return  String.format(Locale.US, "%.3f%s", result, letters[index]);
 
     }
 }

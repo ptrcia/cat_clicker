@@ -309,7 +309,7 @@ public class UpgradeFragment extends Fragment {
         newLevel.setLayoutParams(levelParams);
         newLevel.setText(idUserLevel);
         newLevel.setTextSize(textSize);
-        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.glina_script);
+        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.cleanow);
         newLevel.setTypeface(typefaceLevel);
         newLevel.setTextColor(Color.BLACK);
         newLevel.setGravity(Gravity.CENTER);
@@ -324,7 +324,7 @@ public class UpgradeFragment extends Fragment {
         newCost.setLayoutParams(costParams);
         newCost.setText(NumberFormatter.formatNumber(cost));
         newCost.setTextSize(textSize);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.glina_script);
+        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.cleanow);
         newCost.setTypeface(typefaceCost);
         newCost.setTextColor(Color.parseColor("#8f2d56"));
         newCost.setGravity(Gravity.CENTER);
@@ -340,7 +340,7 @@ public class UpgradeFragment extends Fragment {
         if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
         else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
         newEffect.setTextSize(textSize);
-        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.glina_script);
+        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.cleanow);
         newEffect.setTypeface(typefaceEffect);
         newEffect.setTextColor(Color.parseColor("#8f2d56"));
         newEffect.setGravity(Gravity.CENTER);

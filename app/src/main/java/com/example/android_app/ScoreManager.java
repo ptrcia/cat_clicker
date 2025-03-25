@@ -10,17 +10,9 @@ public class ScoreManager {
     private int clickValue=1;
     private int passiveValue=0;
     private int score=0;
-    private String scoreText;
-    private String clickValueText;
-    private String passiveValueText;
 
     //region Instance
     private static ScoreManager instance;
-
-    private ScoreManager() {
-        PassiveTimer passiveTimer = new PassiveTimer(this);
-        passiveTimer.start();
-    }
 
     public static synchronized ScoreManager getInstance() {
         if (instance == null) {
@@ -40,40 +32,63 @@ public class ScoreManager {
         setScore(score);
         if (Game.getInstance() != null) {
             Game.getInstance().UpdateScoreText();
-        } else {
-            Log.e("Clicker->", "Game instance is null");
         }
-        //Game.getInstance().UpdateScoreText();
     }
 
     public void applyActiveUpgrade(Context context , int cost, int effect){
             score -= cost;
             clickValue += effect;
+            setClickValue(clickValue);
             Log.d("Clicker-> ", "Has comprado la mejora");
             Log.d("Clicker-> ", "Score->" + score);
             Log.d("Clicker-> ", "ClickValue->" + clickValue);
-        Log.d("Clicker->", "Game instance: " + Game.getInstance());
+             Log.d("Clicker->", "Game instance: " + Game.getInstance());
 
         if (Game.getInstance() != null) {
             Game.getInstance().UpdateScoreText();
         } else {
             Log.e("Clicker->", "Game instance is null");
         }
-
-        //Game.getInstance().UpdateScoreText();
-            //Audio
+         //Audio
             checkAudio(context);
     }
     public void applyPassiveUpgrade(Context context , int cost, int effect){
             score -= cost;
             passiveValue += effect;
-
+        setPassiveValue(passiveValue);
             Log.d("Clicker-> ", "Has comprado la mejora");
             Log.d("Clicker-> ", "Score->" + score);
             Log.d("Clicker-> ", "PassiveValue->" + passiveValue);
             Game.getInstance().UpdateScoreText();
             //Audio
             checkAudio(context);
+    }
+
+    public void applyTimeBetweenSesions(long time){
+
+        long secondsPassed = (time/1000);
+        // Aqui hay que hacer una progresión segun el tiempo que haya pasado y los puntos que tenga
+        if(secondsPassed<=0){
+            return;
+        }
+
+        if (getPassiveValue() <= 0) {
+            Log.e("Clicker->", "Passive value is not initialized. Skipping session calculation.");
+            return;
+        }
+        
+        int pointsGained = (int) secondsPassed * getPassiveValue();
+        score += pointsGained;
+        setScore(score);
+
+        if (Game.getInstance() != null) {
+            Game.getInstance().showTimeScore(pointsGained);
+
+            Game.getInstance().UpdateScoreText();
+        }
+
+        Log.d("Clicker-> ", "SM Has ganado: "+ (int) secondsPassed * getPassiveValue() +"puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ getPassiveValue());
+        Log.d("Clicker-> ", "SM Score->" + score);
     }
 
     void checkAudio(Context context){
@@ -97,14 +112,6 @@ public class ScoreManager {
     public int getScore(){
         return score;
     }
-    public String getClickValueText(){
-        clickValueText = String.valueOf(clickValue);
-        return clickValueText;
-    }
-    public String getPassiveValueText(){
-        passiveValueText = String.valueOf(passiveValue);
-        return passiveValueText;
-    }
     public int getClickValue() {
         return clickValue;
     }
@@ -116,6 +123,5 @@ public class ScoreManager {
     public void setPassiveValue(int passiveValue) {
         this.passiveValue = passiveValue;
     }
-
     //endregion
 }

@@ -3,6 +3,7 @@ package com.example.android_app;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                                 mainActivityViewModel.resetUserStats();
                                 Log.d("Clicker->", "Reseteando UserStats...");
                                 Log.d("Clicker->", "Reseteando UserUpgrades...");
-
+                                resetGame();
                                 startActivity(new Intent(MainActivity.this, Game.class));
                             }
                         })
@@ -79,13 +80,7 @@ public class MainActivity extends AppCompatActivity {
         butttonContinue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //CARGAR DATOS
                String user = "User1";
-
-               //en plan esto no siurve para nada
-                //mainActivityViewModel.getUserStats(user);
-
-                //mainActivityViewModel.getUpgradesUser();
                 startActivity(new Intent(MainActivity.this, Game.class));
             }
         });
@@ -94,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         buttonExit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //GUARDAR DATOS
                 finish();
                 System.exit(0);
             }
@@ -158,6 +152,18 @@ public class MainActivity extends AppCompatActivity {
             playIntent.setAction("playMusic");
             startService(playIntent);
         }
+    }
+    public void resetGame() {
+        SharedPreferences preferences = getSharedPreferences("GameData", MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("isFirstRun", true); // Marca como primera ejecución
+        editor.putLong("closedTime", 0); // Reinicia closedTime
+        editor.apply();
+        boolean checkFirstRun =preferences.getBoolean("isFirstRun", true);
+        Log.d("Clicker->", "Validación tras reinicio: isFirstRun -> " + checkFirstRun);
+
+        Log.d("Clicker->", "Juego reiniciado, marcando como primera ejecución.");
     }
 
 }

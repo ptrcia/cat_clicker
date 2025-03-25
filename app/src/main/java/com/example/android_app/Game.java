@@ -3,7 +3,10 @@ package com.example.android_app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -44,6 +49,7 @@ public class Game extends AppCompatActivity {
     TextView textScore;
     TextView clickValueText;
     TextView passiveValueText;
+    TextView timeScoreText;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
     String user = "User1";
@@ -70,6 +76,7 @@ public class Game extends AppCompatActivity {
         textScore = findViewById(R.id.scoreText);
         clickValueText = findViewById(R.id.clickValueText);
         passiveValueText = findViewById(R.id.passiveValueText);
+        timeScoreText = findViewById(R.id.timeScoreText);
         scoreManager = ScoreManager.getInstance();
 
         //region Audio
@@ -167,7 +174,6 @@ public class Game extends AppCompatActivity {
                 }).start();
 
                 //Reference Script Score
-                Log.d("Clicker-> ", "Se ha hecho click");
                 scoreManager.ClickActive();
                 UpdateScoreText();
             }
@@ -335,6 +341,32 @@ public class Game extends AppCompatActivity {
         }, 100);*/
     }
 
+    public void showTimeScore(long timeScore){
+        //Animator animator
+        timeScoreText.setText("+ "+timeScore);
+        timeScoreText.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .setStartDelay(4000)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        timeScoreText.setText("");
+                        timeScoreText.setAlpha(1f);
+                    }
+                });
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Game.this);
+        alertDialogBuilder.setTitle("¡Hola de nuevo!");
+        alertDialogBuilder
+                .setMessage("!En tu ausencia se han acumulado  "+timeScore+" puntos!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                }).create().show();
+  }
+
     public void UpdateScoreText(){
         //ejecutar en el hilo principal
         runOnUiThread(new Runnable() {
@@ -348,16 +380,13 @@ public class Game extends AppCompatActivity {
 
                 String formattedPassiveValue = NumberFormatter.formatNumber(scoreManager.getPassiveValue());
                 passiveValueText.setText(formattedPassiveValue + "/s");
-
-
             }
         });
     }
-    public void setCurrentImage(ImageView img) {
-        this.currentImage = img;
-    }
-    public ImageView getCurrentImage(){
-        return currentImage;
-    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Clicker->", "onResume en game");
+    }
 }

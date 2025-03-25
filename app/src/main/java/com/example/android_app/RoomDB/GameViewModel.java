@@ -32,6 +32,7 @@ public class GameViewModel extends AndroidViewModel {
 
         });
     }
+
     //guardar los datos
     public void updateUserStats(int score, int pcu, int acu) {
         userRepository.updateUserStats(score, pcu, acu);

@@ -5,19 +5,36 @@ import java.util.TimerTask;
 
 public class PassiveTimer {
     private Timer timer;
+    private TimerTask timerTask;
     private ScoreManager scoreManager;
+    boolean isRunning;
 
     public PassiveTimer(ScoreManager scoreManager) {
         this.scoreManager = scoreManager;
+        this.isRunning = false;
         this.timer = new Timer();
     }
 
     public void start() {
-        this.timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                scoreManager.ClickPassive();
-            }
-        }, 0, 1000);
+        if (!isRunning) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    scoreManager.ClickPassive();
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
+            isRunning = true;
+        }
+    }
+
+    public void stop() {
+        if (isRunning) {
+            timer.cancel();
+            timer.purge();
+            timerTask.cancel();
+            isRunning = false;
+        }
     }
 }
