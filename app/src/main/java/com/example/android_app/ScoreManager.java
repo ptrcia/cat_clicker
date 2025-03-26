@@ -1,8 +1,8 @@
 package com.example.android_app;
 
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class ScoreManager {
@@ -21,6 +21,10 @@ public class ScoreManager {
         return instance;
     }
     //endregion
+
+    public boolean flag(boolean isValue){
+        return isValue;
+    }
 
     public void ClickActive(){
         score = clickValue + score;
@@ -53,18 +57,20 @@ public class ScoreManager {
             checkAudio(context);
     }
     public void applyPassiveUpgrade(Context context , int cost, int effect){
-            score -= cost;
-            passiveValue += effect;
+        score -= cost;
+        passiveValue += effect;
         setPassiveValue(passiveValue);
-            Log.d("Clicker-> ", "Has comprado la mejora");
-            Log.d("Clicker-> ", "Score->" + score);
-            Log.d("Clicker-> ", "PassiveValue->" + passiveValue);
-            Game.getInstance().UpdateScoreText();
-            //Audio
-            checkAudio(context);
+        //savePassiveValue(context);
+        Log.d("Clicker->", "Has comprado la mejora");
+        Log.d("Clicker->", "SM antes Score->" + score);
+        Log.d("Clicker->", "PassiveValue->" + passiveValue);
+        Game.getInstance().UpdateScoreText();
+        //saveScore(context); /////////aqui?
+        //Audio
+        checkAudio(context);
     }
 
-    public void applyTimeBetweenSesions(long time){
+    public void applyTimeBetweenSesions( long time, int scoreLastTime){
 
         long secondsPassed = (time/1000);
         // Aqui hay que hacer una progresión segun el tiempo que haya pasado y los puntos que tenga
@@ -72,24 +78,27 @@ public class ScoreManager {
             return;
         }
 
-        if (getPassiveValue() <= 0) {
-            Log.e("Clicker->", "Passive value is not initialized. Skipping session calculation.");
+        if (passiveValue <= 0) {
+            Log.e("Clicker->", "Pasivo no inicializado");
             return;
         }
-        
-        int pointsGained = (int) secondsPassed * getPassiveValue();
-        score += pointsGained;
-        setScore(score);
+
+        int pointsGained = (int) secondsPassed * passiveValue;
+        Log.d("Clicker-> ", "SM pointsGained->" + pointsGained);
+        Log.d("Clicker-> ", "SM Score antes->" + scoreLastTime);
+        scoreLastTime += pointsGained;
+        setScore( scoreLastTime);
+        Log.d("Clicker-> ", "SM Score después->" + scoreLastTime);
+
 
         if (Game.getInstance() != null) {
             Game.getInstance().showTimeScore(pointsGained);
-
             Game.getInstance().UpdateScoreText();
         }
 
-        Log.d("Clicker-> ", "SM Has ganado: "+ (int) secondsPassed * getPassiveValue() +"puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ getPassiveValue());
-        Log.d("Clicker-> ", "SM Score->" + score);
+        Log.d("Clicker-> ", "SM Has ganado: "+ (int) secondsPassed * passiveValue +" puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ passiveValue);
     }
+
 
     void checkAudio(Context context){
         //Hacer sonar
@@ -104,24 +113,33 @@ public class ScoreManager {
     //region Getter y Setters
 
     public int getPassiveValue(){
+        Log.d("Clicker-> ", " SM getPassiveValue->" + passiveValue);
         return passiveValue;
     }
     public void setScore(int score){
         this.score = score;
+        Log.d("Clicker-> ", " SM setScore->" + score);
+
     }
     public int getScore(){
+        Log.d("Clicker-> ", " SM getScore->" + score);
         return score;
     }
     public int getClickValue() {
+        Log.d("Clicker->", "SM Get ClickValue: " + clickValue);
         return clickValue;
     }
 
     public void setClickValue(int clickValue) {
         this.clickValue = clickValue;
+        Log.d("Clicker->", "SM Set ClickValue: " + clickValue);
+
     }
 
     public void setPassiveValue(int passiveValue) {
         this.passiveValue = passiveValue;
+        Log.d("Clicker->", "SM Set PassiveValue: " + passiveValue);
+
     }
     //endregion
 }

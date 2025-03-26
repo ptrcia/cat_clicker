@@ -447,12 +447,12 @@ public class UpgradeFragment extends Fragment {
         }
     };
 
-    public ImageView getImage(){
+    /*public ImageView getImage(){
     return image;
     }
     public void setImage(ImageView img){
         image = img;
-    }
+    }*/
 
     void shakeAnimation(View button){
         Animation shake = new TranslateAnimation(0, 10, 0, 0);

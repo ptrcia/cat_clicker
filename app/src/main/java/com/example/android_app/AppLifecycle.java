@@ -63,7 +63,15 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         openedTime = System.currentTimeMillis();
         elapsedTime = openedTime - closedTime;
         Log.d("Clicker->", "Tiempo transcurrido: " + elapsedTime + " ms");
-        scoreManager.applyTimeBetweenSesions(elapsedTime);
+        if(elapsedTime<=0){
+            Log.d("Clicker->", "Tiempo transcurrido negativo, no se calcula");
+            return;
+        }
+       /* if(elapsedTime>1000*60*60*24){
+            Log.d("Clicker->", "Tiempo transcurrido mayor a 24 horas, no se calcula");
+            return;
+        }*/
+        scoreManager.applyTimeBetweenSesions(elapsedTime, scoreManager.getScore());
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("wasDestroyed", false);
@@ -174,7 +182,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         editor.apply();
     }
 
-    private void checkMutedMusic(){
+    /*private void checkMutedMusic(){
         Intent playIntent = new Intent(this, AudioManager.class);
         if(!AudioManager.isMutedMusic()){
             playIntent.setAction("playMusic");
@@ -182,5 +190,5 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             playIntent.setAction("pauseMusic");
         }
         startService(playIntent);
-    }
+    }*/
 }
