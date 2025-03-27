@@ -58,7 +58,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             return;
         }
 
-
+        //calcular tiempo
         closedTime = preferences.getLong("closedTime", 0);
         openedTime = System.currentTimeMillis();
         elapsedTime = openedTime - closedTime;
@@ -71,12 +71,14 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             Log.d("Clicker->", "Tiempo transcurrido mayor a 24 horas, no se calcula");
             return;
         }*/
-        scoreManager.applyTimeBetweenSesions(elapsedTime, scoreManager.getScore());
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("wasDestroyed", false);
         editor.apply();
 
+    }
+    public long getElapsedTime(){
+        return elapsedTime;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
         if (activity instanceof Game) {
             timer.stop();
-            Log.d("Clicker->", "APPCYCLE -> Timer stopped resumedfor Game");
+            //Log.d("Clicker->", "APPCYCLE -> Timer stopped resumedfor Game");
         }
 
         if (gyroscopeManager != null) {
@@ -118,9 +120,8 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
         if (activity instanceof Game) {
             timer.stop();
-            Log.d("Clicker->", "APPCYCLE -> Timer stopped stopppedfor Game");
+            //Log.d("Clicker->", "APPCYCLE -> Timer stopped stopppedfor Game");
         }
-
 
         int pcu = scoreManager.getPassiveValue();
         int acu = scoreManager.getClickValue();
@@ -181,14 +182,4 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         editor.putLong("closedTime", closedTime);
         editor.apply();
     }
-
-    /*private void checkMutedMusic(){
-        Intent playIntent = new Intent(this, AudioManager.class);
-        if(!AudioManager.isMutedMusic()){
-            playIntent.setAction("playMusic");
-        }else {
-            playIntent.setAction("pauseMusic");
-        }
-        startService(playIntent);
-    }*/
 }

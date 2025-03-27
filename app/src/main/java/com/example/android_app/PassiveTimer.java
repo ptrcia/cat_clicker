@@ -21,14 +21,14 @@ public class PassiveTimer {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    scoreManager.ClickPassive();
+                    scoreManager.ClickPassive(null);
                 }
             };
             timer.schedule(timerTask, 0, 1000);
             isRunning = true;
         }
     }
-
+//Stop ara tener control
     public void stop() {
         if (isRunning) {
             timer.cancel();

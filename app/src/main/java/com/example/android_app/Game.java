@@ -54,9 +54,6 @@ public class Game extends AppCompatActivity {
     FrameLayout mainLayout;
     String user = "User1";
 
-    boolean isActive = false;
-
-
     public static Game getInstance() {
         return instance;
     }
@@ -103,7 +100,6 @@ public class Game extends AppCompatActivity {
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
 
-
         //Coger los datos de la base de datos
         gameViewModel.userStatsLiveData.observe(this, userStats -> {
             if (userStats != null) {
@@ -117,12 +113,13 @@ public class Game extends AppCompatActivity {
 
 
                 UpdateScoreText();
-                //scoreManager.flag(isActive = true);
+                scoreManager.applyTimeBetweenSesions( ((AppLifecycle) getApplication()).getElapsedTime(), scoreManager.getScore());
+
             } else {
-                //Log.e("Clicker->", "UserStats is null");
+                Log.e("Clicker->", "UserStats es null. No se pueden cargar los datos.");
             }
         });
-        //Log.d("Clicker->" ,"Calling getUserStats for userId: " + user);
+        Log.d("Clicker->" ," GAME -> elapsedTime: " + ((AppLifecycle) getApplication()).getElapsedTime() + " Score: " + scoreManager.getScore() + " PassiveValue: " + scoreManager.getPassiveValue());
 
         gameViewModel.getUserStats(user);
         Log.d("Clicker->", " NO OBSERVEUserStats: Passive" +scoreManager.getPassiveValue() +" Active "+ scoreManager.getClickValue() + " Score " + scoreManager.getScore());
@@ -352,9 +349,9 @@ public class Game extends AppCompatActivity {
         }, 100);*/
     }
 
-    public void showTimeScore(long timeScore){
+    public void showTimeScore(long pointsGained){
         //Animator animator
-        timeScoreText.setText("+ "+timeScore);
+        timeScoreText.setText("+ "+pointsGained);
         timeScoreText.animate()
                 .alpha(0f)
                 .setDuration(1000)
@@ -369,7 +366,7 @@ public class Game extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Game.this);
         alertDialogBuilder.setTitle("¡Hola de nuevo!");
         alertDialogBuilder
-                .setMessage("¡En tu ausencia se han acumulado  "+timeScore+" puntos! (PCU: " + scoreManager.getPassiveValue()+")")
+                .setMessage("¡En tu ausencia se han acumulado  "+pointsGained+" puntos! (PCU: " + scoreManager.getPassiveValue()+")")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

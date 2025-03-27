@@ -68,7 +68,6 @@ public class UpgradeFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_UPGRADE_TYPE, upgradeTypeInput);
         fragment.setArguments(args);
-        //upgradeType = upgradeTypeInput;
         return fragment;
     }
 
@@ -100,9 +99,9 @@ public class UpgradeFragment extends Fragment {
             public void handleOnBackPressed() {
 
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    requireActivity().getSupportFragmentManager().popBackStack(); // Quita el fragmento de la pila
+                    requireActivity().getSupportFragmentManager().popBackStack();
                 } else {
-                    requireActivity().finish(); // Si no hay fragmentos en la pila, cierra la actividad
+                    requireActivity().finish();
                 }
             }
         });
@@ -378,13 +377,11 @@ public class UpgradeFragment extends Fragment {
 
         verticalLayoutImg.addView(newImg);
 
-        //horizontalLayoutText.addView(space);
         horizontalLayoutText.addView(newTitle);
         horizontalLayoutText.addView(newCost);
         horizontalLayoutText.addView(newEffect);
         horizontalLayoutText.addView(newLevel);
 
-        //horizontalLayoutButton.addView(spaceButton);
         horizontalLayoutButton.addView(newButton);
 
         verticalLayoutTextButton.addView(horizontalLayoutText);
@@ -413,7 +410,6 @@ public class UpgradeFragment extends Fragment {
             int effect = (int) view.getTag(R.id.effect_tag);
             String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
             String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
-            //ImageView img = (ImageView) view.getTag(R.id.img_tag);
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
@@ -446,13 +442,6 @@ public class UpgradeFragment extends Fragment {
             }*/
         }
     };
-
-    /*public ImageView getImage(){
-    return image;
-    }
-    public void setImage(ImageView img){
-        image = img;
-    }*/
 
     void shakeAnimation(View button){
         Animation shake = new TranslateAnimation(0, 10, 0, 0);
