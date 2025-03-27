@@ -27,13 +27,11 @@ public class ScoreManager {
         setScore(score);
         Game.getInstance().UpdateScoreText();
     }
-    public void ClickPassive(Integer  timePassed){
-        if (timePassed == null) {
-            timePassed = 0;
-            score = passiveValue + score;
-        }else{
-            score = passiveValue + score + timePassed;
-        }
+    public void ClickPassive(Integer  timePassed, Integer bonusCat){
+        timePassed = (timePassed == null) ? 0 : timePassed;
+        bonusCat = (bonusCat == null) ? 0 : bonusCat;
+
+        score += passiveValue + timePassed + bonusCat;
 
         setScore(score);
         if (Game.getInstance() != null) {
@@ -90,11 +88,10 @@ public class ScoreManager {
 
         if (Game.getInstance() != null) {
             Game.getInstance().showTimeScore(pointsGained);
-            ClickPassive(pointsGained);
+            ClickPassive(pointsGained, null);
         }
         Log.d("Clicker-> ", "SM Has ganado: "+ (int) secondsPassed * passiveValue +" puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ passiveValue);
     }
-
 
     void checkAudio(Context context){
         //Hacer sonar

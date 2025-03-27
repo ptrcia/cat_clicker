@@ -21,7 +21,7 @@ public class PassiveTimer {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    scoreManager.ClickPassive(null);
+                    scoreManager.ClickPassive(null, Game.getInstance().applyCatBonus());
                 }
             };
             timer.schedule(timerTask, 0, 1000);

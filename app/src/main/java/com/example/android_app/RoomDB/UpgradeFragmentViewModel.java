@@ -47,7 +47,7 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                                 //hay un errror en el parse int porque currentlevel es null
                                 String currentLevelOfUpgrade = currentLevel; //es redundante
                                 int nextLevel = Integer.parseInt(currentLevelOfUpgrade) + 1; //obtenermos el siguiente nivel
-                                Log.d("Clicker->", "Siguiente nivel de la mejora " + idUpgrades + ": " + nextLevel);
+                                //Log.d("Clicker->", "Siguiente nivel de la mejora " + idUpgrades + ": " + nextLevel);
 
                                 upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel), new BaseCallback<Level>() {
                                     @Override

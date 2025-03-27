@@ -1,5 +1,8 @@
 package com.example.android_app;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -15,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -39,6 +43,8 @@ import com.example.android_app.RoomDB.BaseCallback;
 import com.example.android_app.RoomDB.GameViewModel;
 import com.example.android_app.RoomDB.UserStats;
 
+import java.util.Random;
+
 public class Game extends AppCompatActivity {
 
     private static Game instance;
@@ -50,9 +56,12 @@ public class Game extends AppCompatActivity {
     TextView clickValueText;
     TextView passiveValueText;
     TextView timeScoreText;
+    TextView catBonusText;
+    TextView catBonusNumber;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
     String user = "User1";
+    int catCount;
 
     public static Game getInstance() {
         return instance;
@@ -78,6 +87,8 @@ public class Game extends AppCompatActivity {
         clickValueText = findViewById(R.id.clickValueText);
         passiveValueText = findViewById(R.id.passiveValueText);
         timeScoreText = findViewById(R.id.timeScoreText);
+        catBonusText = findViewById(R.id.catBonusText);
+        catBonusNumber = findViewById(R.id.catBonusNumber);
         scoreManager = ScoreManager.getInstance();
 
         //region Audio
@@ -93,6 +104,9 @@ public class Game extends AppCompatActivity {
             startService(playIntent);
         }
         //endregion
+
+        //reseteo gatitos
+        catCount = 0;
 
         //Giroscopio
         gyroscopeManager = new GyroscopeManager(this);
@@ -200,6 +214,18 @@ public class Game extends AppCompatActivity {
 
     //imgLayout
     public void addImage(Context context, String id){
+
+        //contar gatitos
+        catCount ++;
+        if(catCount > 0){
+            catBonusText.setText("¡Gatitos activos!");
+            String formatedBonus = NumberFormatter.formatNumber(applyCatBonus());
+            catBonusNumber.setText("+"+formatedBonus);
+        }else{
+            catBonusNumber.setText("");
+        }
+
+        //Imagen
         ImageView newImage = new ImageView(context);
         newImage.setLayoutParams(new FrameLayout.LayoutParams(
                 100, // Ancho
@@ -210,95 +236,43 @@ public class Game extends AppCompatActivity {
         newImage.setImageResource(resourceId); // Imagen del gatito (reemplaza con tu recurso)
         newImage.setX((float) (Math.random() * (mainLayout.getWidth() - 100))); // Posición aleatoria en eje X
         newImage.setY(-100);
-
-
+        //añadirslo
         mainLayout.addView(newImage);
-
         StartFallAnimation(newImage, mainLayout);
         //Log.d("addImage", "Imagen añadida al contenedor. Coordenadas iniciales - X: " + img.getX() + ", Y: " + img.getY());
         //SphereImages(img);
+    }
+    public int applyCatBonus(){
+        if(catCount > 0) {
+            int bonus = catCount * scoreManager.getPassiveValue();
+            //Log.d("Clicker-> ", "applyCatBonus: " + bonus + " =  catCount: " + catCount + "  * passiveValue: " + scoreManager.getPassiveValue());
+            return bonus;
+        }
+        return 0;
     }
 
     private void StartFallAnimation(ImageView img, ViewGroup container){
         float targetY = container.getHeight() - img.getHeight()-86;
         ObjectAnimator fall = ObjectAnimator.ofFloat(img, "translationY", targetY);
-        fall.setDuration(3000); // Duración de la caída en milisegundos
+        fall.setDuration(new Random().nextInt(1000) + 200); // Duración de la caída en milisegundos
         fall.setInterpolator(new AccelerateInterpolator());
 
         fall.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                Log.d("FallAnimation", "Imagen llegó al fondo. Coordenadas - X: " + img.getX() + ", Y: " + img.getY());
+                //Log.d("FallAnimation", "ICoordenadas - X: " + img.getX() + ", Y: " + img.getY());
+                // rebotar
+                ObjectAnimator bounce = ObjectAnimator.ofFloat(img, "translationY", targetY - 30, targetY); // Rebote hacia arriba y abajo
+                bounce.setDuration(new Random().nextInt(500) + 500);
+                bounce.setInterpolator(new BounceInterpolator());
+                bounce.start();
             }
         });
         fall.start();
-        gyroscopeManager.startListening();
-    }
-    /*
-    public void GyroPosition( float x, float y){
-
-        if (currentImage == null) {return;  }
-        for (int i = 0; i < mainLayout.getChildCount(); i++) {
-            View child = mainLayout.getChildAt(i);
-            if (child instanceof ImageView) {
-                float currentX = child.getX();
-                float currentY = child.getY();
-                Log.d("GyroPosition", "Posición anterior - X: " + currentX + ", Y: " + currentY);
-
-                // Ajustar las posiciones según el giro
-                float newX = currentX + (x * 5); // Escala de movimiento horizontal
-                float newY = currentY - (y * 5); // Escala de movimiento vertical
-
-                // Evitar que las imágenes salgan fuera del contenedor
-                newX = Math.max(0, Math.min(newX, mainLayout.getWidth() - child.getWidth()));
-                newY = Math.max(0, Math.min(newY, mainLayout.getHeight() - child.getHeight()));
-
-                child.setX(newX);
-                child.setY(newY);
-                Log.d("GyroPosition", "Nueva posición establecida - X: " + newX + ", Y: " + newY);
-
-            }
-        }
-        updatePhysics();
+        gyroscopeManager.startListening(); //?????
     }
 
-    private void updatePhysics() {
-        for (int i = 0; i < mainLayout.getChildCount(); i++) {
-            ImageView img1 = (ImageView) mainLayout.getChildAt(i);
-
-            // Verificar colisiones
-            for (int j = i + 1; j < mainLayout.getChildCount(); j++) {
-                ImageView img2 = (ImageView) mainLayout.getChildAt(j);
-                if (checkCollision(img1, img2)) {
-                    Log.d("Collision", "Colisión detectada entre imágenes.");
-                    // Ajustar posiciones o simular rebotes aquí
-                    simulateBounce(img1, img2);
-                }
-            }
-        }
-    }
-    private boolean checkCollision(ImageView img1, ImageView img2){
-        float x1 = img1.getX();
-        float y1 = img1.getY();
-        float x2 = img2.getX();
-        float y2 = img2.getY();
-        return (x1 < x2 + img2.getWidth() &&
-                x1 + img1.getWidth() > x2 &&
-                y1 < y2 + img2.getHeight() &&
-                y1 + img1.getHeight() > y2);
-    }
-    private void simulateBounce(ImageView img1, ImageView img2) {
-        // Movimiento inverso en el eje X
-        img1.setX(img1.getX() - 10);
-        img2.setX(img2.getX() + 10);
-
-        // Animación sutil para representar el rebote
-        img1.animate().scaleX(1.1f).scaleY(1.1f).setDuration(100).withEndAction(() -> {
-            img1.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100);
-        });
-    }*/
     //endregion
-
     private void checkAudio(ImageButton buttonVolume){
         Intent audioManager = new Intent(Game.this, AudioManager.class);
         isMuted = AudioManager.isMutedMusic();
@@ -333,7 +307,7 @@ public class Game extends AppCompatActivity {
         transaction.addToBackStack(null); // Añadir a la pila de retroceso
         transaction.commit();
 
-        /*container.postDelayed(new Runnable() {
+        container.postDelayed(new Runnable() {
             @Override
             public void run() {
                 container.animate()
@@ -346,7 +320,7 @@ public class Game extends AppCompatActivity {
                         })
                         .start();
             }
-        }, 100);*/
+        }, 100);
     }
 
     public void showTimeScore(long pointsGained){
