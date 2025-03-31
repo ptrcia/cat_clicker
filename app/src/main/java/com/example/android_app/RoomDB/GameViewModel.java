@@ -34,7 +34,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     //guardar los datos
-    public void updateUserStats(int score, int pcu, int acu) {
+    public void updateUserStats(double score, double pcu, double acu) {
         userRepository.updateUserStats(score, pcu, acu);
     }
     public void updateUserLevel(String idUpgrade, String level) {

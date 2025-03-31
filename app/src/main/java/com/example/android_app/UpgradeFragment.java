@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -51,6 +52,7 @@ public class UpgradeFragment extends Fragment {
 
     private static final String ARG_UPGRADE_TYPE = "upgrade_type";
     UpgradeFragmentViewModel viewModel;
+    ProgressBar progressBar;
     Context context;
     LinearLayout container;
     TextView title;
@@ -80,6 +82,8 @@ public class UpgradeFragment extends Fragment {
         this.container = rootView.findViewById(R.id.container);
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
         title = rootView.findViewById(R.id.title);
+        progressBar = rootView.findViewById(R.id.progressBar);
+
 
 
         //Conecta con el viewmodel
@@ -90,7 +94,6 @@ public class UpgradeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 requireActivity().getSupportFragmentManager().popBackStack();
-
             }
         });
         //Boton de atras nativo
@@ -148,9 +151,14 @@ public class UpgradeFragment extends Fragment {
             Log.d("Pollo", "Pollo ha cambiado a :" + pollitos);
                 });
 
+        progressBar.setVisibility(View.VISIBLE);
+
         viewModel.filteredUpgrades.observe(getViewLifecycleOwner(), upgrades -> {
-            // Crear una copa para que no haya ocnfluico
-            Map<ClickUpgrade, Level> upgradesCopy = new HashMap<>(upgrades);
+            // Crear una copia y hacerlo dentro de un syncronized  para que no haya conflicto
+            Map<ClickUpgrade, Level> upgradesCopy;
+            synchronized (upgrades) {
+                upgradesCopy = new HashMap<>(upgrades);
+            }
 
             // Convertir el mapa a una lista de entradas
             List<Map.Entry<ClickUpgrade, Level>> sortedUpgrades = new ArrayList<>(upgradesCopy.entrySet());
@@ -165,23 +173,18 @@ public class UpgradeFragment extends Fragment {
                 }
             });
 
-            //container.removeAllViews();//limpiar la vista
             //para la UI
             for (Map.Entry<ClickUpgrade, Level> e : sortedUpgrades) {
                 Log.d("Fragment-> ", "Upgrade: " + e.getKey().getName() + ", ID: " +  e.getValue().getIdLevel() + ", Description: " + e.getKey().getDescription() + ", Level: " + e.getValue().getIdLevel() + ", Cost: " + e.getValue().getCost() + ", Effect: " + e.getValue().getEffect());
                 FormatUI(e.getKey().getName(), e.getKey().getDescription(),e.getKey().getId(),  e.getValue().getIdLevel(), e.getValue().getCost(), e.getValue().getEffect());
             }
+            //upgradesCopy.clear(); //??
+            progressBar.setVisibility(View.GONE);
+            container.setVisibility(View.VISIBLE);
         });
-
        return rootView;
     }
     //region Getter y Setters
-    public String getUserLevel(){
-        return userLevel;
-    }
-    public void setUserLevel(String level){
-        userLevel = level;
-    }
     public String getIdUpgrade(){
         return idUpgrade;
     }
@@ -198,7 +201,7 @@ public class UpgradeFragment extends Fragment {
 
     //Volcado UI
     int textSize=17;
-    private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, int cost, int effect) {
+    private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, double cost, double effect) {
 
 
 
@@ -271,6 +274,8 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         newImg.setLayoutParams(imgParams);
+        newImg.setScaleX(0.7f);
+        newImg.setScaleY(0.7f);
 
         //Sacamos el valor numérico del id
         String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
@@ -392,9 +397,8 @@ public class UpgradeFragment extends Fragment {
 
         // Añadir el nuevo LinearLayout al contenedor
         container.addView(mainLayout, 0);
-        Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + idUserLevel + ", Description: " + description + ", Cost: " + cost + ", Effect: " + effect);
+        Log.d("Clicker -> ", "FormatUI: " + name + ", Id: " + idUserLevel + ", Description: " + description + ", Cost: " + newCost.getText() + ", Effect: " + newEffect.getText());
     }
-
 
 
     private int dpToPx(int dp) {
@@ -406,18 +410,19 @@ public class UpgradeFragment extends Fragment {
         public void onClick(View view) {
             // Obtener la mejora a partir del tag del botón
 
-            int cost = (int) view.getTag(R.id.cost_tag);
-            int effect = (int) view.getTag(R.id.effect_tag);
+            double cost = (double) view.getTag(R.id.cost_tag);
+            double effect =  (double)view.getTag(R.id.effect_tag);
             String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
             String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
 
             Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-           /* Toast.makeText(
+            //toast
+            Toast.makeText(
                     context,
                     userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
                     Toast.LENGTH_SHORT
-            ).show();*/
+            ).show();
 
             if(userHasEnoughScore(cost)){
                 if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(),  cost, effect);
@@ -451,8 +456,8 @@ public class UpgradeFragment extends Fragment {
         button.startAnimation(shake);
     }
 
-    private boolean userHasEnoughScore(int cost){
-        int score = ScoreManager.getInstance().getScore();
+    private boolean userHasEnoughScore(double cost){
+        double score = ScoreManager.getInstance().getScore();
         return score >= cost;
     }
 

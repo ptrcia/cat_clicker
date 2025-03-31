@@ -25,10 +25,10 @@ public class Level {
     @ColumnInfo(name = "idUpgrade")
     public  String idUpgrade; //foránea
     public String idLevel;
-    private int cost;
-    private int effect;
+    private double cost;
+    private double effect;
 
-    public Level(@NotNull String id, String idUpgrade, String idLevel, int cost, int effect){
+    public Level(@NotNull String id, String idUpgrade, String idLevel, double cost, double effect){
         this.id = id;
         this.idUpgrade = idUpgrade;
         this.idLevel = idLevel;
@@ -51,9 +51,9 @@ public class Level {
     public String getIdLevel() {return idLevel;}
 
 
-    public int getCost() {return cost;}
-    public void setCost(int cost) {this.cost = cost;}
+    public double getCost() {return cost;}
+    public void setCost(double cost) {this.cost = cost;}
 
-    public int getEffect() {return effect;}
-    public void setEffect(int effect) {this.effect = effect;}
+    public double getEffect() {return effect;}
+    public void setEffect(double effect) {this.effect = effect;}
 }

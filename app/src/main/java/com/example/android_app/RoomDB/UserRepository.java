@@ -56,6 +56,7 @@ public class UserRepository{
     public void getUserLevel(String idUpgrades, BaseCallback<String> callback) {
         executorService.execute(()-> {
             callback.onSuccess(upgradesUserDAO.getUserLevel(idUpgrades));
+
         });
     }
 
@@ -72,7 +73,7 @@ public class UserRepository{
     }
 
     //Guardar info de la partida
-    public void updateUserStats(int score, int pcu, int acu) {
+    public void updateUserStats(double score, double pcu, double acu) {
         executorService.execute(() -> {
             userStatsDAO.updateUserStats(score, pcu, acu, "User1");
         });

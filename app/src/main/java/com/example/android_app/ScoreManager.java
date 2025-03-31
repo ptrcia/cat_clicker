@@ -7,9 +7,9 @@ import android.util.Log;
 
 public class ScoreManager {
 
-    private int clickValue=1;
-    private int passiveValue=0;
-    private int score=0;
+    private double clickValue=1;
+    private double passiveValue=0;
+    private double score=0;
 
     //region Instance
     private static ScoreManager instance;
@@ -27,7 +27,7 @@ public class ScoreManager {
         setScore(score);
         Game.getInstance().UpdateScoreText();
     }
-    public void ClickPassive(Integer  timePassed, Integer bonusCat){
+    public void ClickPassive(Double  timePassed, Double bonusCat){
         timePassed = (timePassed == null) ? 0 : timePassed;
         bonusCat = (bonusCat == null) ? 0 : bonusCat;
 
@@ -39,7 +39,7 @@ public class ScoreManager {
         }
     }
 
-    public void applyActiveUpgrade(Context context , int cost, int effect){
+    public void applyActiveUpgrade(Context context , double cost, double effect){
             score -= cost;
             clickValue += effect;
             setClickValue(clickValue);
@@ -56,7 +56,7 @@ public class ScoreManager {
          //Audio
             checkAudio(context);
     }
-    public void applyPassiveUpgrade(Context context , int cost, int effect){
+    public void applyPassiveUpgrade(Context context , double cost, double effect){
         score -= cost;
         passiveValue += effect;
         setPassiveValue(passiveValue);
@@ -69,7 +69,7 @@ public class ScoreManager {
     }
 
     // Aplicar puntos ganados por estar fuera de la aplicación
-    public void applyTimeBetweenSesions( long time, int scoreLastTime){
+    public void applyTimeBetweenSesions( long time, double scoreLastTime){
         long secondsPassed = (time/1000);
         // Aqui hay que hacer una progresión segun el tiempo que haya pasado y los puntos que tenga
         if(secondsPassed<=0){
@@ -80,17 +80,17 @@ public class ScoreManager {
             Log.e("Clicker->", "SM Pasivo no inicializado");
             return;
         }
-        int pointsGained = (int) secondsPassed * passiveValue;
+        double pointsGained = secondsPassed * passiveValue;
         Log.d("Clicker-> ", "SM pointsGained->" + pointsGained);
         Log.d("Clicker-> ", "SM Score antes->" + scoreLastTime);
         scoreLastTime += pointsGained;
         Log.d("Clicker-> ", "SM Score después->" + scoreLastTime);
 
         if (Game.getInstance() != null) {
-            Game.getInstance().showTimeScore(pointsGained);
+            Game.getInstance().showTimeScore((long) pointsGained);
             ClickPassive(pointsGained, null);
         }
-        Log.d("Clicker-> ", "SM Has ganado: "+ (int) secondsPassed * passiveValue +" puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ passiveValue);
+        Log.d("Clicker-> ", "SM Has ganado: "+ secondsPassed * passiveValue +" puntos por estar volver a la aplicación: Han pasado "+ secondsPassed +" segundos, y tu passiveValue es: "+ passiveValue);
     }
 
     void checkAudio(Context context){
@@ -105,24 +105,24 @@ public class ScoreManager {
 
     //region Getter y Setters
 
-    public int getPassiveValue(){
+    public double getPassiveValue(){
         return passiveValue;
     }
-    public void setScore(int score){
+    public void setScore(double score){
         this.score = score;
     }
-    public int getScore(){
+    public double getScore(){
         return score;
     }
-    public int getClickValue() {
+    public double getClickValue() {
         return clickValue;
     }
 
-    public void setClickValue(int clickValue) {
+    public void setClickValue(double clickValue) {
         this.clickValue = clickValue;
     }
 
-    public void setPassiveValue(int passiveValue) {
+    public void setPassiveValue(double passiveValue) {
         this.passiveValue = passiveValue;
     }
     //endregion

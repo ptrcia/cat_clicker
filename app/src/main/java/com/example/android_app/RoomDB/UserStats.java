@@ -12,11 +12,11 @@ public class UserStats {
             @NotNull
     String id; //id para relacionarlo con upgradesuser
     String name;
-    int totalScore;  //Total score
-    int pcuTotal;   // suma total de todos los upgrades pasivos
-    int acuTotal;  // suma total de todos los upgrades activos
+    double totalScore;  //Total score
+    double pcuTotal;   // suma total de todos los upgrades pasivos
+    double acuTotal;  // suma total de todos los upgrades activos
 
-    public UserStats( @NotNull String id, String name ,int totalScore, int pcuTotal, int acuTotal ) {
+    public UserStats( @NotNull String id, String name ,double totalScore, double pcuTotal, double acuTotal ) {
         this.name = name;
         this.totalScore = totalScore;
         this.pcuTotal = pcuTotal;
@@ -30,24 +30,24 @@ public class UserStats {
         this.name = name;
     }
 
-    public int getTotalScore() {
+    public double getTotalScore() {
         return totalScore;
     }
-    public void setTotalScore(int totalScore) {
+    public void setTotalScore(double totalScore) {
         this.totalScore = totalScore;
     }
 
-    public int getPcuTotal() {
+    public double getPcuTotal() {
         return pcuTotal;
     }
-    public void setPcuTotal(int pcuTotal) {
+    public void setPcuTotal(double pcuTotal) {
         this.pcuTotal = pcuTotal;
     }
 
-    public int getAcuTotal() {
+    public double getAcuTotal() {
         return acuTotal;
     }
-    public void setAcuTotal(int acuTotal) {
+    public void setAcuTotal(double acuTotal) {
         this.acuTotal = acuTotal;
     }
 

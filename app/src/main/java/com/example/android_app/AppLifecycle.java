@@ -123,9 +123,9 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             //Log.d("Clicker->", "APPCYCLE -> Timer stopped stopppedfor Game");
         }
 
-        int pcu = scoreManager.getPassiveValue();
-        int acu = scoreManager.getClickValue();
-        int score = scoreManager.getScore();
+        double pcu = scoreManager.getPassiveValue();
+        double acu = scoreManager.getClickValue();
+        double score = scoreManager.getScore();
 
         gameViewModel.updateUserStats(score, pcu, acu);
 
@@ -151,9 +151,9 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         //los datos de llos niveles a los que tiene cada mejora el ussuario se guardan cada vez que compro una mejora
         //control null
         if(activity instanceof Game){
-            int pcu = scoreManager.getPassiveValue();
-            int acu = scoreManager.getClickValue();
-            int score = scoreManager.getScore();
+            double pcu = scoreManager.getPassiveValue();
+            double acu = scoreManager.getClickValue();
+            double score = scoreManager.getScore();
 
             gameViewModel.updateUserStats(score, pcu, acu);
 
@@ -167,9 +167,9 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             editor.apply();
         }
 
-        int pcu = scoreManager.getPassiveValue();
-        int acu = scoreManager.getClickValue();
-        int score = scoreManager.getScore();
+        double pcu = scoreManager.getPassiveValue();
+        double acu = scoreManager.getClickValue();
+        double score = scoreManager.getScore();
 
         gameViewModel.updateUserStats(score, pcu, acu);
 

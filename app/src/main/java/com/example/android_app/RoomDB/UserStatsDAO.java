@@ -23,7 +23,7 @@ public interface UserStatsDAO {
     void resetUserStats( String id);
 
     @Query("UPDATE user_stats SET totalScore  = :score, pcuTotal = :pcu, acuTotal = :acu WHERE id = :id")
-    void updateUserStats(int score, int pcu, int acu, String id);
+    void updateUserStats(double score, double pcu, double acu, String id);
 
 
 

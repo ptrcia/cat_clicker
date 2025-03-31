@@ -188,7 +188,7 @@ public class Game extends AppCompatActivity {
                 }
 
                 //Animación
-                buttonClickScore.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).withEndAction(new Runnable() {
+                buttonClickScore.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(new Runnable() {
                     @Override
                     public void run() {
                         buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
@@ -242,9 +242,9 @@ public class Game extends AppCompatActivity {
         //Log.d("addImage", "Imagen añadida al contenedor. Coordenadas iniciales - X: " + img.getX() + ", Y: " + img.getY());
         //SphereImages(img);
     }
-    public int applyCatBonus(){
+    public double applyCatBonus(){
         if(catCount > 0) {
-            int bonus = catCount * scoreManager.getPassiveValue();
+            double bonus = catCount * scoreManager.getPassiveValue();
             //Log.d("Clicker-> ", "applyCatBonus: " + bonus + " =  catCount: " + catCount + "  * passiveValue: " + scoreManager.getPassiveValue());
             return bonus;
         }
