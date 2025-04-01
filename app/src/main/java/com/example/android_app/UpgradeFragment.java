@@ -360,7 +360,18 @@ public class UpgradeFragment extends Fragment {
         newButton.setLayoutParams(buttonParams);
         newButton.setText("mejorar");
         newButton.setAllCaps(false);
-        newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
+
+        if(userHasEnoughScore(cost)) {
+            //newButton.setEnabled(true);
+            newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
+
+        }else{
+            //newButton.setEnabled(false);
+            newButton.setBackgroundColor(Color.parseColor("#9b9b9b"));
+            //shakeAnimation(newButton);
+        }
+
+        //newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
         Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
@@ -376,7 +387,6 @@ public class UpgradeFragment extends Fragment {
 
         //EL PULSAR
         newButton.setOnClickListener(ButtonUpgrade);
-
 
         //añadir
 
@@ -408,6 +418,8 @@ public class UpgradeFragment extends Fragment {
     private final View.OnClickListener ButtonUpgrade = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
+
             // Obtener la mejora a partir del tag del botón
 
             double cost = (double) view.getTag(R.id.cost_tag);
@@ -415,18 +427,24 @@ public class UpgradeFragment extends Fragment {
             String idUpgrade = (String) view.getTag(R.id.idUpgrade_tag);
             String idUserLevel = (String) view.getTag(R.id.idUserLevel_tag);
 
-            Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
-            //toast
-            Toast.makeText(
-                    context,
-                    userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
-                    Toast.LENGTH_SHORT
-            ).show();
+            if(!userHasEnoughScore(cost)){
+                shakeAnimation(view);
+            }else {
 
-            if(userHasEnoughScore(cost)){
-                if(upgradeType.equals("Active"))ScoreManager.getInstance().applyActiveUpgrade(requireContext(),  cost, effect);
-                else if(upgradeType.equals("Passive"))ScoreManager.getInstance().applyPassiveUpgrade(requireContext(), cost, effect);
+                Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
+
+                //toast
+                Toast.makeText(
+                        context,
+                        userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                if (upgradeType.equals("Active"))
+                    ScoreManager.getInstance().applyActiveUpgrade(requireContext(), cost, effect);
+                else if (upgradeType.equals("Passive"))
+                    ScoreManager.getInstance().applyPassiveUpgrade(requireContext(), cost, effect);
 
                 //Poner esa mejora al nivel siguiente
                 viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
@@ -438,17 +456,16 @@ public class UpgradeFragment extends Fragment {
 
                 //Animación de caer gatitos
                 Game.getInstance().addImage(context, idUserLevel);
-            }else{
-                shakeAnimation(view);
-            }
+
             /*if (img == null) {
                 Log.e("ButtonUpgrade", "La ImageView asociada al botón es null. Revisa el ID o la asociación.");
                 return; // Detener si no hay imagen asociada
             }*/
+            }
         }
     };
 
-    void shakeAnimation(View button){
+    public void shakeAnimation(View button){
         Animation shake = new TranslateAnimation(0, 10, 0, 0);
         shake.setDuration(70);
         shake.setRepeatCount(7);

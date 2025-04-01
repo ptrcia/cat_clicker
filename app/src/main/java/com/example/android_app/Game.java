@@ -244,7 +244,7 @@ public class Game extends AppCompatActivity {
     }
     public double applyCatBonus(){
         if(catCount > 0) {
-            double bonus = catCount * scoreManager.getPassiveValue();
+            double bonus = catCount + scoreManager.getPassiveValue();
             //Log.d("Clicker-> ", "applyCatBonus: " + bonus + " =  catCount: " + catCount + "  * passiveValue: " + scoreManager.getPassiveValue());
             return bonus;
         }
@@ -269,7 +269,7 @@ public class Game extends AppCompatActivity {
             }
         });
         fall.start();
-        gyroscopeManager.startListening(); //?????
+        //gyroscopeManager.startListening(); //?????
     }
 
     //endregion

@@ -92,17 +92,17 @@ public abstract class AppDataBase extends RoomDatabase {
 
         //Cálculo de coste y efecto exponencial
 
-        double baseCost = 50; //coste de base
-        double growthRate = 2.5; //crecimiento exponencial
-        double upgradeMultiplier = 100; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
-        double effectMultiplier = 0.05; //el efecto asociado al coste, 0.4 es un 40%
+        double baseCost = 150; //coste de base
+        double growthRate = 5; //crecimiento exponencial
+        double upgradeMultiplier = 1000; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double effectMultiplier = 0.005; //el efecto asociado al coste, 0.4 es un 40%
 
-        double baseCostP = 5;//1500; //coste de base
-        double growthRateP = 2.3; //crecimiento exponencial
-        double upgradeMultiplierP = 75; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
-        double effectMultiplierP = 0.03; //el efecto asociado al coste, 0.4 es un 40%
+        double baseCostP = 1500;//1500; //coste de base
+        double growthRateP = 8; //crecimiento exponencial
+        double upgradeMultiplierP = 750; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double effectMultiplierP = 0.003; //el efecto asociado al coste, 0.4 es un 40%
 
-        double minEffect = 0.2;
+        double minEffect = 0.05;
 
 //Niveles de las mejoras
         List<Level> levels = new ArrayList<>();

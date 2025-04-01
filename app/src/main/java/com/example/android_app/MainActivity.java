@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     static boolean isMuted = false;
     GameViewModel gameViewModel;
     MainActivityViewModel mainActivityViewModel;
+    boolean runStarted = false;
+    Button butttonContinue;
 
 
     @Override
@@ -39,13 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonStart = findViewById(R.id.buttonStart);
         Button buttonExit = findViewById(R.id.buttonExit);
-        Button butttonContinue = findViewById(R.id.buttonContinue);
-        ImageButton buttonConfig = findViewById(R.id.buttonConfig);
+        butttonContinue = findViewById(R.id.buttonContinue);
+        ImageButton buttonInfo = findViewById(R.id.info);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
 
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+
 
 
 
@@ -66,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("Clicker->", "Reseteando UserUpgrades...");
                                 resetGame();
                                 startActivity(new Intent(MainActivity.this, Game.class));
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("GameData", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean("runStarted", true); // Cambia 'true' según tu necesidad
+                                editor.apply(); // Guarda los cambios de manera asíncrona
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -94,12 +103,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Config
-        buttonConfig.setOnClickListener(new OnClickListener() {
+        //Info
+        buttonInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Abrir popup
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder.setTitle("Realizado por: Patricia S. Gracia Artero");
+                alertDialogBuilder
+                        .setMessage("Puedes consultar mi porfolio para más proyectos. Gracias por jugar.")
+                        .setCancelable(false)
+                        .setPositiveButton("Abrir porfolio en el navegador", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //EMPEZAR
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://ptrcia.github.io/porfolio/"));
+                                startActivity(browserIntent);
+                            }
+                        })
+                        .setNegativeButton("Atrás", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }).create().show();
             }
+
         });
 
         //Volumen
@@ -137,6 +164,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+        SharedPreferences preferences = getSharedPreferences("GameData", MODE_PRIVATE);
+        runStarted = preferences.getBoolean("runStarted", false);
+        Log.d("Clicker->", "HOLA A VER SI FUNCIONA isFirstRun -> " + runStarted);
+
+        if (!runStarted) {
+            butttonContinue.setEnabled(false);
+        }else{
+            butttonContinue.setEnabled(true);
+        }
 
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
 

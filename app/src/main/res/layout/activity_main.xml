@@ -62,13 +62,13 @@
                 android:gravity="center">
 
                 <ImageButton
-                    android:id="@+id/buttonConfig"
+                    android:id="@+id/info"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     android:background="@android:color/transparent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/settings"
+                    app:srcCompat="@drawable/info"
                     />
                 <Button
                     android:id="@+id/buttonExit"
