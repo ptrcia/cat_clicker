@@ -1,17 +1,16 @@
 package com.example.android_app;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,29 +18,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.android_app.RoomDB.BaseCallback;
 import com.example.android_app.RoomDB.GameViewModel;
-import com.example.android_app.RoomDB.UserStats;
 
 import java.util.Random;
 
@@ -62,11 +56,13 @@ public class Game extends AppCompatActivity {
     FrameLayout mainLayout;
     String user = "User1";
     int catCount;
+    String formattedClickValue;
 
     public static Game getInstance() {
         return instance;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +172,7 @@ public class Game extends AppCompatActivity {
             }
         });*/
 
-        buttonClickScore.setOnClickListener(new View.OnClickListener() {
+        /*buttonClickScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Audio
@@ -187,7 +183,7 @@ public class Game extends AppCompatActivity {
                     startService(playIntent);
                 }
 
-                //Animación
+                //Animación de escalado
                 buttonClickScore.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(new Runnable() {
                     @Override
                     public void run() {
@@ -195,11 +191,70 @@ public class Game extends AppCompatActivity {
                     }
                 }).start();
 
+                //Animacion de puntuación
+                int[] location = new int[2];
+                v.getLocationOnScreen(location);
+                int x = location[0] + v.getWidth() / 2;
+                int y = location[1];
+                Log.d("ButtonPosition", "X: " + x + ", Y: " + y);
+
+                // Crea el efecto animado
+                animateText(formattedClickValue, x, y);
+
                 //Reference Script Score
                 scoreManager.ClickActive();
                 UpdateScoreText();
             }
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    float x = event.getRawX(); // Coordenada X absoluta en la pantalla
+                    float y = event.getRawY(); // Coordenada Y absoluta en la pantalla
+
+                    Log.d("FingerPosition", "X: " + x + ", Y: " + y);
+
+                    animateText(clickValueText.getText().toString(), x, y);
+
+                    return true; // Indica que el evento se ha manejado
+                }
+                return false;
+            }
+        });*/
+
+        buttonClickScore.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // Audio
+                    if (!AudioManager.isMutedMusic()) {
+                        Intent playIntent = new Intent(Game.this, AudioManager.class);
+                        playIntent.setAction("playSFX");
+                        playIntent.putExtra("resourceID", R.raw.tap);
+                        startService(playIntent);
+                    }
+
+                    // Animación de escalado
+                    buttonClickScore.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
+                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
+                    }).start();
+
+                    // Coordenadas del dedo
+                    float x = event.getRawX();
+                    float y = event.getRawY();
+                    Log.d("FingerPosition", "X: " + x + ", Y: " + y);
+
+                    // Efecto animado en esa posición
+                    animateText(formattedClickValue, x, y);
+
+                    // Lógica de puntuación
+                    scoreManager.ClickActive();
+                    UpdateScoreText();
+
+                    return true;
+                }
+                return false;
+            }
         });
+
 
         //Volumen
         buttonVolume.setOnClickListener(new View.OnClickListener() {
@@ -357,7 +412,7 @@ public class Game extends AppCompatActivity {
                 String formattedScore = NumberFormatter.formatNumber(scoreManager.getScore());
                 textScore.setText(formattedScore);
 
-                String formattedClickValue = NumberFormatter.formatNumber(scoreManager.getClickValue());
+                formattedClickValue = NumberFormatter.formatNumber(scoreManager.getClickValue());
                 clickValueText.setText(formattedClickValue + "/click");
 
                 String formattedPassiveValue = NumberFormatter.formatNumber(scoreManager.getPassiveValue());
@@ -365,6 +420,55 @@ public class Game extends AppCompatActivity {
             }
         });
     }
+
+    private void animateText(String text, float startX, float startY) {
+        // Crear un nuevo TextView con el texto proporcionado
+        TextView textView = new TextView(this);
+        textView.setText(text);  // Establecer el texto
+        textView.setTextSize(25);  // Ajusta el tamaño de la fuente
+        textView.setTextColor(Color.parseColor("#8f2d56"));
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.glina_script);
+        textView.setTypeface(typeface);
+
+
+        FrameLayout layout = findViewById(R.id.mainLayout);
+        layout.addView(textView);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        int[] layoutLocation = new int[2];
+        layout.getLocationOnScreen(layoutLocation);
+        params.leftMargin = (int) startX - layoutLocation[0];
+        params.topMargin = (int) startY - layoutLocation[1];
+
+        textView.setLayoutParams(params);
+
+        // Animación de movimiento hacia arriba
+        ObjectAnimator moveUp = ObjectAnimator.ofFloat(textView, "translationY", 0, -500);
+        moveUp.setDuration(1500);
+
+        // Animación de desvanecimiento (de alpha 1 a alpha 0)
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(textView, "alpha", 1f, 0f);
+        fadeOut.setDuration(2000);
+
+        // Crear un conjunto de animaciones
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(moveUp, fadeOut);  // Ambas animaciones ocurren simultáneamente
+
+        // Iniciar la animación
+        animatorSet.start();
+
+        // Eliminar el TextView cuando la animación termine
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Eliminar el TextView de la vista después de que la animación termine
+                layout.removeView(textView);
+            }
+        });
+    }
+
 
     @Override
     protected void onResume() {
