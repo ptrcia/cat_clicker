@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.android_app.RoomDB.GameViewModel;
@@ -45,6 +47,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
         if (activity instanceof Game) {
             timer.start();
+            timer.startAutoSaveTimer(this::saveProgress);
             Log.d("Clicker->", "APPCYCLE -> Timer started for Game");
         }
         preferences = getSharedPreferences("GameData", MODE_PRIVATE);
@@ -123,20 +126,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             //Log.d("Clicker->", "APPCYCLE -> Timer stopped stopppedfor Game");
         }
 
-        double pcu = scoreManager.getPassiveValue();
-        double acu = scoreManager.getClickValue();
-        double score = scoreManager.getScore();
-
-        gameViewModel.updateUserStats(score, pcu, acu);
-
-        //obtener a que hora se cerró
-        closedTime = System.currentTimeMillis();
-
-        //Guardar el valor
-        preferences = getSharedPreferences("GameData", MODE_PRIVATE);
-        editor = preferences.edit();
-        editor.putLong("closedTime", closedTime);
-        editor.apply();
+        saveProgress();
     }
 
     @Override
@@ -151,22 +141,13 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         //los datos de llos niveles a los que tiene cada mejora el ussuario se guardan cada vez que compro una mejora
         //control null
         if(activity instanceof Game){
-            double pcu = scoreManager.getPassiveValue();
-            double acu = scoreManager.getClickValue();
-            double score = scoreManager.getScore();
-
-            gameViewModel.updateUserStats(score, pcu, acu);
-
-            //obtener a que hora se cerró
-            closedTime = System.currentTimeMillis();
-
-            //Guardar el valor
-            preferences = getSharedPreferences("GameData", MODE_PRIVATE);
-            editor = preferences.edit();
-            editor.putLong("closedTime", closedTime);
-            editor.apply();
+            saveProgress();
         }
+    }
 
+
+
+    public void saveProgress(){
         double pcu = scoreManager.getPassiveValue();
         double acu = scoreManager.getClickValue();
         double score = scoreManager.getScore();
@@ -181,5 +162,6 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         editor = preferences.edit();
         editor.putLong("closedTime", closedTime);
         editor.apply();
+        Log.d("SAVE PROGRESS" , "Se ha guarado " + closedTime);
     }
 }

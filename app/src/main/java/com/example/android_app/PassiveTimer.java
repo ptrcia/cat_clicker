@@ -1,5 +1,7 @@
 package com.example.android_app;
 
+import android.widget.Toast;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -8,6 +10,9 @@ public class PassiveTimer {
     private TimerTask timerTask;
     private ScoreManager scoreManager;
     boolean isRunning;
+    private TimerTask timeCheckerTask; // Nuevo TimerTask
+    private long startTime;
+    private long lastCheckTime = 0;
 
     public PassiveTimer(ScoreManager scoreManager) {
         this.scoreManager = scoreManager;
@@ -37,4 +42,18 @@ public class PassiveTimer {
             isRunning = false;
         }
     }
+    //guardar progreso cada x segundos
+    public void startAutoSaveTimer(Runnable saveProgressAction) {
+        startTime  = System.currentTimeMillis();
+
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                saveProgressAction.run();
+            }
+        };
+        timer.schedule(timerTask, 0, 20000);
+    }
+
 }
