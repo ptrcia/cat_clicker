@@ -435,11 +435,11 @@ public class UpgradeFragment extends Fragment {
                 Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
                 //toast
-                Toast.makeText(
+                /*Toast.makeText(
                         context,
                         userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
                         Toast.LENGTH_SHORT
-                ).show();
+                ).show();*/
 
                 if (upgradeType.equals("Active"))
                     ScoreManager.getInstance().applyActiveUpgrade(requireContext(), cost, effect);

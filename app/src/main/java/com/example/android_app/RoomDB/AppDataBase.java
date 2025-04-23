@@ -27,6 +27,7 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract LevelDAO levelDAO();
     public abstract UpgradesUserDAO upgradesUserDAO();
 
+
     //Manejo de hilos
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
@@ -93,16 +94,20 @@ public abstract class AppDataBase extends RoomDatabase {
         //Cálculo de coste y efecto exponencial
 
         double baseCost = 150; //coste de base
-        double growthRate = 5; //crecimiento exponencial
-        double upgradeMultiplier = 1000; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double growthRate = 8; //crecimiento exponencial
+        double upgradeMultiplier = 5000; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
         double effectMultiplier = 0.005; //el efecto asociado al coste, 0.4 es un 40%
 
         double baseCostP = 1500;//1500; //coste de base
-        double growthRateP = 8; //crecimiento exponencial
-        double upgradeMultiplierP = 750; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
+        double growthRateP = 9; //crecimiento exponencial
+        double upgradeMultiplierP = 1200; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
         double effectMultiplierP = 0.003; //el efecto asociado al coste, 0.4 es un 40%
 
         double minEffect = 0.05;
+
+
+
+
 
 //Niveles de las mejoras
         List<Level> levels = new ArrayList<>();
@@ -111,12 +116,19 @@ public abstract class AppDataBase extends RoomDatabase {
             for (int j = 1; j <= 3; j++) { //  nivel
 
                 double cost = baseCost * Math.pow(growthRate, (i - 1)) * Math.pow(upgradeMultiplier, (j - 1));
+                double costPassive = baseCostP * Math.pow(growthRateP, (i - 1)) * Math.pow(upgradeMultiplierP, (j - 1));
+
+                boolean testMode= true;
+                if (testMode) {
+                    cost = 1;
+                    costPassive = 1;
+                }
+
                 double effectMultiplierA = effectMultiplier+ (i * 0.005);
                 double effect = Math.max(cost* effectMultiplierA, minEffect);
                 levels.add(new Level("levelA" + i + "_" + j, "ua_" + i, String.valueOf(j), cost,  effect));
 
 
-                double costPassive = baseCostP * Math.pow(growthRateP, (i - 1)) * Math.pow(upgradeMultiplierP, (j - 1));
                 double effectMultiplierPassive = effectMultiplierP + (i * 0.003);
                 double effectPassive = Math.max(costPassive * effectMultiplierPassive, minEffect);
                 levels.add(new Level("levelP" + i + "_" + j, "up_" + i, String.valueOf(j),  costPassive,  effectPassive));
