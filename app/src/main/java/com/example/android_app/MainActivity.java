@@ -21,12 +21,16 @@ import com.example.android_app.RoomDB.GameViewModel;
 import com.example.android_app.RoomDB.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
+    private static MainActivity instance;
 
     static boolean isMuted = false;
     GameViewModel gameViewModel;
     MainActivityViewModel mainActivityViewModel;
     boolean runStarted = false;
     Button butttonContinue;
+    public static MainActivity getInstance() {
+        return instance;
+    }
 
 
     @Override
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        instance = this;
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -107,7 +113,9 @@ public class MainActivity extends AppCompatActivity {
         buttonInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Abrir popup
+                buttonInfo.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
+                    buttonInfo.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
+                }).start();                //Abrir popup
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertDialogBuilder.setTitle("Realizado por: Patricia S. Gracia Artero");
                 alertDialogBuilder

@@ -25,15 +25,51 @@
         app:layout_constraintBottom_toTopOf="@id/linearBottom"
         android:background="#F7EDE2">
 
-        <ImageButton
-            android:id="@+id/buttonVolume"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:layout_gravity="end"
-            android:background="@android:color/transparent"                    android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/horizontalFlech"
+            android:layout_gravity="bottom|end"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_margin="10dp"
-            app:srcCompat="@drawable/volume" />
+            android:layout_marginEnd="-120dp"
+            android:orientation="horizontal">
+        <!--             android:layout_marginBottom="70dp"
+ -->
+            <ImageButton
+                android:id="@+id/buttonLanguageFlech"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:layout_marginEnd="20dp"
+                app:srcCompat="@drawable/back" />
+
+            <ImageButton
+                android:id="@+id/buttonVolume"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:visibility="visible"
+                app:srcCompat="@drawable/volume" />
+
+            <ImageButton
+                android:id="@+id/buttonLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="120dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:visibility="visible"
+                app:srcCompat="@drawable/language" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/scoreText"
@@ -64,31 +100,7 @@
                 android:fontFamily="@font/parkinsans_regular"
                 android:gravity="center">
             </TextView>
-            <!--<TextView
-                android:layout_marginTop="50dp"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_gravity="top"
-                android:text="puntos/segundo"
-                android:textSize="20sp"
-                android:textColor="#540b0e"
-                android:fontFamily="@font/parkinsans_regular"
-                android:gravity="center">
-            </TextView>
-            <TextView
-                android:layout_marginTop="50dp"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_gravity="top"
-                android:text="puntos/click"
-                android:textSize="20sp"
-                android:fontFamily="@font/parkinsans_regular"
-                android:textColor="#540b0e"
-                android:gravity="center">
-            </TextView>
-            -->
+
         </LinearLayout>
         <LinearLayout
             android:id="@+id/imgLayout"

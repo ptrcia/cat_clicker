@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -52,12 +53,16 @@ public class Game extends AppCompatActivity {
     TextView timeScoreText;
     TextView catBonusText;
     TextView catBonusNumber;
+    ImageButton buttonLanguageFlech;
+    ImageButton buttonLanguage;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
+    LinearLayout horizontalFlech;
     String user = "User1";
     int catCount;
     String formattedClickValue;
-
+    boolean isLanguageOpen = false;
+    public boolean isFragmentOpen= false;
     public static Game getInstance() {
         return instance;
     }
@@ -86,7 +91,9 @@ public class Game extends AppCompatActivity {
         catBonusText = findViewById(R.id.catBonusText);
         catBonusNumber = findViewById(R.id.catBonusNumber);
         scoreManager = ScoreManager.getInstance();
-
+        buttonLanguage = findViewById(R.id.buttonLanguage);
+        buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
+        horizontalFlech = findViewById(R.id.horizontalFlech);
         //region Audio
         Intent playIntent = new Intent(this, AudioManager.class);
         isMuted = AudioManager.isMutedMusic();
@@ -101,6 +108,8 @@ public class Game extends AppCompatActivity {
         }
         //endregion
 
+        //Moverbotones
+        moveLayoutButtons();
         //reseteo gatitos
         catCount = 0;
 
@@ -138,6 +147,7 @@ public class Game extends AppCompatActivity {
         buttonActives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickAnimation(buttonActives); //Animación de click (escalado)
                 View container = findViewById(R.id.container_layout);
                 OpenFragment("Active", container);
             }
@@ -145,6 +155,7 @@ public class Game extends AppCompatActivity {
         buttonPassives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickAnimation(buttonPassives); //Animación de click (escalado)
                 View container = findViewById(R.id.container_layout);
                 OpenFragment("Passive", container);
             }
@@ -263,9 +274,58 @@ public class Game extends AppCompatActivity {
                 checkAudio(buttonVolume);
             }
         });
+        //language
+        buttonLanguageFlech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            //mover imagen a la derecha y cambiar icono
+                clickAnimation(buttonLanguageFlech);
+
+                if(isLanguageOpen){
+
+                    horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonLanguageFlech.setImageResource(R.drawable.back);
+                        }
+                    });
+                    isLanguageOpen = false;
+                }else{
+                    horizontalFlech.animate().translationX(-350).setDuration(500).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonLanguageFlech.setImageResource(R.drawable.forward);
+
+                        }
+                    });
+                    isLanguageOpen = true;
+                }
+            }
+        });
+        buttonLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickAnimation(buttonLanguage);
+                Log.d("LanguageTranslator", "Idioma seleccionado: " + LanguageTranslator.getInstance().getCurrentLanguage() );
+                LanguageTranslator.getInstance().SelectLanguage();
+            }
+        });
+
+
         //endregion
     }
     //region Imagen
+
+    public void moveLayoutButtons(){
+        if(isFragmentOpen){
+            horizontalFlech.animate().translationY(-1450).setDuration(100);
+
+        }else{
+            horizontalFlech.animate().translationY(0).setDuration(1000);
+        }
+    }
+
+
 
     //imgLayout
     public void addImage(Context context, String id){
@@ -354,7 +414,8 @@ public class Game extends AppCompatActivity {
     private void OpenFragment(String upgradeType, View container){
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
-
+        isFragmentOpen = true;
+        moveLayoutButtons();
         Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
@@ -426,7 +487,7 @@ public class Game extends AppCompatActivity {
         TextView textView = new TextView(this);
         textView.setText(text);  // Establecer el texto
         textView.setTextSize(25);  // Ajusta el tamaño de la fuente
-        textView.setTextColor(Color.parseColor("#8f2d56"));
+        textView.setTextColor(Color.parseColor("#90CAF9"));
         Typeface typeface = ResourcesCompat.getFont(this, R.font.glina_script);
         textView.setTypeface(typeface);
 
@@ -468,6 +529,14 @@ public class Game extends AppCompatActivity {
             }
         });
     }
+
+    public void clickAnimation(View button) {
+        button.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
+            button.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
+        }).start();
+    }
+
+
 
 
     @Override

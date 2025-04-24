@@ -15,14 +15,17 @@
         android:layout_gravity="top"
         android:background="#F6BD60"
         android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/buttonBack"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="start"
-            android:src="?attr/actionModeCloseDrawable"
+            android:scaleType="fitCenter"
+            android:src="@drawable/back"
             >
+
         </ImageButton>
         <TextView
             android:id="@+id/title"
