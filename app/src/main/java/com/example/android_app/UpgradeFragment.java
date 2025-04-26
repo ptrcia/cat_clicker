@@ -50,7 +50,6 @@ import android.widget.Toast;
 
 public class UpgradeFragment extends Fragment {
 
-
     private static final String ARG_UPGRADE_TYPE = "upgrade_type";
     UpgradeFragmentViewModel viewModel;
     ProgressBar progressBar;
@@ -59,11 +58,10 @@ public class UpgradeFragment extends Fragment {
     TextView title;
     String userId = "User1";
     String upgradeType;
-
     String userLevel ="0";
     String idUpgrade ="";
-
     ImageView image;
+    public int buttonId;
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeTypeInput) {
@@ -85,7 +83,10 @@ public class UpgradeFragment extends Fragment {
         title = rootView.findViewById(R.id.title);
         progressBar = rootView.findViewById(R.id.progressBar);
 
-
+        //Idoma
+        LanguageTranslator.getInstance().initializeButtons();
+        LanguageTranslator translator = LanguageTranslator.getInstance();
+        translator.Translate(translator.getCurrentLanguage());
 
         //Conecta con el viewmodel
         viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
@@ -120,8 +121,8 @@ public class UpgradeFragment extends Fragment {
         // Mostrar algo básico si no hay datos
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-       if(upgradeType.equals("Active")) title.setText("Mejoras activas");
-       else if(upgradeType.equals("Passive")) title.setText("Mejoras pasivas");
+       if(upgradeType.equals("Active")) {LanguageTranslator.getInstance().renameTitleActiveUpgrades(title);}
+       else if(upgradeType.equals("Passive")) {LanguageTranslator.getInstance().renameTitlePassiveUpgrades(title);}
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -275,7 +276,7 @@ public class UpgradeFragment extends Fragment {
         newTitle.setLayoutParams(titleParams);
 
         //Título personalizado
-        renameUpgrades(numberId, newTitle);
+        LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);
 
         newTitle.setTextSize(textSize);
         Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.cleanow);
@@ -340,6 +341,9 @@ public class UpgradeFragment extends Fragment {
         newButton.setLayoutParams(buttonParams);
         newButton.setText("mejorar");
         newButton.setAllCaps(false);
+        newButton.setId(View.generateViewId());
+        buttonId = newButton.getId();
+
 
         if(userHasEnoughScore(cost)) {
             newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
@@ -444,67 +448,7 @@ public class UpgradeFragment extends Fragment {
         return score >= cost;
     }
 
-    void renameUpgrades(String idUserLevel, TextView textView) {
-        switch (idUserLevel) {
-            case "1":
-                textView.setText("Carmín");
-                break;
-            case "2":
-                textView.setText("Lavanda");
-                break;
-            case "3":
-                textView.setText("Celeste");
-                break;
-            case "4":
-                textView.setText("Aguamarina");
-                break;
-            case "5":
-                textView.setText("Menta");
-                break;
-            case "6":
-                textView.setText("Áureo");
-                break;
-            case "7":
-                textView.setText("Amatista");
-                break;
-            case "8":
-                textView.setText("Lirios");
-                break;
-            case "9":
-                textView.setText("Cobalto");
-                break;
-            case "10":
-                textView.setText("Bosque");
-                break;
-            case "11":
-                textView.setText("Oliva");
-                break;
-            case "12":
-                textView.setText("Siena");
-                break;
-            case "13":
-                textView.setText("Burdeos");
-                break;
-            case "14":
-                textView.setText("Mango");
-                break;
-            case "15":
-                textView.setText("Plata");
-                break;
-            case "16":
-                textView.setText("Dorado");
-                break;
-            case "17":
-                textView.setText("Blanco");
-                break;
-            case "18":
-                textView.setText("Ébano");
-                break;
-            default:
-                textView.setText("Gatito");
-                break;
-        }
-    }
+
 
     void changeImg(String idUserLevel, ImageView image){
         switch (idUserLevel){

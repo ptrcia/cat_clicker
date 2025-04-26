@@ -110,10 +110,10 @@ public class Game extends AppCompatActivity {
         //endregion
 
         //Animaciones iniciales
-
         AnimationManager.getInstance().initialize(this);
         AnimationManager.getInstance().moveLayoutButtons(horizontalFlech, isFragmentOpen);
         //Idioma
+        LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
         LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
         //reseteo gatitos
@@ -403,7 +403,7 @@ public class Game extends AppCompatActivity {
         Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
-        transaction.replace(R.id.container_layout, fragment);
+        transaction.replace(R.id.container_layout, fragment, "UPGRADE_FRAGMENT_TAG");
         transaction.addToBackStack(null); // Añadir a la pila de retroceso
         transaction.commit();
 

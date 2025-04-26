@@ -82,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         //idioma
+        LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
         LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
+        //LanguageTranslator.getInstance().getDialogTexts();
 
         //animaicon del tituloi
         AnimationManager.getInstance().TitleAnimation(title1);
@@ -147,18 +149,18 @@ public class MainActivity extends AppCompatActivity {
                     buttonInfo.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
                 }).start();                //Abrir popup
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertDialogBuilder.setTitle("Realizado por: Patricia S. Gracia Artero");
+                alertDialogBuilder.setTitle(LanguageTranslator.getInstance().getDialogTexts()[0]);
                 alertDialogBuilder
-                        .setMessage("Puedes consultar mi porfolio para más proyectos. Gracias por jugar.")
+                        .setMessage(LanguageTranslator.getInstance().getDialogTexts()[1])
                         .setCancelable(false)
-                        .setPositiveButton("Abrir porfolio en el navegador", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(LanguageTranslator.getInstance().getDialogTexts()[2], new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://ptrcia.github.io/porfolio/"));
                                 startActivity(browserIntent);
                             }
                         })
-                        .setNegativeButton("Atrás", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(LanguageTranslator.getInstance().getDialogTexts()[3], new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
@@ -243,13 +245,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    //Cuando queremos vovler a la actividad principal que se mantenga la configuracion del audio
-    //Lo hagoa qui y no en el lifecycle porque necesito cambiar la imagen
-
-
-
-
 
     @Override
     protected void onResume() {

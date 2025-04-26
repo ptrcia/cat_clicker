@@ -4,85 +4,282 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class LanguageTranslator {
     //Menú
-    Button buttonStart = MainActivity.getInstance().findViewById(R.id.buttonStart);
-    Button buttonExit = MainActivity.getInstance().findViewById(R.id.buttonExit);
-    Button butttonContinue = MainActivity.getInstance().findViewById(R.id.buttonContinue);
+    Button buttonStart;
+    Button buttonExit;
+    Button butttonContinue;
 
     //Game
     Button buttonPassives;
     Button buttonActives;
 
+    //Fragment
+    TextView cost;
+    TextView effect;
+    TextView level;
+    Button retrievedButton;
+
+    // Recuperar el botón usando su id
+
+
+    // Obtener referencias a los TextViews del fragmento
+    UpgradeFragment upgradeFragment = (UpgradeFragment) MainActivity.getInstance()
+            .getSupportFragmentManager()
+            .findFragmentByTag("UPGRADE_FRAGMENT_TAG");
 
     private static LanguageTranslator instance;
-    private String currentLanguage;// = "English"; // Idioma predeterminado
-
+    private Language currentLanguage = Language.ENGLISH; //por defaults
+    public enum Language {
+        SPANISH, ENGLISH
+    }
     public static synchronized LanguageTranslator getInstance() {
         if (instance == null) {
             instance = new LanguageTranslator();
         }
         return instance;
     }
-    public String getCurrentLanguage() {
+    public Language getCurrentLanguage() {
         return currentLanguage;
+    }
+    public void initializeButtons() {
+        buttonStart = MainActivity.getInstance().findViewById(R.id.buttonStart);
+        buttonExit = MainActivity.getInstance().findViewById(R.id.buttonExit);
+        butttonContinue = MainActivity.getInstance().findViewById(R.id.buttonContinue);
+        if (upgradeFragment != null) {
+            Log.d("LanguageTranslator", "Fragmento no es null: es visible? " + upgradeFragment.isVisible());
+        } else {
+            Log.d("LanguageTranslator", "El fragmento es null.");
+        }
+
+        if (Game.getInstance() != null) {
+            buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
+            buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
+        }
+
+        if (upgradeFragment != null && upgradeFragment.isVisible()) {
+            cost = upgradeFragment.getView().findViewById(R.id.cost);
+            effect = upgradeFragment.getView().findViewById(R.id.effect);
+            level = upgradeFragment.getView().findViewById(R.id.level);
+            retrievedButton = upgradeFragment.getView().findViewById(upgradeFragment.buttonId);
+        }
     }
 
     public void SelectLanguage() {
-        if(currentLanguage.equals("Spanish")){
-            currentLanguage = "English";
-
-        }else{
-            currentLanguage = "Spanish";
-        }
+        currentLanguage = (currentLanguage == Language.SPANISH) ? Language.ENGLISH : Language.SPANISH;
         Log.d("LanguageTranslator", "Idioma seleccionado: " + currentLanguage );
         Translate(currentLanguage);
         saveLanguagePreference(currentLanguage);
     }
 
-    public void Translate(String currentLanguage){
+    public void Translate(Language currentLanguage){
 
-        if(currentLanguage.equals("Spanish")){
+        if(currentLanguage == Language.SPANISH){
             if (Game.getInstance() != null) {
-                buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
-                buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
                 buttonPassives.setText("Mejoras Pasivas");
                 buttonActives.setText("Mejoras Activas");
             }
+            if(upgradeFragment != null) {
+                cost.setText("Coste");
+                effect.setText("Efecto");
+                level.setText("Nivel");
+
+            }
             buttonStart.setText("Nueva partida");
             buttonExit.setText("Salir");
-           butttonContinue.setText("Continuar");
+            butttonContinue.setText("Continuar");
 
 
         }else{
             if (Game.getInstance() != null) {
-                buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
-                buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
                 buttonPassives.setText("Passive Upgrades");
                 buttonActives.setText("Active Upgrades");
             }
+            if(upgradeFragment != null) {
+                cost.setText("Cost");
+                effect.setText("Effect");
+                level.setText("Level");
+            }
             buttonStart.setText("New game");
             buttonExit.setText("Exit");
-           butttonContinue.setText("Continue");
+            butttonContinue.setText("Continue");
 
 
         }
     }
+    public String[] getDialogTexts() {
+        if (currentLanguage == Language.SPANISH) {
+            return new String[]{
+                    "Realizado por: Patricia S. Gracia Artero",
+                    "Puedes consultar mi porfolio para más proyectos. Gracias por jugar.",
+                    "Abrir porfolio en el navegador",
+                    "Atrás"
+            };
+        } else { // English
+            return new String[]{
+                    "Created by: Patricia S. Gracia Artero",
+                    "You can check out my portfolio for more projects. Thank you for playing.",
+                    "Open portfolio in browser",
+                    "Back"
+            };
+        }
+    }
+    void renameUpgrades(String idUserLevel, TextView textView) {
+        if(currentLanguage == Language.SPANISH) {
+            switch (idUserLevel) {
+                case "1":
+                    textView.setText("Carmín");
+                    break;
+                case "2":
+                    textView.setText("Lavanda");
+                    break;
+                case "3":
+                    textView.setText("Celeste");
+                    break;
+                case "4":
+                    textView.setText("Aguamarina");
+                    break;
+                case "5":
+                    textView.setText("Menta");
+                    break;
+                case "6":
+                    textView.setText("Áureo");
+                    break;
+                case "7":
+                    textView.setText("Amatista");
+                    break;
+                case "8":
+                    textView.setText("Lirios");
+                    break;
+                case "9":
+                    textView.setText("Cobalto");
+                    break;
+                case "10":
+                    textView.setText("Bosque");
+                    break;
+                case "11":
+                    textView.setText("Oliva");
+                    break;
+                case "12":
+                    textView.setText("Siena");
+                    break;
+                case "13":
+                    textView.setText("Burdeos");
+                    break;
+                case "14":
+                    textView.setText("Mango");
+                    break;
+                case "15":
+                    textView.setText("Plata");
+                    break;
+                case "16":
+                    textView.setText("Dorado");
+                    break;
+                case "17":
+                    textView.setText("Blanco");
+                    break;
+                case "18":
+                    textView.setText("Ébano");
+                    break;
+                default:
+                    textView.setText("Gatito");
+                    break;
+            }
+        }else{
+            switch (idUserLevel) {
+                case "1":
+                    textView.setText("Carmine");
+                    break;
+                case "2":
+                    textView.setText("Lavender");
+                    break;
+                case "3":
+                    textView.setText("Celeste");
+                    break;
+                    case "4":
+                    textView.setText("Aquamarine");
+                    break;
+                case "5":
+                    textView.setText("Mint");
+                    break;
+                case "6":
+                    textView.setText("Golden");
+                    break;
+                case "7":
+                    textView.setText("Amethyst");
+                    break;
+                case "8":
+                    textView.setText("Lilies");
+                    break;
+                    case "9":
+                    textView.setText("Cobalt");
+                    break;
+                case "10":
+                    textView.setText("Forest");
+                    break;
+                case "11":
+                    textView.setText("Olive");
+                    break;
+                case "12":
+                    textView.setText("Sienna");
+                    break;
+                case "13":
+                    textView.setText("Burgundy");
+                    break;
+                    case "14":
+                    textView.setText("Mango");
+                    break;
+                case "15":
+                    textView.setText("Silver");
+                    break;
+                case "16":
+                    textView.setText("Golden");
+                    break;
+                case "17":
+                    textView.setText("White");
+                    break;
+                case "18":
+                    textView.setText("Ebony");
+                    break;
+                    default:
+                    textView.setText("Kitty");
+                    break;
+            }
+        }
 
-    public void saveLanguagePreference(String language) {
+    }
+    public void renameTitleActiveUpgrades(TextView title){
+        if(currentLanguage == Language.SPANISH){
+            title.setText("Mejoras activas");
+        }else{
+            title.setText("Active Upgrades");
+        }
+    }
+    public void renameTitlePassiveUpgrades(TextView title) {
+        if (currentLanguage == Language.SPANISH) {
+           title.setText("Mejoras pasivas");
+        } else {
+            title.setText("Passive Upgrades");
+        }
+    }
+    public void saveLanguagePreference(Language language) {
         Context context = MainActivity.getInstance(); // Replace with the appropriate context if needed
         SharedPreferences sharedPreferences = context.getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("SelectedLanguage", language);
+        editor.putString("SelectedLanguage", language.toString());
         Log.d("LanguageTranslator", "Idioma guardado: " + language );
         editor.apply();
     }
     public void loadLanguagePreference() {
         Context context = MainActivity.getInstance(); // Replace with the appropriate context if needed
         SharedPreferences sharedPreferences = context.getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE);
-        currentLanguage = sharedPreferences.getString("SelectedLanguage", "English"); // Default
-        Log.d("LanguageTranslator", "Idioma cargado: " + currentLanguage );
+        String savedLanguage = sharedPreferences.getString("SelectedLanguage", "ENGLISH"); // Valor predeterminado: "ENGLISH"
+        currentLanguage = Language.valueOf(savedLanguage);
+        // Convertir la cadena a enum        Log.d("LanguageTranslator", "Idioma cargado: " + currentLanguage );
        // return currentLanguage;
 
     }
