@@ -19,7 +19,8 @@ public class AudioManager extends Service {
     private SoundPool SFXAudio;
     private static boolean isMutedMusic = false;
     private static boolean isMutedSFX = false;
-   public SharedPreferences sharedPref;
+    public SharedPreferences sharedPref;
+
 
     @Override
     public void onCreate() {

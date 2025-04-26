@@ -99,7 +99,7 @@ public class UpgradeFragment extends Fragment {
                 }).start();
                 requireActivity().getSupportFragmentManager().popBackStack();
                 Game.getInstance().isFragmentOpen = false;
-                Game.getInstance().moveLayoutButtons();
+                AnimationManager.getInstance().moveLayoutButtons(Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen);
             }
         });
         //Boton de atras nativo
@@ -107,7 +107,7 @@ public class UpgradeFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Game.getInstance().isFragmentOpen = false;
-                Game.getInstance().moveLayoutButtons();
+                AnimationManager.getInstance().moveLayoutButtons(Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen);
 
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     requireActivity().getSupportFragmentManager().popBackStack();
@@ -122,32 +122,6 @@ public class UpgradeFragment extends Fragment {
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
        if(upgradeType.equals("Active")) title.setText("Mejoras activas");
        else if(upgradeType.equals("Passive")) title.setText("Mejoras pasivas");
-
-        //Metodo para gesto de hacia abajo
-        /*container.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    //animacion para bajar el tragmento
-                    v.animate()
-                            .translationY(1000f)
-                            .setDuration(500)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //y retroceder
-
-                                    requireActivity().getSupportFragmentManager().popBackStack(); //volver hacia atrás
-                                }
-                            })
-                            .start();
-                   // v.performClick(); //que no ionteractue con el cli
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });*/
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -275,9 +249,7 @@ public class UpgradeFragment extends Fragment {
         //Imagen
         ImageView newImg = new ImageView(context);
         LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
-                /*0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f*/
+
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
@@ -287,7 +259,6 @@ public class UpgradeFragment extends Fragment {
 
         //Sacamos el valor numérico del id
         String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
-        //System.out.println(numberId);
         changeImg(numberId, newImg);
 
         newImg.setPadding(dpToPx(10), dpToPx(-10), dpToPx(10), dpToPx(10));
@@ -301,8 +272,6 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
-       // titleParams.setMarginStart(dpToPx(0));
-        //titleParams.setMarginEnd(dpToPx(1));
         newTitle.setLayoutParams(titleParams);
 
         //Título personalizado
@@ -373,16 +342,12 @@ public class UpgradeFragment extends Fragment {
         newButton.setAllCaps(false);
 
         if(userHasEnoughScore(cost)) {
-            //newButton.setEnabled(true);
             newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
 
         }else{
-            //newButton.setEnabled(false);
             newButton.setBackgroundColor(Color.parseColor("#9b9b9b"));
-            //shakeAnimation(newButton);
         }
 
-        //newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
         Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
@@ -440,7 +405,7 @@ public class UpgradeFragment extends Fragment {
 
 
             if(!userHasEnoughScore(cost)){
-                shakeAnimation(view);
+                AnimationManager.getInstance().shakeAnimation(view);
             }else {
 
                 Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
@@ -468,21 +433,11 @@ public class UpgradeFragment extends Fragment {
                 //Animación de caer gatitos
                 Game.getInstance().addImage(context, idUserLevel);
 
-            /*if (img == null) {
-                Log.e("ButtonUpgrade", "La ImageView asociada al botón es null. Revisa el ID o la asociación.");
-                return; // Detener si no hay imagen asociada
-            }*/
             }
         }
     };
 
-    public void shakeAnimation(View button){
-        Animation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(70);
-        shake.setRepeatCount(7);
-        shake.setRepeatMode(Animation.REVERSE);
-        button.startAnimation(shake);
-    }
+
 
     private boolean userHasEnoughScore(double cost){
         double score = ScoreManager.getInstance().getScore();

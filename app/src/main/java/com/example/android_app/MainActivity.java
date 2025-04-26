@@ -1,5 +1,6 @@
 package com.example.android_app;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,9 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -20,6 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.android_app.RoomDB.GameViewModel;
 import com.example.android_app.RoomDB.MainActivityViewModel;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
 
@@ -28,6 +35,17 @@ public class MainActivity extends AppCompatActivity {
     MainActivityViewModel mainActivityViewModel;
     boolean runStarted = false;
     Button butttonContinue;
+    Button titleButton;
+    TextView title1;
+    TextView title2;
+    ImageButton buttonLanguageFlech;
+    ImageButton buttonLanguage;
+    LinearLayout horizontalFlech;
+
+
+    int[] catSounds = {R.raw.cat_purrs_01, R.raw.cat_purrs_02, R.raw.cat_purrs_03, R.raw.cat_purrs_04, R.raw.catpurrs, R.raw.catmeows, R.raw.cat_meows_02, R.raw.cat_meows_03, R.raw.cat_meows_04, R.raw.cat_meows_05, R.raw.cat_meows_06};
+
+    boolean isLanguageOpen = false;
     public static MainActivity getInstance() {
         return instance;
     }
@@ -51,13 +69,25 @@ public class MainActivity extends AppCompatActivity {
         butttonContinue = findViewById(R.id.buttonContinue);
         ImageButton buttonInfo = findViewById(R.id.info);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
-
+        titleButton = findViewById(R.id.titleButton);
+        title1 = findViewById(R.id.titulo);
+        title2 = findViewById(R.id.titulo2);
+        buttonLanguage = findViewById(R.id.buttonLanguage);
+        buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
+        horizontalFlech = findViewById(R.id.horizontalFlech);
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
 
 
+        //idioma
+        LanguageTranslator.getInstance().loadLanguagePreference();
+        LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
+
+        //animaicon del tituloi
+        AnimationManager.getInstance().TitleAnimation(title1);
+        AnimationManager.getInstance().TitleAnimation(title2);
 
         //New game
         buttonStart.setOnClickListener(new OnClickListener() {
@@ -164,10 +194,62 @@ public class MainActivity extends AppCompatActivity {
                 startService(audioManager);
             }
         });
+        //language
+        buttonLanguageFlech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //mover imagen a la derecha y cambiar icono
+                AnimationManager.getInstance().Scaling(buttonLanguageFlech);
+
+                if(isLanguageOpen){
+
+                    horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonLanguageFlech.setImageResource(R.drawable.back);
+                        }
+                    });
+                    isLanguageOpen = false;
+                }else{
+                    horizontalFlech.animate().translationX(-550).setDuration(500).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            buttonLanguageFlech.setImageResource(R.drawable.forward);
+                        }
+                    });
+                    isLanguageOpen = true;
+                }
+            }
+        });
+        buttonLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AnimationManager.getInstance().Scaling(buttonLanguage);
+                LanguageTranslator.getInstance().SelectLanguage();
+            }
+        });
+
+        //title
+        titleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!AudioManager.isMutedMusic()) {
+                    Intent playIntent = new Intent(MainActivity.this, AudioManager.class);
+                    playIntent.setAction("playSFX");
+                    playIntent.putExtra("resourceID", catSounds[new Random().nextInt(catSounds.length)]);
+                    startService(playIntent);
+                }
+            }
+        });
+
     }
 
     //Cuando queremos vovler a la actividad principal que se mantenga la configuracion del audio
     //Lo hagoa qui y no en el lifecycle porque necesito cambiar la imagen
+
+
+
+
 
     @Override
     protected void onResume() {

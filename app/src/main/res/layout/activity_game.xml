@@ -30,7 +30,7 @@
             android:layout_gravity="bottom|end"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginEnd="-120dp"
+            android:layout_marginEnd="-60dp"
             android:orientation="horizontal">
         <!--             android:layout_marginBottom="70dp"
  -->
@@ -55,19 +55,19 @@
                 android:scaleType="fitXY"
                 android:visibility="visible"
                 app:srcCompat="@drawable/volume" />
-
-            <ImageButton
-                android:id="@+id/buttonLanguage"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="end"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="120dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:visibility="visible"
-                app:srcCompat="@drawable/language" />
+            <!--                 android:layout_marginBottom="70dp"
+               <ImageButton
+                   android:id="@+id/buttonLanguage"
+                   android:layout_width="wrap_content"
+                   android:layout_height="50dp"
+                   android:layout_gravity="end"
+                   android:layout_marginHorizontal="10dp"
+                   android:layout_marginTop="120dp"
+                   android:adjustViewBounds="true"
+                   android:background="@android:color/transparent"
+                   android:scaleType="fitXY"
+                   android:visibility="visible"
+                   app:srcCompat="@drawable/language" />-->
         </LinearLayout>
 
 

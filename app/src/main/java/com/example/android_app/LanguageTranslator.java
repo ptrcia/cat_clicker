@@ -1,5 +1,8 @@
 package com.example.android_app;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Button;
 
 public class LanguageTranslator {
@@ -9,12 +12,12 @@ public class LanguageTranslator {
     Button butttonContinue = MainActivity.getInstance().findViewById(R.id.buttonContinue);
 
     //Game
-    Button buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
-    Button buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
+    Button buttonPassives;
+    Button buttonActives;
 
 
     private static LanguageTranslator instance;
-    private String currentLanguage = "Spanish"; // Idioma predeterminado
+    private String currentLanguage;// = "English"; // Idioma predeterminado
 
     public static synchronized LanguageTranslator getInstance() {
         if (instance == null) {
@@ -29,30 +32,61 @@ public class LanguageTranslator {
     public void SelectLanguage() {
         if(currentLanguage.equals("Spanish")){
             currentLanguage = "English";
-            Translate(currentLanguage);
+
         }else{
             currentLanguage = "Spanish";
-            Translate(currentLanguage);
         }
+        Log.d("LanguageTranslator", "Idioma seleccionado: " + currentLanguage );
+        Translate(currentLanguage);
+        saveLanguagePreference(currentLanguage);
     }
 
-    private void Translate(String currentLanguage){
+    public void Translate(String currentLanguage){
+
         if(currentLanguage.equals("Spanish")){
+            if (Game.getInstance() != null) {
+                buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
+                buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
+                buttonPassives.setText("Mejoras Pasivas");
+                buttonActives.setText("Mejoras Activas");
+            }
             buttonStart.setText("Nueva partida");
             buttonExit.setText("Salir");
            butttonContinue.setText("Continuar");
 
-            buttonPassives.setText("Mejoras Pasivas");
-            buttonActives.setText("Mejoras Activas");
+
         }else{
+            if (Game.getInstance() != null) {
+                buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
+                buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
+                buttonPassives.setText("Passive Upgrades");
+                buttonActives.setText("Active Upgrades");
+            }
             buttonStart.setText("New game");
             buttonExit.setText("Exit");
            butttonContinue.setText("Continue");
 
-            buttonPassives.setText("Passives Upgrades");
-            buttonActives.setText("Actives Upgrades");
+
         }
     }
+
+    public void saveLanguagePreference(String language) {
+        Context context = MainActivity.getInstance(); // Replace with the appropriate context if needed
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("SelectedLanguage", language);
+        Log.d("LanguageTranslator", "Idioma guardado: " + language );
+        editor.apply();
+    }
+    public void loadLanguagePreference() {
+        Context context = MainActivity.getInstance(); // Replace with the appropriate context if needed
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE);
+        currentLanguage = sharedPreferences.getString("SelectedLanguage", "English"); // Default
+        Log.d("LanguageTranslator", "Idioma cargado: " + currentLanguage );
+       // return currentLanguage;
+
+    }
+
 }
 
 

@@ -54,10 +54,11 @@ public class Game extends AppCompatActivity {
     TextView catBonusText;
     TextView catBonusNumber;
     ImageButton buttonLanguageFlech;
-    ImageButton buttonLanguage;
+    //ImageButton buttonLanguage;
+    LinearLayout horizontalFlech;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
-    LinearLayout horizontalFlech;
+
     String user = "User1";
     int catCount;
     String formattedClickValue;
@@ -91,7 +92,7 @@ public class Game extends AppCompatActivity {
         catBonusText = findViewById(R.id.catBonusText);
         catBonusNumber = findViewById(R.id.catBonusNumber);
         scoreManager = ScoreManager.getInstance();
-        buttonLanguage = findViewById(R.id.buttonLanguage);
+       // buttonLanguage = findViewById(R.id.buttonLanguage);
         buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
         horizontalFlech = findViewById(R.id.horizontalFlech);
         //region Audio
@@ -108,8 +109,13 @@ public class Game extends AppCompatActivity {
         }
         //endregion
 
-        //Moverbotones
-        moveLayoutButtons();
+        //Animaciones iniciales
+
+        AnimationManager.getInstance().initialize(this);
+        AnimationManager.getInstance().moveLayoutButtons(horizontalFlech, isFragmentOpen);
+        //Idioma
+        LanguageTranslator.getInstance().loadLanguagePreference();
+        LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
         //reseteo gatitos
         catCount = 0;
 
@@ -147,7 +153,7 @@ public class Game extends AppCompatActivity {
         buttonActives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickAnimation(buttonActives); //Animación de click (escalado)
+                AnimationManager.getInstance().Scaling(buttonActives); //Animación de click (escalado)
                 View container = findViewById(R.id.container_layout);
                 OpenFragment("Active", container);
             }
@@ -155,7 +161,7 @@ public class Game extends AppCompatActivity {
         buttonPassives.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickAnimation(buttonPassives); //Animación de click (escalado)
+                AnimationManager.getInstance().Scaling(buttonPassives); //Animación de click (escalado)
                 View container = findViewById(R.id.container_layout);
                 OpenFragment("Passive", container);
             }
@@ -244,9 +250,7 @@ public class Game extends AppCompatActivity {
                     }
 
                     // Animación de escalado
-                    buttonClickScore.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
-                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
-                    }).start();
+                    AnimationManager.getInstance().Scaling(buttonClickScore);
 
                     // Coordenadas del dedo
                     float x = event.getRawX();
@@ -254,7 +258,7 @@ public class Game extends AppCompatActivity {
                     Log.d("FingerPosition", "X: " + x + ", Y: " + y);
 
                     // Efecto animado en esa posición
-                    animateText(formattedClickValue, x, y);
+                    AnimationManager.getInstance().animateText(formattedClickValue, x, y, mainLayout);
 
                     // Lógica de puntuación
                     scoreManager.ClickActive();
@@ -279,7 +283,7 @@ public class Game extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             //mover imagen a la derecha y cambiar icono
-                clickAnimation(buttonLanguageFlech);
+                AnimationManager.getInstance().Scaling(buttonLanguageFlech);
 
                 if(isLanguageOpen){
 
@@ -302,30 +306,10 @@ public class Game extends AppCompatActivity {
                 }
             }
         });
-        buttonLanguage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickAnimation(buttonLanguage);
-                Log.d("LanguageTranslator", "Idioma seleccionado: " + LanguageTranslator.getInstance().getCurrentLanguage() );
-                LanguageTranslator.getInstance().SelectLanguage();
-            }
-        });
-
 
         //endregion
     }
     //region Imagen
-
-    public void moveLayoutButtons(){
-        if(isFragmentOpen){
-            horizontalFlech.animate().translationY(-1450).setDuration(100);
-
-        }else{
-            horizontalFlech.animate().translationY(0).setDuration(1000);
-        }
-    }
-
-
 
     //imgLayout
     public void addImage(Context context, String id){
@@ -415,7 +399,7 @@ public class Game extends AppCompatActivity {
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
         isFragmentOpen = true;
-        moveLayoutButtons();
+        AnimationManager.getInstance().moveLayoutButtons(horizontalFlech, isFragmentOpen);
         Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
@@ -481,62 +465,6 @@ public class Game extends AppCompatActivity {
             }
         });
     }
-
-    private void animateText(String text, float startX, float startY) {
-        // Crear un nuevo TextView con el texto proporcionado
-        TextView textView = new TextView(this);
-        textView.setText(text);  // Establecer el texto
-        textView.setTextSize(25);  // Ajusta el tamaño de la fuente
-        textView.setTextColor(Color.parseColor("#90CAF9"));
-        Typeface typeface = ResourcesCompat.getFont(this, R.font.glina_script);
-        textView.setTypeface(typeface);
-
-
-        FrameLayout layout = findViewById(R.id.mainLayout);
-        layout.addView(textView);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-
-        int[] layoutLocation = new int[2];
-        layout.getLocationOnScreen(layoutLocation);
-        params.leftMargin = (int) startX - layoutLocation[0];
-        params.topMargin = (int) startY - layoutLocation[1];
-
-        textView.setLayoutParams(params);
-
-        // Animación de movimiento hacia arriba
-        ObjectAnimator moveUp = ObjectAnimator.ofFloat(textView, "translationY", 0, -500);
-        moveUp.setDuration(1500);
-
-        // Animación de desvanecimiento (de alpha 1 a alpha 0)
-        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(textView, "alpha", 1f, 0f);
-        fadeOut.setDuration(2000);
-
-        // Crear un conjunto de animaciones
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(moveUp, fadeOut);  // Ambas animaciones ocurren simultáneamente
-
-        // Iniciar la animación
-        animatorSet.start();
-
-        // Eliminar el TextView cuando la animación termine
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Eliminar el TextView de la vista después de que la animación termine
-                layout.removeView(textView);
-            }
-        });
-    }
-
-    public void clickAnimation(View button) {
-        button.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
-            button.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
-        }).start();
-    }
-
-
 
 
     @Override
