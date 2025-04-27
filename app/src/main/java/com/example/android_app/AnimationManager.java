@@ -18,6 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 
 public class AnimationManager {
@@ -35,48 +37,44 @@ public class AnimationManager {
         return instance;
     }
 
+    public void moveLayoutButtons(Context context, LinearLayout layout, boolean isFragmentOpen, View containerLayout, FrameLayout mainLayout, LinearLayout linearBottom) {
 
-    /*public void moveLayoutButtons(LinearLayout layout, boolean isFragmentOpen, View containerLayout){
-        if(isFragmentOpen){
-            Resources resources = getResources();
-            Configuration configuration = resources.getConfiguration();
+        // Referencia al ConstraintLayout (padre)
+        ConstraintLayout constraintLayout = (ConstraintLayout) mainLayout.getParent();
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
 
-            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layout.animate().translationY(containerLayout.getHeight()-3100).setDuration(100);
-                //-1450
-                Log.d("AnimationManager", "moveLayoutButtons: " +( containerLayout.getHeight()-3100));
-            } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                layout.animate().translationY(containerLayout.getHeight()-3100).setDuration(100);
-                //-1450
-                Log.d("AnimationManager", "moveLayoutButtons: " +( containerLayout.getHeight()-3100));
-            }
-
-
-        }else{
-            layout.animate().translationY(0).setDuration(1000);
-        }
-    }*/
-    public void moveLayoutButtons(Context context, LinearLayout layout, boolean isFragmentOpen, View containerLayout) {
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
         if (isFragmentOpen) {
-            Resources resources = context.getResources();
-            Configuration configuration = resources.getConfiguration();
 
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layout.animate().translationX(- 530).setDuration(100);
+                //mover flecha
+               // layout.animate().translationX(- 530).setDuration(100);
                 //Log.d("AnimationManager", "moveLayoutButtons (landscape): " + (containerLayout.getWidth() - 100));
+                //mover pantalla
+                constraintSet.connect(mainLayout.getId(), ConstraintSet.END, containerLayout.getId(), ConstraintSet.START);
+                constraintSet.applyTo(constraintLayout);
+
             } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                //mover flecha
                 layout.animate().translationY(containerLayout.getHeight() - 3100).setDuration(100);
                 //Log.d("AnimationManager", "moveLayoutButtons (portrait): " + (containerLayout.getHeight() - 3100));
+                //no mover pantalla
             }
         } else {
+            // Restaurar constraint de mainLayout a linearBottom (o a su estado inicial)
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                constraintSet.clear(mainLayout.getId(), ConstraintSet.END);
+                constraintSet.connect(mainLayout.getId(), ConstraintSet.END, linearBottom.getId(), ConstraintSet.START);
+                constraintSet.applyTo(constraintLayout);
+            }
+            // Restaurar animaciones a la posición original (se aplica en ambas orientaciones al cerrar)
             layout.animate().translationY(0).setDuration(1000);
             layout.animate().translationX(0).setDuration(1000);
         }
     }
 
-    public void moveGameActivityWhenFragmentIsOpened(LinearLayout layout, boolean isFragmentOpen){
-
-    }
 
 
     public void TitleAnimation(View animatedResource){
@@ -115,8 +113,6 @@ public class AnimationManager {
         Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
         textView.setTypeface(typeface);
 
-
-        //FrameLayout layout = findViewById(R.id.mainLayout);
         layout.addView(textView);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(

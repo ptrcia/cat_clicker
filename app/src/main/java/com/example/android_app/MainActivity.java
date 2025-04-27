@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         //idioma
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
-        LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
+        LanguageTranslator.getInstance().Translate(this, LanguageTranslator.getInstance().getCurrentLanguage());
         //LanguageTranslator.getInstance().getDialogTexts();
 
         //animaicon del tituloi

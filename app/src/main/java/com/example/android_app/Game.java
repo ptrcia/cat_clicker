@@ -58,6 +58,7 @@ public class Game extends AppCompatActivity {
     LinearLayout horizontalFlech;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
+    LinearLayout linearBottom;
 
     String user = "User1";
     int catCount;
@@ -95,6 +96,7 @@ public class Game extends AppCompatActivity {
         catBonusText = findViewById(R.id.catBonusText);
         catBonusNumber = findViewById(R.id.catBonusNumber);
         scoreManager = ScoreManager.getInstance();
+        linearBottom = findViewById(R.id.linearBottom);
        // buttonLanguage = findViewById(R.id.buttonLanguage);
         buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
         horizontalFlech = findViewById(R.id.horizontalFlech);
@@ -114,11 +116,12 @@ public class Game extends AppCompatActivity {
 
         //Animaciones iniciales
         AnimationManager.getInstance().initialize(this);
-        AnimationManager.getInstance().moveLayoutButtons(this, horizontalFlech, isFragmentOpen, container);
+        AnimationManager.getInstance().moveLayoutButtons(this, horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
         //Idioma
+        LanguageTranslator.getInstance().initialize(this);
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
-        LanguageTranslator.getInstance().Translate(LanguageTranslator.getInstance().getCurrentLanguage());
+        LanguageTranslator.getInstance().Translate(this, LanguageTranslator.getInstance().getCurrentLanguage());
         //reseteo gatitos
         catCount = 0;
 
@@ -167,76 +170,6 @@ public class Game extends AppCompatActivity {
                 OpenFragment("Passive", container);
             }
         });
-
-        /*buttonActives.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    View container = findViewById(R.id.container_layout);
-                    OpenFragment("Active", container);
-                }
-                return false;
-            }
-        });
-        buttonPassives.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    View container = findViewById(R.id.container_layout);
-
-                    OpenFragment("Passive", container);
-                }
-                return false;
-            }
-        });*/
-
-        /*buttonClickScore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Audio
-                if(!AudioManager.isMutedMusic()){
-                    Intent playIntent = new Intent(Game.this, AudioManager.class);
-                    playIntent.setAction("playSFX");
-                    playIntent.putExtra("resourceID", R.raw.tap);
-                    startService(playIntent);
-                }
-
-                //Animación de escalado
-                buttonClickScore.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        buttonClickScore.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
-                    }
-                }).start();
-
-                //Animacion de puntuación
-                int[] location = new int[2];
-                v.getLocationOnScreen(location);
-                int x = location[0] + v.getWidth() / 2;
-                int y = location[1];
-                Log.d("ButtonPosition", "X: " + x + ", Y: " + y);
-
-                // Crea el efecto animado
-                animateText(formattedClickValue, x, y);
-
-                //Reference Script Score
-                scoreManager.ClickActive();
-                UpdateScoreText();
-            }
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    float x = event.getRawX(); // Coordenada X absoluta en la pantalla
-                    float y = event.getRawY(); // Coordenada Y absoluta en la pantalla
-
-                    Log.d("FingerPosition", "X: " + x + ", Y: " + y);
-
-                    animateText(clickValueText.getText().toString(), x, y);
-
-                    return true; // Indica que el evento se ha manejado
-                }
-                return false;
-            }
-        });*/
 
         buttonClickScore.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -400,7 +333,7 @@ public class Game extends AppCompatActivity {
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
         isFragmentOpen = true;
-        AnimationManager.getInstance().moveLayoutButtons(this,horizontalFlech, isFragmentOpen, container);
+        AnimationManager.getInstance().moveLayoutButtons(this,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
         Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");

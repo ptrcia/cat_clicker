@@ -2,11 +2,11 @@ package com.example.android_app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class LanguageTranslator {
     //Menú
@@ -17,6 +17,10 @@ public class LanguageTranslator {
     //Game
     Button buttonPassives;
     Button buttonActives;
+    Context context;
+    public void initialize(Context context) {
+        this.context = context;
+    }
 
 
     // Obtener referencias a los TextViews del fragmento
@@ -52,38 +56,39 @@ public class LanguageTranslator {
     public void SelectLanguage() {
         currentLanguage = (currentLanguage == Language.SPANISH) ? Language.ENGLISH : Language.SPANISH;
         Log.d("LanguageTranslator", "Idioma seleccionado: " + currentLanguage );
-        Translate(currentLanguage);
+        Translate(context, currentLanguage);
         saveLanguagePreference(currentLanguage);
     }
 
-    public void Translate(Language currentLanguage){
-
-        if(currentLanguage == Language.SPANISH){
-            if (Game.getInstance() != null) {
-                //buttonPassives.setText("Mejoras Pasivas");
-                //buttonActives.setText("Mejoras Activas");
-                buttonActives.setText("A\nc\ti\nv\na\ns");
-                buttonPassives.setText("P\na\ts\ni\nv\na\ns");
-
+    public void Translate(Context context, Language currentLanguage){
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
+        if(configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if(Game.getInstance() != null){
+                buttonPassives.setText("Passive Upgrades");
+                buttonActives.setText("Active Upgrades");
             }
             buttonStart.setText("Nueva partida");
             buttonExit.setText("Salir");
             butttonContinue.setText("Continuar");
-
-
-        }else{
-            if (Game.getInstance() != null) {
-                buttonActives.setText("A\nc\nt\ni\nv\ne\n");
-                buttonPassives.setText("P\na\ns\ns\ni\nv\ne\n");
-
-                //buttonPassives.setText("Passive Upgrades");
-                //buttonActives.setText("Active Upgrades");
+        }else if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            if(currentLanguage == Language.SPANISH){
+                if (Game.getInstance() != null) {
+                    buttonActives.setText("A\nc\ti\nv\na\ns");
+                    buttonPassives.setText("P\na\ts\ni\nv\na\ns");
+                }
+                buttonStart.setText("Nueva partida");
+                buttonExit.setText("Salir");
+                butttonContinue.setText("Continuar");
+            }else{
+                if (Game.getInstance() != null) {
+                    buttonActives.setText("A\nc\nt\ni\nv\ne\n");
+                    buttonPassives.setText("P\na\ns\ns\ni\nv\ne\n");
+                }
+                buttonStart.setText("New game");
+                buttonExit.setText("Exit");
+                butttonContinue.setText("Continue");
             }
-            buttonStart.setText("New game");
-            buttonExit.setText("Exit");
-            butttonContinue.setText("Continue");
-
-
         }
     }
     public String[] getDialogTexts() {

@@ -3,18 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".UpgradeFragment">
 
-    <!-- Upper bar -->
+    <!-- Left side bar -->
 
+
+    <!-- Upper bar -->
     <LinearLayout
         android:id="@+id/linearTopFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:background="#F6BD60"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearSideFragment"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
 
         <ImageButton
             android:id="@+id/buttonBack"
@@ -35,7 +43,7 @@
             android:layout_gravity="center"
             android:textAllCaps="true"
             android:fontFamily="@font/glina_script"
-            android:textSize="30sp">
+            android:textSize="25sp">
         </TextView>
     </LinearLayout>
 
@@ -114,14 +122,15 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F7EDE2">
+        android:background="#FFF8F0 ">
+
         <LinearLayout
             android:visibility="visible"
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#F7EDE2">
+            android:background="#FFF8F0 ">
         </LinearLayout>
 
 

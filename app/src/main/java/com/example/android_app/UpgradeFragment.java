@@ -92,7 +92,7 @@ public class UpgradeFragment extends Fragment {
         //Idoma
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator translator = LanguageTranslator.getInstance();
-        translator.Translate(translator.getCurrentLanguage());
+        translator.Translate(context, translator.getCurrentLanguage());
 
         //Conecta con el viewmodel
         viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);
@@ -106,7 +106,7 @@ public class UpgradeFragment extends Fragment {
                 }).start();
                 requireActivity().getSupportFragmentManager().popBackStack();
                 Game.getInstance().isFragmentOpen = false;
-                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container);
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container, Game.getInstance().mainLayout, Game.getInstance().linearBottom);
             }
         });
         //Boton de atras nativo
@@ -114,7 +114,7 @@ public class UpgradeFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Game.getInstance().isFragmentOpen = false;
-                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container);
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container, Game.getInstance().mainLayout, Game.getInstance().linearBottom);
 
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     requireActivity().getSupportFragmentManager().popBackStack();
@@ -126,18 +126,6 @@ public class UpgradeFragment extends Fragment {
 
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-    /*   if(upgradeType.equals("Active")) {LanguageTranslator.getInstance().renameTitleActiveUpgrades(title);}
-       else if(upgradeType.equals("Passive")) {LanguageTranslator.getInstance().renameTitlePassiveUpgrades(title);}
-
-       if(LanguageTranslator.getInstance().getCurrentLanguage() == LanguageTranslator.Language.SPANISH){
-           cost.setText("Coste");
-           effect.setText("Efecto");
-           level.setText("Nivel");
-       }else{
-           cost.setText("Cost");
-           effect.setText("Effect");
-           level.setText("Level");
-       }*/
        LanguageTranslator.getInstance().renameFragment(upgradeType, title, cost, effect, level);
 
 
@@ -223,7 +211,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutImg.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutImg.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutImg.setBackgroundColor(Color.parseColor("#F7EDE2"));
+        verticalLayoutImg.setBackgroundColor(Color.parseColor("#FFF8F0"));
 
         //Layout vertical para el texto y el botón
         LinearLayout verticalLayoutTextButton = new LinearLayout(context);
@@ -234,7 +222,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutTextButton.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutTextButton.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutTextButton.setBackgroundColor(Color.parseColor("#F7EDE2"));
+        verticalLayoutTextButton.setBackgroundColor(Color.parseColor("#FFF8F0"));
 
 
         //Layout horizontal para el texto
