@@ -5,8 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -33,14 +36,49 @@ public class AnimationManager {
     }
 
 
-    public void moveLayoutButtons(LinearLayout layout, boolean isFragmentOpen){
+    /*public void moveLayoutButtons(LinearLayout layout, boolean isFragmentOpen, View containerLayout){
         if(isFragmentOpen){
-            layout.animate().translationY(-1450).setDuration(100);
+            Resources resources = getResources();
+            Configuration configuration = resources.getConfiguration();
+
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                layout.animate().translationY(containerLayout.getHeight()-3100).setDuration(100);
+                //-1450
+                Log.d("AnimationManager", "moveLayoutButtons: " +( containerLayout.getHeight()-3100));
+            } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                layout.animate().translationY(containerLayout.getHeight()-3100).setDuration(100);
+                //-1450
+                Log.d("AnimationManager", "moveLayoutButtons: " +( containerLayout.getHeight()-3100));
+            }
+
 
         }else{
             layout.animate().translationY(0).setDuration(1000);
         }
+    }*/
+    public void moveLayoutButtons(Context context, LinearLayout layout, boolean isFragmentOpen, View containerLayout) {
+        if (isFragmentOpen) {
+            Resources resources = context.getResources();
+            Configuration configuration = resources.getConfiguration();
+
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                layout.animate().translationX(- 530).setDuration(100);
+                //Log.d("AnimationManager", "moveLayoutButtons (landscape): " + (containerLayout.getWidth() - 100));
+            } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                layout.animate().translationY(containerLayout.getHeight() - 3100).setDuration(100);
+                //Log.d("AnimationManager", "moveLayoutButtons (portrait): " + (containerLayout.getHeight() - 3100));
+            }
+        } else {
+            layout.animate().translationY(0).setDuration(1000);
+            layout.animate().translationX(0).setDuration(1000);
+        }
     }
+
+    public void moveGameActivityWhenFragmentIsOpened(LinearLayout layout, boolean isFragmentOpen){
+
+    }
+
+
     public void TitleAnimation(View animatedResource){
         ObjectAnimator animacionX = ObjectAnimator.ofFloat(animatedResource, "scaleX", 0.9f);
         ObjectAnimator animacionY = ObjectAnimator.ofFloat(animatedResource, "scaleY", 1f);

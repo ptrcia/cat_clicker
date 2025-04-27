@@ -61,6 +61,9 @@ public class UpgradeFragment extends Fragment {
     String userLevel ="0";
     String idUpgrade ="";
     ImageView image;
+    TextView cost;
+    TextView effect;
+    TextView level;
     public int buttonId;
 
     //instancia segun el tipo
@@ -82,6 +85,9 @@ public class UpgradeFragment extends Fragment {
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
         title = rootView.findViewById(R.id.title);
         progressBar = rootView.findViewById(R.id.progressBar);
+        cost = rootView.findViewById(R.id.cost);
+        effect = rootView.findViewById(R.id.effect);
+        level = rootView.findViewById(R.id.level);
 
         //Idoma
         LanguageTranslator.getInstance().initializeButtons();
@@ -100,7 +106,7 @@ public class UpgradeFragment extends Fragment {
                 }).start();
                 requireActivity().getSupportFragmentManager().popBackStack();
                 Game.getInstance().isFragmentOpen = false;
-                AnimationManager.getInstance().moveLayoutButtons(Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen);
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container);
             }
         });
         //Boton de atras nativo
@@ -108,7 +114,7 @@ public class UpgradeFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Game.getInstance().isFragmentOpen = false;
-                AnimationManager.getInstance().moveLayoutButtons(Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen);
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container);
 
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     requireActivity().getSupportFragmentManager().popBackStack();
@@ -118,11 +124,22 @@ public class UpgradeFragment extends Fragment {
             }
         });
 
-        // Mostrar algo básico si no hay datos
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-       if(upgradeType.equals("Active")) {LanguageTranslator.getInstance().renameTitleActiveUpgrades(title);}
+    /*   if(upgradeType.equals("Active")) {LanguageTranslator.getInstance().renameTitleActiveUpgrades(title);}
        else if(upgradeType.equals("Passive")) {LanguageTranslator.getInstance().renameTitlePassiveUpgrades(title);}
+
+       if(LanguageTranslator.getInstance().getCurrentLanguage() == LanguageTranslator.Language.SPANISH){
+           cost.setText("Coste");
+           effect.setText("Efecto");
+           level.setText("Nivel");
+       }else{
+           cost.setText("Cost");
+           effect.setText("Effect");
+           level.setText("Level");
+       }*/
+       LanguageTranslator.getInstance().renameFragment(upgradeType, title, cost, effect, level);
+
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -339,7 +356,14 @@ public class UpgradeFragment extends Fragment {
         buttonParams.setMargins(0, 0, dpToPx(10),0);
         newButton.setWidth(dpToPx(150));
         newButton.setLayoutParams(buttonParams);
-        newButton.setText("mejorar");
+        if(LanguageTranslator.getInstance().getCurrentLanguage() == LanguageTranslator.Language.SPANISH){
+            newButton.setText("Mejorar");
+
+        }else{
+            newButton.setText("Upgrade");
+
+        }
+        //newButton.setText("mejorar");
         newButton.setAllCaps(false);
         newButton.setId(View.generateViewId());
         buttonId = newButton.getId();

@@ -18,14 +18,6 @@ public class LanguageTranslator {
     Button buttonPassives;
     Button buttonActives;
 
-    //Fragment
-    TextView cost;
-    TextView effect;
-    TextView level;
-    Button retrievedButton;
-
-    // Recuperar el botón usando su id
-
 
     // Obtener referencias a los TextViews del fragmento
     UpgradeFragment upgradeFragment = (UpgradeFragment) MainActivity.getInstance()
@@ -50,22 +42,10 @@ public class LanguageTranslator {
         buttonStart = MainActivity.getInstance().findViewById(R.id.buttonStart);
         buttonExit = MainActivity.getInstance().findViewById(R.id.buttonExit);
         butttonContinue = MainActivity.getInstance().findViewById(R.id.buttonContinue);
-        if (upgradeFragment != null) {
-            Log.d("LanguageTranslator", "Fragmento no es null: es visible? " + upgradeFragment.isVisible());
-        } else {
-            Log.d("LanguageTranslator", "El fragmento es null.");
-        }
 
         if (Game.getInstance() != null) {
             buttonPassives = Game.getInstance().findViewById(R.id.buttonPassives);
             buttonActives = Game.getInstance().findViewById(R.id.buttonActives);
-        }
-
-        if (upgradeFragment != null && upgradeFragment.isVisible()) {
-            cost = upgradeFragment.getView().findViewById(R.id.cost);
-            effect = upgradeFragment.getView().findViewById(R.id.effect);
-            level = upgradeFragment.getView().findViewById(R.id.level);
-            retrievedButton = upgradeFragment.getView().findViewById(upgradeFragment.buttonId);
         }
     }
 
@@ -80,13 +60,10 @@ public class LanguageTranslator {
 
         if(currentLanguage == Language.SPANISH){
             if (Game.getInstance() != null) {
-                buttonPassives.setText("Mejoras Pasivas");
-                buttonActives.setText("Mejoras Activas");
-            }
-            if(upgradeFragment != null) {
-                cost.setText("Coste");
-                effect.setText("Efecto");
-                level.setText("Nivel");
+                //buttonPassives.setText("Mejoras Pasivas");
+                //buttonActives.setText("Mejoras Activas");
+                buttonActives.setText("A\nc\ti\nv\na\ns");
+                buttonPassives.setText("P\na\ts\ni\nv\na\ns");
 
             }
             buttonStart.setText("Nueva partida");
@@ -96,13 +73,11 @@ public class LanguageTranslator {
 
         }else{
             if (Game.getInstance() != null) {
-                buttonPassives.setText("Passive Upgrades");
-                buttonActives.setText("Active Upgrades");
-            }
-            if(upgradeFragment != null) {
-                cost.setText("Cost");
-                effect.setText("Effect");
-                level.setText("Level");
+                buttonActives.setText("A\nc\nt\ni\nv\ne\n");
+                buttonPassives.setText("P\na\ns\ns\ni\nv\ne\n");
+
+                //buttonPassives.setText("Passive Upgrades");
+                //buttonActives.setText("Active Upgrades");
             }
             buttonStart.setText("New game");
             buttonExit.setText("Exit");
@@ -252,20 +227,24 @@ public class LanguageTranslator {
         }
 
     }
-    public void renameTitleActiveUpgrades(TextView title){
-        if(currentLanguage == Language.SPANISH){
-            title.setText("Mejoras activas");
-        }else{
-            title.setText("Active Upgrades");
-        }
-    }
-    public void renameTitlePassiveUpgrades(TextView title) {
+
+    public void renameFragment(String type, TextView title, TextView cost, TextView effect, TextView level) {
         if (currentLanguage == Language.SPANISH) {
-           title.setText("Mejoras pasivas");
+            if(type.equals("Passive"))title.setText("Mejoras pasivas");
+            else{title.setText("Mejoras activas");}
+            cost.setText("Coste");
+            effect.setText("Efecto");
+            level.setText("Nivel");
         } else {
-            title.setText("Passive Upgrades");
+            if(type.equals("Passive"))title.setText("Passive Upgrades");
+            else{title.setText("Active Upgrades");}
+            cost.setText("Cost");
+            effect.setText("Effect");
+            level.setText("Level");
         }
     }
+
+
     public void saveLanguagePreference(Language language) {
         Context context = MainActivity.getInstance(); // Replace with the appropriate context if needed
         SharedPreferences sharedPreferences = context.getSharedPreferences("LanguageSettings", Context.MODE_PRIVATE);

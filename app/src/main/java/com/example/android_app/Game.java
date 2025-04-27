@@ -84,6 +84,9 @@ public class Game extends AppCompatActivity {
         Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
         ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+        View container = findViewById(R.id.container_layout);
+
+
         mainLayout = findViewById(R.id.mainLayout);
         textScore = findViewById(R.id.scoreText);
         clickValueText = findViewById(R.id.clickValueText);
@@ -111,7 +114,7 @@ public class Game extends AppCompatActivity {
 
         //Animaciones iniciales
         AnimationManager.getInstance().initialize(this);
-        AnimationManager.getInstance().moveLayoutButtons(horizontalFlech, isFragmentOpen);
+        AnimationManager.getInstance().moveLayoutButtons(this, horizontalFlech, isFragmentOpen, container);
         //Idioma
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
@@ -154,7 +157,6 @@ public class Game extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AnimationManager.getInstance().Scaling(buttonActives); //Animación de click (escalado)
-                View container = findViewById(R.id.container_layout);
                 OpenFragment("Active", container);
             }
         });
@@ -162,7 +164,6 @@ public class Game extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AnimationManager.getInstance().Scaling(buttonPassives); //Animación de click (escalado)
-                View container = findViewById(R.id.container_layout);
                 OpenFragment("Passive", container);
             }
         });
@@ -399,7 +400,7 @@ public class Game extends AppCompatActivity {
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
         //abrir
         isFragmentOpen = true;
-        AnimationManager.getInstance().moveLayoutButtons(horizontalFlech, isFragmentOpen);
+        AnimationManager.getInstance().moveLayoutButtons(this,horizontalFlech, isFragmentOpen, container);
         Fragment fragment = UpgradeFragment.newInstance(upgradeType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Log.d("Clicker->", "Transacción de fragmento en progreso");
