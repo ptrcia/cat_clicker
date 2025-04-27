@@ -27,11 +27,12 @@ public class ScoreManager {
         setScore(score);
         Game.getInstance().UpdateScoreText();
     }
+    
     public void ClickPassive(Double  timePassed, Double bonusCat){
         timePassed = (timePassed == null) ? 0 : timePassed;
-        bonusCat = (bonusCat == null) ? 0 : bonusCat;
+        //bonusCat = (bonusCat == null) ? 0 : bonusCat;
 
-        score += passiveValue + timePassed + bonusCat;
+        score += passiveValue + timePassed;// + bonusCat;
 
         setScore(score);
         if (Game.getInstance() != null) {

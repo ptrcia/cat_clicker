@@ -249,14 +249,14 @@ public class Game extends AppCompatActivity {
     public void addImage(Context context, String id){
 
         //contar gatitos
-        catCount ++;
+       /* catCount ++;
         if(catCount > 0){
             catBonusText.setText("¡Gatitos activos!");
             String formatedBonus = NumberFormatter.formatNumber(applyCatBonus());
             catBonusNumber.setText("+"+formatedBonus);
         }else{
             catBonusNumber.setText("");
-        }
+        }*/
 
         //Imagen
         ImageView newImage = new ImageView(context);
