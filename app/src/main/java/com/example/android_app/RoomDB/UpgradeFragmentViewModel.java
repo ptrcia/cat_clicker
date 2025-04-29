@@ -44,26 +44,20 @@ public class UpgradeFragmentViewModel extends AndroidViewModel {
                             public void onSuccess(String currentLevel) {
                                 //Log.d("Clicker->", "Nivel al que la tiene el isuario la mejora  " + idUpgrades + ": " + currentLevel); //"currentLevel: 1"
 
-                                //hay un errror en el parse int porque currentlevel es null
-                                //String currentLevelOfUpgrade = currentLevel; //es redundante
                                 int nextLevel = Integer.parseInt(currentLevel) + 1; //obtenermos el siguiente nivel
-                                //Log.d("Clicker->", "Siguiente nivel de la mejora " + idUpgrades + ": " + nextLevel);
-
                                 upgradesRepository.getLevelForUpgradeByUserLevel(idUpgrades, String.valueOf(nextLevel), new BaseCallback<Level>() {
                                     @Override
                                     public void onSuccess(Level levelNextUser) {
                                         //Log.d("Clicker->", "levelNextUser: " + levelNextUser); //"levelNextUser: levelActive1_2"
                                         if(levelNextUser!=null){
-                                           // auxMap.put(upgrade, levelNextUser);
                                             synchronized (auxMap) {  //ESTO ES IMPORTANTE PARA EVITAR ERRORES DE CONCURRENCIA
                                                 auxMap.put(upgrade, levelNextUser);
                                                 //Log.d("Clicker->", "auxMap: " + auxMap);
                                             }
                                         }
 
-                                        if(upgrades.size()-1 == upgrades.indexOf(upgrade)){
+                                        if(upgrades.size()-1 == upgrades.indexOf(upgrade)){ //si es el ultimo elemento
                                             filteredUpgrades.postValue(auxMap);
-                                            //filteredUpgrades.postValue(sortUpgradesById(auxMap));
 
                                         }
                                     }

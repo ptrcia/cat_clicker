@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AnimationManager.getInstance().Scaling(buttonLanguage);
-                LanguageTranslator.getInstance().SelectLanguage();
+                LanguageTranslator.getInstance().SelectLanguage(MainActivity.this);
             }
         });
 

@@ -60,6 +60,9 @@ public class Game extends AppCompatActivity {
     FrameLayout mainLayout;
     LinearLayout linearBottom;
 
+    boolean areAllActivePurchased= false;
+    boolean areAllPassivePurchased= false;
+
     String user = "User1";
     int catCount;
     String formattedClickValue;
@@ -372,9 +375,9 @@ public class Game extends AppCompatActivity {
                     }
                 });
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Game.this);
-        alertDialogBuilder.setTitle("¡Hola de nuevo!");
+        alertDialogBuilder.setTitle(LanguageTranslator.getInstance().getScoredDialog()[0]);
         alertDialogBuilder
-                .setMessage("¡En tu ausencia se han acumulado  "+pointsGained+" puntos! (PCU: " + scoreManager.getPassiveValue()+")")
+                .setMessage(LanguageTranslator.getInstance().getScoredDialog()[1]  +pointsGained+ LanguageTranslator.getInstance().getScoredDialog()[2])
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -398,6 +401,71 @@ public class Game extends AppCompatActivity {
                 passiveValueText.setText(formattedPassiveValue + "/s");
             }
         });
+    }
+
+    void EndGame(String upgradeType){
+        Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado");
+
+
+        if(upgradeType.equals("Active")){
+            //crear un alert dialog
+            if(areAllPassivePurchased) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[6]);
+                builder.setPositiveButton(LanguageTranslator.getInstance().getFinalDialog()[4], (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
+                    Intent intent = new Intent(Game.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    dialog.dismiss();
+                });
+                builder.show();
+                areAllActivePurchased = true;
+                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las pasivas están compradas");
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[2]);
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                            dialog.dismiss();
+                        });
+                builder.show();
+                areAllActivePurchased = true;
+                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las pasivas NO están compradas");
+            }
+
+        }else if(upgradeType.equals("Passive")){
+            if(areAllActivePurchased){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[6 ]);
+                builder.setPositiveButton(LanguageTranslator.getInstance().getFinalDialog()[4], (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
+                            Intent intent = new Intent(Game.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            dialog.dismiss();
+                        });
+                builder.show();
+                areAllPassivePurchased = true;
+                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las activas están compradas");
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[3]);
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                builder.show();
+                areAllActivePurchased = true;
+                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las activas NO están compradas");
+            }
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.android_app;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.util.Log;
 
 import android.view.Gravity;
@@ -141,7 +143,16 @@ public class UpgradeFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        //Recoger datos de la database
         viewModel.filteredUpgrades.observe(getViewLifecycleOwner(), upgrades -> {
+
+            if (upgrades == null || upgrades.isEmpty()) {
+                Log.d("Fragment End Game ->", "No hay más elementos en la lista." + upgradeType);
+                progressBar.setVisibility(View.GONE);
+                Game.getInstance().EndGame(upgradeType);
+                return;
+            }
+
             // Crear una copia y hacerlo dentro de un syncronized  para que no haya conflicto
             Map<ClickUpgrade, Level> upgradesCopy;
             synchronized (upgrades) {
@@ -355,14 +366,14 @@ public class UpgradeFragment extends Fragment {
         newButton.setAllCaps(false);
         newButton.setId(View.generateViewId());
         buttonId = newButton.getId();
+        monitorButtonState(newButton);
 
-
-        if(userHasEnoughScore(cost)) {
+        /*if(userHasEnoughScore(cost)) {
             newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
 
         }else{
             newButton.setBackgroundColor(Color.parseColor("#9b9b9b"));
-        }
+        }*/
 
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
@@ -406,6 +417,42 @@ public class UpgradeFragment extends Fragment {
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
+
+
+//region Gestión de actualizar la compra de mejoras segun el score actualizado
+    private Handler handler = new Handler();
+    private void monitorButtonState(Button button) {
+        Runnable buttonUpdater = new Runnable() {
+            @Override
+            public void run() {
+                updateButtonState(button); // Pasar la referencia del botón
+                handler.postDelayed(this, 500); // Comprobar cada 500 ms
+            }
+        };
+
+        handler.post(buttonUpdater); // Iniciar el monitoreo
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null); // Detener todos los callbacks
+    }
+    public void updateButtonState(Button button) {
+        double cost = (double) button.getTag(R.id.cost_tag);
+        if (userHasEnoughScore(cost)) {
+            button.setBackgroundColor(Color.parseColor("#8f2d56"));
+        } else {
+            button.setBackgroundColor(Color.parseColor("#9b9b9b"));
+        }
+    }
+//endregion
+
+    private boolean userHasEnoughScore(double cost){
+        double score = ScoreManager.getInstance().getScore();
+        return score >= cost;
+    }
+
 
     private final View.OnClickListener ButtonUpgrade = new View.OnClickListener() {
         @Override
@@ -454,13 +501,38 @@ public class UpgradeFragment extends Fragment {
     };
 
 
+    void SecretEnding(){
+        boolean areAllActivePurchased= false;
+        boolean areAllPassivePurchased= false;
 
-    private boolean userHasEnoughScore(double cost){
-        double score = ScoreManager.getInstance().getScore();
-        return score >= cost;
+        if(upgradeType.equals("Active")){
+            //crear un alert dialog
+            if(areAllPassivePurchased) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[4]);
+                areAllActivePurchased = true;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                areAllActivePurchased = true;
+            }
+
+        }else if(upgradeType.equals("Passive")){
+            if(areAllActivePurchased){
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[4]);
+                areAllPassivePurchased = true;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                areAllActivePurchased = true;
+            }
+        }
     }
-
-
 
     void changeImg(String idUserLevel, ImageView image){
         switch (idUserLevel){

@@ -53,7 +53,7 @@ public class LanguageTranslator {
         }
     }
 
-    public void SelectLanguage() {
+    public void SelectLanguage(Context context) {
         currentLanguage = (currentLanguage == Language.SPANISH) ? Language.ENGLISH : Language.SPANISH;
         Log.d("LanguageTranslator", "Idioma seleccionado: " + currentLanguage );
         Translate(context, currentLanguage);
@@ -64,13 +64,24 @@ public class LanguageTranslator {
         Resources resources = context.getResources();
         Configuration configuration = resources.getConfiguration();
         if(configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if(Game.getInstance() != null){
-                buttonPassives.setText("Passive Upgrades");
-                buttonActives.setText("Active Upgrades");
+            if(currentLanguage == Language.SPANISH){
+                if (Game.getInstance() != null) {
+                    buttonActives.setText("Mejoras activas");
+                    buttonPassives.setText("Mejoras Pasivas");
+                }
+                buttonStart.setText("Nueva partida");
+                buttonExit.setText("Salir");
+                butttonContinue.setText("Continuar");
+            }else{
+                if (Game.getInstance() != null) {
+                    buttonActives.setText("Active Upgrades");
+                    buttonPassives.setText("Passive Upgrades");
+                }
+                buttonStart.setText("New game");
+                buttonExit.setText("Exit");
+                butttonContinue.setText("Continue");
             }
-            buttonStart.setText("Nueva partida");
-            buttonExit.setText("Salir");
-            butttonContinue.setText("Continuar");
+
         }else if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             if(currentLanguage == Language.SPANISH){
                 if (Game.getInstance() != null) {
@@ -91,6 +102,8 @@ public class LanguageTranslator {
             }
         }
     }
+
+    //region Dialogs
     public String[] getDialogTexts() {
         if (currentLanguage == Language.SPANISH) {
             return new String[]{
@@ -108,6 +121,70 @@ public class LanguageTranslator {
             };
         }
     }
+     public  String[] getScoredDialog(){
+         if (currentLanguage == Language.SPANISH) {
+             return new String[]{
+                     "¡Hola de nuevo!",
+                     "En tu ausencia has acumulado",
+                     "puntos."
+             };
+         } else { // English
+             return new String[]{
+                     "Welcome back!",
+                     "In your absence you have accumulated",
+                     "passive.",
+             };
+         }
+     }
+
+     public String[] getFinalDialog(){
+         if (currentLanguage == Language.SPANISH) {
+             return new String[]{
+                     "¡Has comprado todas las activas!",
+                     "¡Has comprado todas las pasivas!",
+                     "Solo te falta terminar todas las pasivas",
+                     "Solo te falta terminar todas las activas",
+                     "Modo 99",
+                     "Salir",
+                     "¡Felicidades! Has comprado todas las mejoras. No lo he puesto fácil pero ¡ahí estás!. Ahora puedes elegirentrte: rendirte aquí y dar el juego por acabado o bien, intentar el modo 99."
+             };
+         } else { // English
+             return new String[]{
+                     "You've bought all the actives!",
+                     "You've bought all the passives!",
+                     "You just need to finish all the passives.",
+                     "You just need to finish all the actives.",
+                     "Mode 99",
+                     "Exit",
+                     "Congratulations! You've bought all the upgrades. I didn't make it easy but there you are! Now you have a choice: either give up here and call it a day or try mode 99."
+             };
+         }
+     }
+    public String[] getFinal99Dialog(){
+        if (currentLanguage == Language.SPANISH) {
+            return new String[]{
+                    "¿Ya has comprado todas las activas?",
+                    "¿Ya has comprado todas las pasivas? ",
+                    "Ya te queda menos entonces, ¡Ánimo!",
+                    "¿Pero que...-? ¿Felicidades? ¿Cómo es que has sacado tiempo y ganas para esto? " +
+                            "Vamos a hacer una cosa. ándame por alguno de estos sitios un mensaje con una captura de este mensaje y la primera que reciba mandaré un regalo. " +
+                            "(No puedo hacer más, este juego es gratis y sin muchas pretensiones). " +
+                            "Muchísimas, muchísimas gracias."
+            };
+        } else { // English
+            return new String[]{
+                    "Have you already purchased all the active ones?",
+                    "Have you already purchased all the passive ones?",
+                    "You have less time to go then, keep up the good work!",
+                    "But what...-? congratulations? how did you find the time and desire for this" + "Let's do something." +
+                            "Let's do one thing. send me through one of these sites a message with a screenshot of this message  and the first one I get I'll send a gift. " +
+                            "(I can't do more, this game is free and without many pretensions). " +
+                            "Thank you very, very much.!"
+            };
+        }
+    }
+     //endregion
+
     void renameUpgrades(String idUserLevel, TextView textView) {
         if(currentLanguage == Language.SPANISH) {
             switch (idUserLevel) {
