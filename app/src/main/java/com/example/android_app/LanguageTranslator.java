@@ -167,19 +167,19 @@ public class LanguageTranslator {
                     "¿Ya has comprado todas las pasivas? ",
                     "Ya te queda menos entonces, ¡Ánimo!",
                     "¿Pero que...-? ¿Felicidades? ¿Cómo es que has sacado tiempo y ganas para esto? " +
-                            "Vamos a hacer una cosa. ándame por alguno de estos sitios un mensaje con una captura de este mensaje y la primera que reciba mandaré un regalo. " +
+                            "Vamos a hacer una cosa: Mándame por alguno de estos sitios un mensaje con una captura de este mensaje y, la primera que reciba mandaré un regalo. " +
                             "(No puedo hacer más, este juego es gratis y sin muchas pretensiones). " +
-                            "Muchísimas, muchísimas gracias."
+                            "¡¡¡¡Muchísimas, muchísimas gracias.!!!"
             };
         } else { // English
             return new String[]{
                     "Have you already purchased all the active ones?",
                     "Have you already purchased all the passive ones?",
-                    "You have less time to go then, keep up the good work!",
-                    "But what...-? congratulations? how did you find the time and desire for this" + "Let's do something." +
-                            "Let's do one thing. send me through one of these sites a message with a screenshot of this message  and the first one I get I'll send a gift. " +
+                    "You are getting closer , keep up the good work!",
+                    "But what...-? congratulations? how did you find the time and will for this? " + "Let's do something. " +
+                            "Let's do one thing: send me through one of these sites a message with a screenshot of this message,  and the first one I get I'll send a gift. " +
                             "(I can't do more, this game is free and without many pretensions). " +
-                            "Thank you very, very much.!"
+                            "Thank you very, very much!!!!!!"
             };
         }
     }

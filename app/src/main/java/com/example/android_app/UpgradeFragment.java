@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.ClickUpgrade;
 import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
@@ -149,7 +150,12 @@ public class UpgradeFragment extends Fragment {
             if (upgrades == null || upgrades.isEmpty()) {
                 Log.d("Fragment End Game ->", "No hay más elementos en la lista." + upgradeType);
                 progressBar.setVisibility(View.GONE);
-                Game.getInstance().EndGame(upgradeType);
+                if(!AppDataBase.getInstance().getMode99()){
+                    Game.getInstance().EndGame(upgradeType, context, container);
+
+                }else{
+                    Game.getInstance().SecretEnding(upgradeType);
+                }
                 return;
             }
 
@@ -501,38 +507,6 @@ public class UpgradeFragment extends Fragment {
     };
 
 
-    void SecretEnding(){
-        boolean areAllActivePurchased= false;
-        boolean areAllPassivePurchased= false;
-
-        if(upgradeType.equals("Active")){
-            //crear un alert dialog
-            if(areAllPassivePurchased) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[4]);
-                areAllActivePurchased = true;
-            }else{
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
-                areAllActivePurchased = true;
-            }
-
-        }else if(upgradeType.equals("Passive")){
-            if(areAllActivePurchased){
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[4]);
-                areAllPassivePurchased = true;
-            }else{
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
-                areAllActivePurchased = true;
-            }
-        }
-    }
 
     void changeImg(String idUserLevel, ImageView image){
         switch (idUserLevel){

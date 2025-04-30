@@ -40,4 +40,13 @@ public class GameViewModel extends AndroidViewModel {
     public void updateUserLevel(String idUpgrade, String level) {
         userRepository.updateUserLevel(idUpgrade, level);
     }
+
+    // Resetear datos del usuario
+    public void resetUserStats() {
+        userRepository.resetUserStats();
+        userRepository.resetUserUpgrades();
+
+        // Después de resetear, recargar los datos del usuario
+        getUserStats("User1");
+    }
 }

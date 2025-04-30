@@ -1,19 +1,18 @@
 package com.example.android_app.RoomDB;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import com.example.android_app.Game;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,9 +35,18 @@ public abstract class AppDataBase extends RoomDatabase {
 
     //Configurar la database
     private static volatile AppDataBase instance;
+    public static AppDataBase getInstance() {
+        return instance;
+    }
+
+    private static  Context userRepositoryContext;
+    static  int numberOfUpgrades=2; //18;
+    static  int numberOfLevels=2; //3;
+    boolean mode99= false;
 
     public static AppDataBase getDatabase(final Context context) {
         if (instance == null) {
+            userRepositoryContext = context.getApplicationContext();
             instance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDataBase.class, "app_database")
                     //.fallbackToDestructiveMigration()
@@ -70,6 +78,15 @@ public abstract class AppDataBase extends RoomDatabase {
         return instance;
     }
     //endregion
+    public boolean getMode99(){return mode99;}
+    public void Mode99(){
+        Game.getInstance().setAreAllActivePurchased(false);
+        Game.getInstance().setAreAllPassivePurchased(false);
+        numberOfUpgrades=6;
+        numberOfLevels=6;
+        databaseWriteExecutor.execute(() ->  initData(userRepositoryContext));
+        mode99 = true;
+    }
 
     private static void initData(Context context) {
         AppDataBase db = getDatabase(context);
@@ -82,7 +99,7 @@ public abstract class AppDataBase extends RoomDatabase {
         List<ClickUpgrade> activeUpgrades = new ArrayList<>();
         List<ClickUpgrade> passiveUpgrades = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) {
+        for (int i = 1; i <= numberOfUpgrades; i++) {
             activeUpgrades.add(new ClickUpgrade("ua_" + i, "Mejora" + i, 0, "", "Active"));
             passiveUpgrades.add(new ClickUpgrade("up_" + i, "Mejora" + i, 0, "", "Passive"));
         }
@@ -105,15 +122,12 @@ public abstract class AppDataBase extends RoomDatabase {
 
         double minEffect = 0.05;
 
-
-
-
-
 //Niveles de las mejoras
         List<Level> levels = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) { // mejora
-            for (int j = 1; j <= 3; j++) { //  nivel
+
+        for (int i = 1; i <= numberOfUpgrades; i++) { // mejora
+            for (int j = 1; j <= numberOfLevels; j++) { //  nivel
 
                 double cost = baseCost * Math.pow(growthRate, (i - 1)) * Math.pow(upgradeMultiplier, (j - 1));
                 double costPassive = baseCostP * Math.pow(growthRateP, (i - 1)) * Math.pow(upgradeMultiplierP, (j - 1));
@@ -145,7 +159,7 @@ public abstract class AppDataBase extends RoomDatabase {
 
         List<UpgradesUser> upgradesUsers = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) {
+        for (int i = 1; i <= numberOfUpgrades; i++) {
             upgradesUsers.add(new UpgradesUser("upgradeuserActive_" + i, "ua_" + i, "0", "User1"));
             upgradesUsers.add(new UpgradesUser("upgradeuserPassive_" + i, "up_" + i, "0", "User1"));
         }

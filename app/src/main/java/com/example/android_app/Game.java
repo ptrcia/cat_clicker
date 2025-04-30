@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,6 +37,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.GameViewModel;
 
 import java.util.Random;
@@ -403,8 +405,9 @@ public class Game extends AppCompatActivity {
         });
     }
 
-    void EndGame(String upgradeType){
-        Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado");
+    //region End Game
+    void EndGame(String upgradeType, Context context, ViewGroup container){
+        //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado");
 
 
         if(upgradeType.equals("Active")){
@@ -414,6 +417,15 @@ public class Game extends AppCompatActivity {
                 builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[0]);
                 builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[6]);
                 builder.setPositiveButton(LanguageTranslator.getInstance().getFinalDialog()[4], (dialog, which) -> {
+                    gameViewModel.resetUserStats();
+
+                            Intent intent = new Intent(Game.this, MainActivity.class);
+                            startActivity(intent);
+                            //getSupportFragmentManager().popBackStack();
+                           // isFragmentOpen = false;
+                            //AnimationManager.getInstance().moveLayoutButtons(context,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
+                            finish();
+                            AppDataBase.getInstance().Mode99();
                     dialog.dismiss();
                 })
                 .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
@@ -424,7 +436,7 @@ public class Game extends AppCompatActivity {
                 });
                 builder.show();
                 areAllActivePurchased = true;
-                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las pasivas están compradas");
+                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las pasivas están compradas");
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[0]);
@@ -434,7 +446,7 @@ public class Game extends AppCompatActivity {
                         });
                 builder.show();
                 areAllActivePurchased = true;
-                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las pasivas NO están compradas");
+                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las pasivas NO están compradas");
             }
 
         }else if(upgradeType.equals("Passive")){
@@ -443,8 +455,16 @@ public class Game extends AppCompatActivity {
                 builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[1]);
                 builder.setMessage(LanguageTranslator.getInstance().getFinalDialog()[6 ]);
                 builder.setPositiveButton(LanguageTranslator.getInstance().getFinalDialog()[4], (dialog, which) -> {
-                            dialog.dismiss();
-                        })
+                    gameViewModel.resetUserStats();
+                            Intent intent = new Intent(Game.this, MainActivity.class);
+                            startActivity(intent);
+                            //getSupportFragmentManager().popBackStack();
+                            // isFragmentOpen = false;
+                            //AnimationManager.getInstance().moveLayoutButtons(context,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
+                            finish();
+                            AppDataBase.getInstance().Mode99();
+                    dialog.dismiss();
+                })
                         .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
                             Intent intent = new Intent(Game.this, MainActivity.class);
                             startActivity(intent);
@@ -453,7 +473,7 @@ public class Game extends AppCompatActivity {
                         });
                 builder.show();
                 areAllPassivePurchased = true;
-                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las activas están compradas");
+                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las activas están compradas");
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[1]);
@@ -462,12 +482,101 @@ public class Game extends AppCompatActivity {
                     dialog.dismiss();
                 });
                 builder.show();
-                areAllActivePurchased = true;
-                Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las activas NO están compradas");
+                areAllPassivePurchased = true;
+                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las activas NO están compradas");
             }
         }
     }
 
+
+    void SecretEnding(String upgradeType){
+
+        if(upgradeType.equals("Active")){
+            //crear un alert dialog
+            if(areAllPassivePurchased) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[3]);
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                builder.show();
+                areAllActivePurchased = true;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                builder.setNegativeButton("twitter", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://x.com/PatricGracia"));
+                        startActivity(browserIntent);
+                    }
+                });
+                builder.setNeutralButton("e-mail", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:patriciagraciaartero@gmail.com"));
+                        startActivity(browserIntent);
+                    }
+                });
+                builder.setPositiveButton("instagram", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/ptrcgracia"));
+                        startActivity(browserIntent);
+                    }
+                });
+                builder.show();
+                areAllActivePurchased = true;
+            }
+
+        }else if(upgradeType.equals("Passive")){
+            if(areAllActivePurchased){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[3]);
+                builder.setNegativeButton("twitter", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://x.com/PatricGracia"));
+                        startActivity(browserIntent);
+                    }
+                });
+                builder.setNeutralButton("e-mail", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:patriciagraciaartero@gmail.com"));
+                        startActivity(browserIntent);
+                    }
+                });
+                builder.setPositiveButton("instagram", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EMPEZAR
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/ptrcgracia"));
+                        startActivity(browserIntent);
+                    }
+                });
+
+                builder.show();
+                areAllPassivePurchased = true;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                builder.show();
+                areAllPassivePurchased = true;
+            }
+        }
+    }
+    //endregion
+
+
+    public void setAreAllActivePurchased(boolean areAllActivePurchased) {this.areAllActivePurchased = areAllActivePurchased;}
+    public void setAreAllPassivePurchased(boolean areAllPassivePurchased) {this.areAllPassivePurchased = areAllPassivePurchased;}
 
     @Override
     protected void onResume() {
