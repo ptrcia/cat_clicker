@@ -79,7 +79,11 @@ public class Game extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_game);
+
+        if(!AppDataBase.getInstance().getMode99()) setContentView(R.layout.activity_game);
+        else{setContentView(R.layout.activity_game_mode99);}
+
+        //setContentView(R.layout.activity_game);
         instance = this;
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -229,7 +233,8 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            buttonLanguageFlech.setImageResource(R.drawable.back);
+                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
                     isLanguageOpen = false;
@@ -237,7 +242,8 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-350).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            buttonLanguageFlech.setImageResource(R.drawable.forward);
+                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            else{buttonLanguageFlech.setImageResource(R.drawable.forward);}
 
                         }
                     });
@@ -319,12 +325,14 @@ public class Game extends AppCompatActivity {
         if(isMuted){
             Log.d("Clicker-> ", "Queremos audio");
             //Queremos audio
-            buttonVolume.setImageResource(R.drawable.volume);
+            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.volume99);
+            }else{buttonVolume.setImageResource(R.drawable.volume);}
             audioManager.setAction("playMusic");
         }else{
             Log.d("Clicker-> ", "No queremos audio");
             //No queremos audio
-            buttonVolume.setImageResource(R.drawable.mute);
+            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.mute99);
+            }else{buttonVolume.setImageResource(R.drawable.mute);}
             audioManager.setAction("pauseMusic");
         }
         isMuted = !isMuted;

@@ -92,9 +92,9 @@
 
         <LinearLayout
             android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:orientation="vertical"
-            android:layout_marginBottom="200dp"
+            android:layout_marginBottom="150dp"
             android:layout_gravity="center|bottom"
             >
 
@@ -103,6 +103,8 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="25sp"
+
                 android:text="New Game"
                 android:fontFamily="@font/parkinsans_bold"
                 />
@@ -112,45 +114,22 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="25sp"
+
                 android:text="Continue"
                 android:fontFamily="@font/parkinsans_bold"
                 />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <!--             android:layout_marginBottom="70dp"
+            <Button
+                android:id="@+id/buttonExit"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exit"
+                android:fontFamily="@font/parkinsans_bold"
+                android:textSize="25sp"
 
-                <ImageButton
-                    android:id="@+id/info"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:background="@android:color/transparent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/info"
-                    />-->
-                <Button
-                    android:id="@+id/buttonExit"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Exit"
-                    android:fontFamily="@font/parkinsans_bold"
-                    android:layout_marginHorizontal="30dp"
-                    />
-                <!--             android:layout_marginBottom="70dp"
-
-                <ImageButton
-                    android:id="@+id/buttonVolume2"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:background="@android:color/transparent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/volume" />-->
-            </LinearLayout>
+                android:layout_marginHorizontal="30dp"
+                />
 
         </LinearLayout>
 
@@ -169,23 +148,23 @@
             android:layout_width="150dp"
             android:layout_height="90dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="90dp"
+            android:layout_marginBottom="100dp"
             android:gravity="center"
             android:text="Cat"
             android:textColor="#F28482"
-            android:textSize="90sp"
+            android:textSize="100sp"
             android:fontFamily="@font/glina_script"
             />
         <TextView
             android:id="@+id/titulo2"
-            android:layout_width="250dp"
-            android:layout_height="80dp"
+            android:layout_width="350dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginBottom="40dp"
             android:gravity="center"
             android:text="Clicker"
             android:textColor="#F28482"
-            android:textSize="80sp"
+            android:textSize="100sp"
             android:fontFamily="@font/glina_script"
             />
 
