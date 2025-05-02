@@ -80,8 +80,15 @@ public class Game extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        if(!AppDataBase.getInstance().getMode99()) setContentView(R.layout.activity_game);
-        else{setContentView(R.layout.activity_game_mode99);}
+        //mde99
+        AppDataBase.getInstance().loadMode99Preference(this);
+        if(!AppDataBase.getInstance().loadMode99Preference(this)) {
+            setContentView(R.layout.activity_game);
+        } else{
+            setContentView(R.layout.activity_game_mode99);
+        }
+        Log.d("Mode99", "game "+        AppDataBase.getInstance().loadMode99Preference(this));
+
 
         //setContentView(R.layout.activity_game);
         instance = this;
@@ -113,11 +120,13 @@ public class Game extends AppCompatActivity {
         Intent playIntent = new Intent(this, AudioManager.class);
         isMuted = AudioManager.isMutedMusic();
         if(isMuted){
-            buttonVolume.setImageResource(R.drawable.mute);
+            if(AppDataBase.getInstance().loadMode99Preference(this)){buttonVolume.setImageResource(R.drawable.mute99);}
+            else{buttonVolume.setImageResource(R.drawable.mute);}
             playIntent.setAction("pauseMusic");
             startService(playIntent);
         }else{
-            buttonVolume.setImageResource(R.drawable.volume);
+            if(AppDataBase.getInstance().loadMode99Preference(this)){buttonVolume.setImageResource(R.drawable.volume99);}
+            else{buttonVolume.setImageResource(R.drawable.volume);}
             playIntent.setAction("playMusic");
             startService(playIntent);
         }
@@ -233,7 +242,7 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
@@ -242,7 +251,7 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-350).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.back99);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.forward);}
 
                         }
@@ -429,11 +438,8 @@ public class Game extends AppCompatActivity {
 
                             Intent intent = new Intent(Game.this, MainActivity.class);
                             startActivity(intent);
-                            //getSupportFragmentManager().popBackStack();
-                           // isFragmentOpen = false;
-                            //AnimationManager.getInstance().moveLayoutButtons(context,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
                             finish();
-                            AppDataBase.getInstance().Mode99();
+                            AppDataBase.getInstance().Mode99(this);
                     dialog.dismiss();
                 })
                 .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
@@ -470,7 +476,7 @@ public class Game extends AppCompatActivity {
                             // isFragmentOpen = false;
                             //AnimationManager.getInstance().moveLayoutButtons(context,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
                             finish();
-                            AppDataBase.getInstance().Mode99();
+                            AppDataBase.getInstance().Mode99(this);
                     dialog.dismiss();
                 })
                         .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {

@@ -59,8 +59,16 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         //Poner una vista dependiendo del modo
-        if(!AppDataBase.getInstance().getMode99()) setContentView(R.layout.activity_main);
-        else{setContentView(R.layout.activity_main_mode99);}
+        AppDataBase.getInstance().loadMode99Preference(this);
+        if(!AppDataBase.getInstance().loadMode99Preference(this)){
+            setContentView(R.layout.activity_main);
+        }
+        else{
+            setContentView(R.layout.activity_main_mode99);
+        }
+        Log.d("Mode99", "main  "+        AppDataBase.getInstance().loadMode99Preference(this));
+
+
 
         instance = this;
 
@@ -189,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
                 if(isMuted){
                     //Queremos audio
                     Log.d("Clicker-> ", "Queremos audio");
-                    if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.volume99);
+                    if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.volume99);
                     }else{buttonVolume.setImageResource(R.drawable.volume);}
                     audioManager.setAction("playMusic");
                 }else{
                     //No queremos audio
                     Log.d("Clicker-> ", "No queremos audio");
-                    if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.mute99);
+                    if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.mute99);
                     }else{buttonVolume.setImageResource(R.drawable.mute);}
                     audioManager.setAction("pauseMusic");
                 }
@@ -218,7 +226,8 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            buttonLanguageFlech.setImageResource(R.drawable.back);
+                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
                     isLanguageOpen = false;
@@ -226,7 +235,9 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-550).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            buttonLanguageFlech.setImageResource(R.drawable.forward);
+                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            else{buttonLanguageFlech.setImageResource(R.drawable.forward);
+                            }
                         }
                     });
                     isLanguageOpen = true;
@@ -277,13 +288,13 @@ public class MainActivity extends AppCompatActivity {
         isMuted = AudioManager.isMutedMusic();
         Log.d("Clicker-> ", "isMuted antes de pulsar? mAIN->:   " + isMuted);
         if(isMuted){
-            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.mute99);
+            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.mute99);
             }else{buttonVolume.setImageResource(R.drawable.mute);}
             playIntent.setAction("pauseMusic");
             startService(playIntent);
         }else{
-            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.volume99);
-            }else{buttonVolume.setImageResource(R.drawable.volume99);}
+            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.volume99);
+            }else{buttonVolume.setImageResource(R.drawable.volume);}
             playIntent.setAction("playMusic");
             startService(playIntent);
         }

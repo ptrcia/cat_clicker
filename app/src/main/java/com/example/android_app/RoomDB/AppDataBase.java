@@ -1,6 +1,7 @@
 package com.example.android_app.RoomDB;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.room.Database;
@@ -43,6 +44,7 @@ public abstract class AppDataBase extends RoomDatabase {
     static  int numberOfUpgrades=2; //18;
     static  int numberOfLevels=2; //3;
     boolean mode99= false;
+    SharedPreferences sharedPreferences;
 
     public static AppDataBase getDatabase(final Context context) {
         if (instance == null) {
@@ -79,14 +81,32 @@ public abstract class AppDataBase extends RoomDatabase {
     }
     //endregion
     public boolean getMode99(){return mode99;}
-    public void Mode99(){
+    public void Mode99(Context context){
         Game.getInstance().setAreAllActivePurchased(false);
         Game.getInstance().setAreAllPassivePurchased(false);
         numberOfUpgrades=6;
         numberOfLevels=6;
         databaseWriteExecutor.execute(() ->  initData(userRepositoryContext));
         mode99 = true;
+        SaveMode99Preference(context);
     }
+
+    private void SaveMode99Preference(Context context) {
+        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("mode99", true);
+        editor.apply();
+    }
+    public boolean loadMode99Preference(Context context) {
+        if (context == null) {
+            Log.e("Mode99", "El contexto es nulo");
+            return false;
+        }
+        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("mode99", false); // false como valor predeterminado
+    }
+
+
 
     private static void initData(Context context) {
         AppDataBase db = getDatabase(context);

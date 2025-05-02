@@ -53,6 +53,8 @@ import android.widget.Toast;
 
 public class UpgradeFragment extends Fragment {
 
+    View rootView;
+
     private static final String ARG_UPGRADE_TYPE = "upgrade_type";
     UpgradeFragmentViewModel viewModel;
     ProgressBar progressBar;
@@ -81,8 +83,17 @@ public class UpgradeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("Clicker->", "UpgradeFragment inflando la vista");
-        View rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
+
+        context = getContext();
+        if (!AppDataBase.getInstance().loadMode99Preference(context)) {
+            //view.getRootView();
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
+        } else {
+            //view.getRootView();
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
+        }
+        //rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
+
         context = rootView.getContext();
         this.container = rootView.findViewById(R.id.container);
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
@@ -202,12 +213,56 @@ public class UpgradeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
+/*
+        // Asegurar que el contexto no es nulo
+        Context context = getContext();
+        if (context == null) {
+            Log.e("Mode99", "Context aún es nulo en onViewCreated.");
+            return; // Evita continuar con lógica inválida
+        }
+
+        Log.d("Mode99", "Contexto ahora está disponible.");
+        boolean mode99 = AppDataBase.getInstance().loadMode99Preference(context);
+        Log.d("Mode99", "Valor de mode99: " + mode99);
+
+        // Inflar el layout correcto según `mode99`
+        if (!AppDataBase.getInstance().loadMode99Preference(context)) {
+            //view.getRootView();
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
+        } else {
+            //view.getRootView();
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
+        }
+
+        Log.d("Mode99", "Fragment cargado con mode99: " + mode99);
+        */
+
     }
 
     //Volcado UI
     int textSize=17;
     private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, double cost, double effect) {
+        String colorbackgroud;
+        String titleUpgrade;
+        String costeffectbutton;
+        Typeface typeface;
 
+
+        if(AppDataBase.getInstance().loadMode99Preference(getContext()))
+        {
+            typeface = ResourcesCompat.getFont(context, R.font.hexagothic_display);
+            colorbackgroud = "#1D1616";
+            costeffectbutton = "#EA906C";
+            titleUpgrade = "#FFFFFF";
+
+        }else{
+
+            colorbackgroud = "#FFF8F0";
+            costeffectbutton = "#8f2d56";
+            titleUpgrade = "#000000";
+            typeface = ResourcesCompat.getFont(context, R.font.cleanow);
+
+        }
 
 
     //Main Layout
@@ -228,7 +283,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutImg.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutImg.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutImg.setBackgroundColor(Color.parseColor("#FFF8F0"));
+        verticalLayoutImg.setBackgroundColor(Color.parseColor(colorbackgroud));
 
         //Layout vertical para el texto y el botón
         LinearLayout verticalLayoutTextButton = new LinearLayout(context);
@@ -239,7 +294,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutTextButton.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutTextButton.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutTextButton.setBackgroundColor(Color.parseColor("#FFF8F0"));
+        verticalLayoutTextButton.setBackgroundColor(Color.parseColor(colorbackgroud));
 
 
         //Layout horizontal para el texto
@@ -301,9 +356,8 @@ public class UpgradeFragment extends Fragment {
         LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);
 
         newTitle.setTextSize(textSize);
-        Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.cleanow);
-        newTitle.setTypeface(typefaceTitle);
-        newTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
+        newTitle.setTypeface(typeface);
+        newTitle.setTextColor(Color.parseColor(titleUpgrade));
         newTitle.setGravity(Gravity.START);
 
         //Nivel
@@ -316,9 +370,8 @@ public class UpgradeFragment extends Fragment {
         newLevel.setLayoutParams(levelParams);
         newLevel.setText(idUserLevel);
         newLevel.setTextSize(textSize);
-        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.cleanow);
-        newLevel.setTypeface(typefaceLevel);
-        newLevel.setTextColor(Color.BLACK);
+        newLevel.setTypeface(typeface);
+        newLevel.setTextColor(Color.parseColor(titleUpgrade));
         newLevel.setGravity(Gravity.CENTER);
 
         //Coste
@@ -331,9 +384,8 @@ public class UpgradeFragment extends Fragment {
         newCost.setLayoutParams(costParams);
         newCost.setText(NumberFormatter.formatNumber(cost));
         newCost.setTextSize(textSize);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.cleanow);
-        newCost.setTypeface(typefaceCost);
-        newCost.setTextColor(Color.parseColor("#8f2d56"));
+        newCost.setTypeface(typeface);
+        newCost.setTextColor(Color.parseColor(costeffectbutton));
         newCost.setGravity(Gravity.CENTER);
 
         //Effect
@@ -347,9 +399,8 @@ public class UpgradeFragment extends Fragment {
         if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
         else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
         newEffect.setTextSize(textSize);
-        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.cleanow);
-        newEffect.setTypeface(typefaceEffect);
-        newEffect.setTextColor(Color.parseColor("#8f2d56"));
+        newEffect.setTypeface(typeface);
+        newEffect.setTextColor(Color.parseColor(costeffectbutton));
         newEffect.setGravity(Gravity.CENTER);
 
         //Button
@@ -383,7 +434,6 @@ public class UpgradeFragment extends Fragment {
 
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
         newButton.setTypeface(typeface);
         newButton.setGravity(Gravity.CENTER);
 
@@ -426,7 +476,7 @@ public class UpgradeFragment extends Fragment {
 
 
 //region Gestión de actualizar la compra de mejoras segun el score actualizado
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private void monitorButtonState(Button button) {
         Runnable buttonUpdater = new Runnable() {
             @Override

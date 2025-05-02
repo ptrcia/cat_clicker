@@ -22,6 +22,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.example.android_app.RoomDB.AppDataBase;
+
 public class AnimationManager {
 
     private static AnimationManager instance;
@@ -109,8 +111,15 @@ public class AnimationManager {
         TextView textView = new TextView(context);
         textView.setText(text);  // Establecer el texto
         textView.setTextSize(25);  // Ajusta el tamaño de la fuente
-        textView.setTextColor(Color.parseColor("#90CAF9"));
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
+        Typeface typeface;
+        if(AppDataBase.getInstance().loadMode99Preference(context)){
+            textView.setTextColor(Color.parseColor("#ffffff"));
+            typeface = ResourcesCompat.getFont(context, R.font.vixa);
+
+        }else {
+            textView.setTextColor(Color.parseColor("#90CAF9"));
+            typeface = ResourcesCompat.getFont(context, R.font.glina_script);
+        }
         textView.setTypeface(typeface);
 
         layout.addView(textView);
