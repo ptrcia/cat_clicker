@@ -1,11 +1,9 @@
 package com.example.android_app;
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +15,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
     GameViewModel gameViewModel;
     ScoreManager scoreManager;
     GyroscopeManager gyroscopeManager;
+    AudioManager audioManager;
     PassiveTimer timer;
     long closedTime;
     long openedTime;
@@ -32,18 +31,19 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         registerActivityLifecycleCallbacks(this);
         gameViewModel = new GameViewModel(this);
         scoreManager = ScoreManager.getInstance();
+        audioManager = AudioManager.getInstance(this);
         gyroscopeManager = new GyroscopeManager(getApplicationContext()); // Asegúrate de pasar un contexto válido
         timer = new PassiveTimer(scoreManager);
     }
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-        Log.d("Clicker->", "onActivityCreated");
+        Log.d("Clicker->", "onActivityCreated" + activity);
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-        Log.d("Clicker->", "onActivityStarted");
+        Log.d("Clicker->", "onActivityStarted"+ activity);
 
         if (activity instanceof Game) {
             timer.start();
@@ -86,7 +86,7 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        Log.d("Clicker->", "onActivityResumed");
+        Log.d("Clicker->", "onActivityResumed"+ activity);
 
         if (activity instanceof Game) {
             timer.start();
@@ -96,11 +96,12 @@ public class AppLifecycle extends Application implements Application.ActivityLif
         if (gyroscopeManager != null) {
             gyroscopeManager.startListening(); // Empieza a escuchar el giroscopio
         }
+        audioManager.playMusic();
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-        Log.d("Clicker->", "onActivityPaused");
+        Log.d("Clicker->", "onActivityPaused"+ activity);
 
         if (activity instanceof Game) {
             timer.stop();
@@ -111,15 +112,13 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             gyroscopeManager.stopListening(); // Detén la escucha para ahorrar recursos
         }
 
-        Intent playIntent = new Intent(this, AudioManager.class);
-        playIntent.setAction("pauseMusic");
-        startService(playIntent);
+        audioManager.pauseMusic();
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
 
-        Log.d("Clicker->", "onActivityStopped");
+        Log.d("Clicker->", "onActivityStopped"+ activity);
 
         if (activity instanceof Game) {
             timer.stop();
@@ -136,13 +135,14 @@ public class AppLifecycle extends Application implements Application.ActivityLif
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-        Log.d("Clicker->", "onActivityDestroyed");
+        Log.d("Clicker->", "onActivityDestroyed"+ activity);
         //guardo los datos del usuario
         //los datos de llos niveles a los que tiene cada mejora el ussuario se guardan cada vez que compro una mejora
         //control null
         if(activity instanceof Game){
             saveProgress();
         }
+        //audioManager.release();
     }
 
 

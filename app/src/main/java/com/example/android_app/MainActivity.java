@@ -1,6 +1,5 @@
 package com.example.android_app;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,10 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,8 +30,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
-
-    static boolean isMuted = false;
+    private AudioManager audioManager;
     GameViewModel gameViewModel;
     MainActivityViewModel mainActivityViewModel;
     boolean runStarted = false;
@@ -43,8 +41,17 @@ public class MainActivity extends AppCompatActivity {
     ImageButton buttonLanguageFlech;
     ImageButton buttonLanguage;
     LinearLayout horizontalFlech;
+    ImageView bottomImage;
+    ImageView topImage;
+    ImageView topImage1;
+    ImageView topImage2;
+    ImageButton buttonVolume;
 
 
+    //Audio
+    int[] icons;
+    boolean mutedMusic;
+    boolean mutedSFX;
     int[] catSounds = {R.raw.cat_purrs_01, R.raw.cat_purrs_02, R.raw.cat_purrs_03, R.raw.cat_purrs_04, R.raw.catpurrs, R.raw.catmeows, R.raw.cat_meows_02, R.raw.cat_meows_03, R.raw.cat_meows_04, R.raw.cat_meows_05, R.raw.cat_meows_06};
 
     boolean isLanguageOpen = false;
@@ -52,19 +59,26 @@ public class MainActivity extends AppCompatActivity {
         return instance;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
+        audioManager = AudioManager.getInstance(this);
+        //audioManager.initAudio();
+
         //Poner una vista dependiendo del modo
         AppDataBase.getInstance().loadMode99Preference(this);
         if(!AppDataBase.getInstance().loadMode99Preference(this)){
             setContentView(R.layout.activity_main);
-        }
-        else{
+        }else{
+            audioManager.mode99(this);
             setContentView(R.layout.activity_main_mode99);
+            bottomImage = findViewById(R.id.bottomImage);
+            topImage = findViewById(R.id.topImage);
+            topImage1 = findViewById(R.id.topImage1);
+            topImage2 = findViewById(R.id.topImage2);
+            AnimationManager.getInstance().gifMainMode99(bottomImage, topImage, topImage1, topImage2, this);
         }
         Log.d("Mode99", "main  "+        AppDataBase.getInstance().loadMode99Preference(this));
 
@@ -82,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonExit = findViewById(R.id.buttonExit);
         butttonContinue = findViewById(R.id.buttonContinue);
         ImageButton buttonInfo = findViewById(R.id.info);
-        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+        buttonVolume = findViewById(R.id.buttonVolume);
         titleButton = findViewById(R.id.titleButton);
         title1 = findViewById(R.id.titulo);
         title2 = findViewById(R.id.titulo2);
@@ -90,18 +104,16 @@ public class MainActivity extends AppCompatActivity {
         buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
         horizontalFlech = findViewById(R.id.horizontalFlech);
 
-
-
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
-
+        //Audio
+        startAudio();
 
         //idioma
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator.getInstance().loadLanguagePreference();
         LanguageTranslator.getInstance().Translate(this, LanguageTranslator.getInstance().getCurrentLanguage());
-        //LanguageTranslator.getInstance().getDialogTexts();
 
         //animaicon del tituloi
         AnimationManager.getInstance().TitleAnimation(title1);
@@ -189,31 +201,25 @@ public class MainActivity extends AppCompatActivity {
         buttonVolume.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent audioManager = new Intent(MainActivity.this, AudioManager.class);
-                isMuted = AudioManager.isMutedMusic();
-                Log.d("Clicker-> ", "isMuted antes de pulsar?->:   " + isMuted);
 
+                int currentActiveState = audioManager.getActiveAudioState();
+                int nextActiveState = (currentActiveState + 1) % icons.length;
 
-                if(isMuted){
-                    //Queremos audio
-                    Log.d("Clicker-> ", "Queremos audio");
-                    if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.volume99);
-                    }else{buttonVolume.setImageResource(R.drawable.volume);}
-                    audioManager.setAction("playMusic");
-                }else{
-                    //No queremos audio
-                    Log.d("Clicker-> ", "No queremos audio");
-                    if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.mute99);
-                    }else{buttonVolume.setImageResource(R.drawable.mute);}
-                    audioManager.setAction("pauseMusic");
+                buttonVolume.setImageResource(icons[nextActiveState]);
+
+                switch (nextActiveState) {
+                    case 0: audioManager.playAll(); break;
+                    case 1: audioManager.onlyMusic(); break;
+                    case 2: audioManager.onlySFX(); break;
+                    case 3: audioManager.muteAll(); break;
                 }
-                isMuted = !isMuted;
-                AudioManager.setMutedMusic(isMuted);
-                Log.d("Clicker-> ", "isMuted despues de pulsar?->:   " + isMuted);
-
-                startService(audioManager);
+                // Actualizar el estado activo en AudioManager
+                audioManager.setActiveAudioState(nextActiveState);
+                audioManager.saveAudioState();
             }
         });
+
+
         //language
         buttonLanguageFlech.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.back99);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
@@ -235,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-550).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().getMode99()){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.forward);
                             }
                         }
@@ -256,48 +262,68 @@ public class MainActivity extends AppCompatActivity {
         titleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AudioManager.isMutedMusic()) {
-                    Intent playIntent = new Intent(MainActivity.this, AudioManager.class);
-                    playIntent.setAction("playSFX");
-                    playIntent.putExtra("resourceID", catSounds[new Random().nextInt(catSounds.length)]);
-                    startService(playIntent);
+                if (!audioManager.isMutedSFX()) {
+                    try {
+                        audioManager.playSFX(catSounds[new Random().nextInt(catSounds.length)]);
+                    } catch (Exception e) {
+                        Log.e("AudioManager", "Excepción al hacer clic en titleButton: " + e.getMessage(), e);
+
+                    }
                 }
             }
         });
 
     }
 
+    private void startAudio(){
+        if(audioManager.musicAudio==null){
+            audioManager.initAudio();
+        }
+
+        if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){
+            icons = new int[]{R.drawable.volume99, R.drawable.musicon99, R.drawable.musicoff99, R.drawable.mute99};
+        }else{
+            icons = new int[]{R.drawable.volume, R.drawable.musicon, R.drawable.musicoff, R.drawable.mute};
+        }
+
+        mutedMusic = audioManager.isMutedMusic();
+        mutedSFX = audioManager.isMutedSFX();
+        int activeState = audioManager.getActiveAudioState();
+        // Actualizar la interfaz de usuario según el estado del audio
+        Log.d("AudioManager", "audio_active_state: " + activeState);
+
+        switch (activeState) {
+            case 0: audioManager.playAll();break;
+            case 1: audioManager.onlyMusic(); break;
+            case 2: audioManager.onlySFX(); break;
+            case 3: audioManager.muteAll(); break;
+        }
+
+
+        if (!audioManager.isMutedMusic()) {
+            audioManager.playAll(); // O solo playMusic()
+        }
+
+        updateVolumeIcon();
+
+    }
+
+    private void updateVolumeIcon() {
+        int audioState = audioManager.getActiveAudioState();
+        buttonVolume = findViewById(R.id.buttonVolume);
+        if (buttonVolume != null && icons != null && audioState >= 0 && audioState < icons.length) {
+            buttonVolume.setImageResource(icons[audioState]);
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
 
-
         SharedPreferences preferences = getSharedPreferences("GameData", MODE_PRIVATE);
         runStarted = preferences.getBoolean("runStarted", false);
-        Log.d("Clicker->", "HOLA A VER SI FUNCIONA isFirstRun -> " + runStarted);
 
-        if (!runStarted) {
-            butttonContinue.setEnabled(false);
-        }else{
-            butttonContinue.setEnabled(true);
-        }
-
-        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
-
-        Intent playIntent = new Intent(this, AudioManager.class);
-        isMuted = AudioManager.isMutedMusic();
-        Log.d("Clicker-> ", "isMuted antes de pulsar? mAIN->:   " + isMuted);
-        if(isMuted){
-            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.mute99);
-            }else{buttonVolume.setImageResource(R.drawable.mute);}
-            playIntent.setAction("pauseMusic");
-            startService(playIntent);
-        }else{
-            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonVolume.setImageResource(R.drawable.volume99);
-            }else{buttonVolume.setImageResource(R.drawable.volume);}
-            playIntent.setAction("playMusic");
-            startService(playIntent);
-        }
+        startAudio();
+        updateVolumeIcon();
     }
     public void resetGame() {
         SharedPreferences preferences = getSharedPreferences("GameData", MODE_PRIVATE);

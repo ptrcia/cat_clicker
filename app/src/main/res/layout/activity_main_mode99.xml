@@ -76,18 +76,38 @@
             android:layout_width="match_parent"
             android:layout_marginBottom="-5dp"
             android:layout_height="100dp"
-            android:src="@drawable/upgradecat18"
+            android:src="@drawable/campfire"
             android:layout_gravity="bottom">
         </ImageView>
 
         <ImageView
             android:id="@+id/topImage"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_marginTop="-5dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/upgradecat13"
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+            android:layout_gravity="top|start">
+        </ImageView>
+        <ImageView
+            android:id="@+id/topImage1"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+            android:layout_gravity="top|end">
+        </ImageView>
+        <ImageView
+            android:id="@+id/topImage2"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
 
-            android:layout_gravity="top">
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+
+            android:layout_gravity="top|center">
         </ImageView>
 
 

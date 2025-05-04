@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 public class ScoreManager {
+    private AudioManager audioManager;
 
     private double clickValue=1;
     private double passiveValue=0;
@@ -96,11 +97,10 @@ public class ScoreManager {
 
     void checkAudio(Context context){
         //Hacer sonar
-        if (!AudioManager.isMutedMusic()) {
-            Intent playIntent = new Intent(context, AudioManager.class);
-            playIntent.setAction("playSFX");
-            playIntent.putExtra("resourceID", R.raw.purchase);
-            context.startService(playIntent);
+        audioManager = AudioManager.getInstance(context);
+
+        if (!audioManager.isMutedSFX()) {
+            audioManager.playSFX(R.raw.purchase);
         }
     }
 

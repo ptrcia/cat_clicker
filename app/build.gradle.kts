@@ -63,7 +63,10 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
-    //noinspection KaptUsageInsteadOfKsp
+    //glide
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+
     kapt(libs.room.compiler) // para room
 
     implementation(libs.gson)

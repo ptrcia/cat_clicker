@@ -1,9 +1,7 @@
 package com.example.android_app;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,11 +18,9 @@ import android.util.Log;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,8 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 public class UpgradeFragment extends Fragment {
 
@@ -86,13 +79,10 @@ public class UpgradeFragment extends Fragment {
 
         context = getContext();
         if (!AppDataBase.getInstance().loadMode99Preference(context)) {
-            //view.getRootView();
             rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
         } else {
-            //view.getRootView();
             rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
         }
-        //rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
 
         context = rootView.getContext();
         this.container = rootView.findViewById(R.id.container);
@@ -161,7 +151,7 @@ public class UpgradeFragment extends Fragment {
             if (upgrades == null || upgrades.isEmpty()) {
                 Log.d("Fragment End Game ->", "No hay más elementos en la lista." + upgradeType);
                 progressBar.setVisibility(View.GONE);
-                if(!AppDataBase.getInstance().getMode99()){
+                if(!AppDataBase.getInstance().loadMode99Preference(context)){
                     Game.getInstance().EndGame(upgradeType, context, container);
 
                 }else{
@@ -213,30 +203,6 @@ public class UpgradeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
-/*
-        // Asegurar que el contexto no es nulo
-        Context context = getContext();
-        if (context == null) {
-            Log.e("Mode99", "Context aún es nulo en onViewCreated.");
-            return; // Evita continuar con lógica inválida
-        }
-
-        Log.d("Mode99", "Contexto ahora está disponible.");
-        boolean mode99 = AppDataBase.getInstance().loadMode99Preference(context);
-        Log.d("Mode99", "Valor de mode99: " + mode99);
-
-        // Inflar el layout correcto según `mode99`
-        if (!AppDataBase.getInstance().loadMode99Preference(context)) {
-            //view.getRootView();
-            rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
-        } else {
-            //view.getRootView();
-            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
-        }
-
-        Log.d("Mode99", "Fragment cargado con mode99: " + mode99);
-        */
-
     }
 
     //Volcado UI
@@ -263,7 +229,6 @@ public class UpgradeFragment extends Fragment {
             typeface = ResourcesCompat.getFont(context, R.font.cleanow);
 
         }
-
 
     //Main Layout
         LinearLayout mainLayout = new LinearLayout(context);
@@ -419,18 +384,10 @@ public class UpgradeFragment extends Fragment {
             newButton.setText("Upgrade");
 
         }
-        //newButton.setText("mejorar");
         newButton.setAllCaps(false);
         newButton.setId(View.generateViewId());
         buttonId = newButton.getId();
         monitorButtonState(newButton);
-
-        /*if(userHasEnoughScore(cost)) {
-            newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
-
-        }else{
-            newButton.setBackgroundColor(Color.parseColor("#9b9b9b"));
-        }*/
 
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));

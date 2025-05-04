@@ -2,15 +2,13 @@ package com.example.android_app;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +27,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.GameViewModel;
 
@@ -45,7 +43,8 @@ import java.util.Random;
 public class Game extends AppCompatActivity {
 
     private static Game instance;
-    static boolean isMuted ;
+    private AudioManager audioManager;
+
     private GyroscopeManager gyroscopeManager;
     private ImageView currentImage;
     GameViewModel gameViewModel;
@@ -56,7 +55,6 @@ public class Game extends AppCompatActivity {
     TextView catBonusText;
     TextView catBonusNumber;
     ImageButton buttonLanguageFlech;
-    //ImageButton buttonLanguage;
     LinearLayout horizontalFlech;
     ScoreManager scoreManager;
     FrameLayout mainLayout;
@@ -64,6 +62,13 @@ public class Game extends AppCompatActivity {
 
     boolean areAllActivePurchased= false;
     boolean areAllPassivePurchased= false;
+
+    //volume
+    boolean mutedMusic;
+    boolean mutedSFX;
+    int[] icons;
+    ImageButton buttonVolume;
+
 
     String user = "User1";
     int catCount;
@@ -79,6 +84,7 @@ public class Game extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        audioManager = AudioManager.getInstance(this);
 
         //mde99
         AppDataBase.getInstance().loadMode99Preference(this);
@@ -88,7 +94,6 @@ public class Game extends AppCompatActivity {
             setContentView(R.layout.activity_game_mode99);
         }
         Log.d("Mode99", "game "+        AppDataBase.getInstance().loadMode99Preference(this));
-
 
         //setContentView(R.layout.activity_game);
         instance = this;
@@ -100,10 +105,8 @@ public class Game extends AppCompatActivity {
         Button buttonPassives = findViewById(R.id.buttonPassives);
         Button buttonActives = findViewById(R.id.buttonActives);
         ImageButton buttonClickScore = findViewById(R.id.buttonClickeableCat);
-        ImageButton buttonVolume = findViewById(R.id.buttonVolume);
+        buttonVolume = findViewById(R.id.buttonVolume);
         View container = findViewById(R.id.container_layout);
-
-
         mainLayout = findViewById(R.id.mainLayout);
         textScore = findViewById(R.id.scoreText);
         clickValueText = findViewById(R.id.clickValueText);
@@ -113,24 +116,15 @@ public class Game extends AppCompatActivity {
         catBonusNumber = findViewById(R.id.catBonusNumber);
         scoreManager = ScoreManager.getInstance();
         linearBottom = findViewById(R.id.linearBottom);
-       // buttonLanguage = findViewById(R.id.buttonLanguage);
         buttonLanguageFlech = findViewById(R.id.buttonLanguageFlech);
         horizontalFlech = findViewById(R.id.horizontalFlech);
+
+
         //region Audio
-        Intent playIntent = new Intent(this, AudioManager.class);
-        isMuted = AudioManager.isMutedMusic();
-        if(isMuted){
-            if(AppDataBase.getInstance().loadMode99Preference(this)){buttonVolume.setImageResource(R.drawable.mute99);}
-            else{buttonVolume.setImageResource(R.drawable.mute);}
-            playIntent.setAction("pauseMusic");
-            startService(playIntent);
-        }else{
-            if(AppDataBase.getInstance().loadMode99Preference(this)){buttonVolume.setImageResource(R.drawable.volume99);}
-            else{buttonVolume.setImageResource(R.drawable.volume);}
-            playIntent.setAction("playMusic");
-            startService(playIntent);
-        }
+        startAudio();
         //endregion
+
+
 
         //Animaciones iniciales
         AnimationManager.getInstance().initialize(this);
@@ -144,7 +138,7 @@ public class Game extends AppCompatActivity {
         catCount = 0;
 
         //Giroscopio
-        gyroscopeManager = new GyroscopeManager(this);
+        //gyroscopeManager = new GyroscopeManager(this);
 
         //RoomDB
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
@@ -159,7 +153,6 @@ public class Game extends AppCompatActivity {
                 Log.d("Clicker->", "1.PassiveValue actualizado: " + scoreManager.getPassiveValue());
                 Log.d("Clicker->", "2.Después de setear los valores: Passive " + scoreManager.getPassiveValue() +
                         " Active " + scoreManager.getClickValue() + " Score " + scoreManager.getScore());
-
 
                 UpdateScoreText();
                 scoreManager.applyTimeBetweenSesions( ((AppLifecycle) getApplication()).getElapsedTime(), scoreManager.getScore());
@@ -194,15 +187,17 @@ public class Game extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // Audio
-                    if (!AudioManager.isMutedMusic()) {
-                        Intent playIntent = new Intent(Game.this, AudioManager.class);
-                        playIntent.setAction("playSFX");
-                        playIntent.putExtra("resourceID", R.raw.tap);
-                        startService(playIntent);
+                    if (!audioManager.isMutedSFX()) {
+                        audioManager.playSFX(R.raw.tap);
                     }
 
                     // Animación de escalado
                     AnimationManager.getInstance().Scaling(buttonClickScore);
+
+                    //Mode99
+                    if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
+                        buttonClickScore.setImageResource(R.drawable.catopen);
+                    }
 
                     // Coordenadas del dedo
                     float x = event.getRawX();
@@ -217,6 +212,10 @@ public class Game extends AppCompatActivity {
                     UpdateScoreText();
 
                     return true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
+                        buttonClickScore.setImageResource(R.drawable.catclose);
+                    }
                 }
                 return false;
             }
@@ -227,7 +226,30 @@ public class Game extends AppCompatActivity {
         buttonVolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkAudio(buttonVolume);
+                int currentActiveState = audioManager.getActiveAudioState();
+                Log.d("mode99", " currentActiveState: " + currentActiveState);
+                int nextActiveState = (currentActiveState + 1) % icons.length;
+                Log.d("mode99", " nextActiveState: " + nextActiveState);
+
+                buttonVolume.setImageResource(icons[nextActiveState]);
+
+                switch (nextActiveState) {
+                    case 0: // Estado 0: Suenan música y efectos (índice 0)
+                        audioManager.playAll();
+                        break;
+                    case 1: // Estado 1: Solo música (índice 1)
+                        audioManager.onlyMusic();
+                        break;
+                    case 2: // Estado 2: Solo efectos (índice 2)
+                        audioManager.onlySFX();
+                        break;
+                    case 3: // Estado 3: Mute total (índice 3)
+                        audioManager.muteAll();
+                        break;
+                }
+                // Actualizar el estado activo en AudioManager
+                audioManager.setActiveAudioState(nextActiveState);
+                audioManager.saveAudioState();
             }
         });
         //language
@@ -263,6 +285,39 @@ public class Game extends AppCompatActivity {
 
         //endregion
     }
+
+    private void startAudio(){
+        Log.d("AudioManager", "el game pasa por aqui al volver a hacerse");
+        if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
+            icons = new int[]{R.drawable.volume99, R.drawable.musicon99, R.drawable.musicoff99, R.drawable.mute99};
+        }else{
+            icons = new int[]{R.drawable.volume, R.drawable.musicon, R.drawable.musicoff, R.drawable.mute};
+        }
+
+        mutedMusic = audioManager.isMutedMusic();
+        mutedSFX = audioManager.isMutedSFX();
+        int activeState = audioManager.getActiveAudioState();
+        // Actualizar la interfaz de usuario según el estado del audio
+        Log.d("mode99", "main - onCreate -> Leído audio_active_state: " + activeState);
+
+        switch (activeState) {
+            case 0: audioManager.playAll(); break;
+            case 1: audioManager.onlyMusic(); break;
+            case 2: audioManager.onlySFX(); break;
+            case 3: audioManager.muteAll(); break;
+        }
+        updateVolumeIcon();
+
+    }
+
+    private void updateVolumeIcon() {
+        int audioState = audioManager.getActiveAudioState();
+        buttonVolume = findViewById(R.id.buttonVolume);
+        if (buttonVolume != null && icons != null && audioState >= 0 && audioState < icons.length) {
+            buttonVolume.setImageResource(icons[audioState]);
+        }
+    }
+
     //region Imagen
 
     //imgLayout
@@ -286,7 +341,12 @@ public class Game extends AppCompatActivity {
         ));
         String resourceName = "upgradecat" + id;
         int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
-        newImage.setImageResource(resourceId); // Imagen del gatito (reemplaza con tu recurso)
+        if(!AppDataBase.getInstance().loadMode99Preference(context)){
+            newImage.setImageResource(resourceId);
+        }else{
+            //newImage.setImageResource(R.drawable.fire);
+            Glide.with(context).asGif().load(R.drawable.fire).into(newImage);
+        }
         newImage.setX((float) (Math.random() * (mainLayout.getWidth() - 100))); // Posición aleatoria en eje X
         newImage.setY(-100);
         //añadirslo
@@ -326,7 +386,7 @@ public class Game extends AppCompatActivity {
     }
 
     //endregion
-    private void checkAudio(ImageButton buttonVolume){
+    /*private void checkAudio(ImageButton buttonVolume){
         Intent audioManager = new Intent(Game.this, AudioManager.class);
         isMuted = AudioManager.isMutedMusic();
         Log.d("Clicker-> ", "isMuted:   " + isMuted);
@@ -334,13 +394,13 @@ public class Game extends AppCompatActivity {
         if(isMuted){
             Log.d("Clicker-> ", "Queremos audio");
             //Queremos audio
-            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.volume99);
+            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonVolume.setImageResource(R.drawable.volume99);
             }else{buttonVolume.setImageResource(R.drawable.volume);}
             audioManager.setAction("playMusic");
         }else{
             Log.d("Clicker-> ", "No queremos audio");
             //No queremos audio
-            if(AppDataBase.getInstance().getMode99()){buttonVolume.setImageResource(R.drawable.mute99);
+            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonVolume.setImageResource(R.drawable.mute99);
             }else{buttonVolume.setImageResource(R.drawable.mute);}
             audioManager.setAction("pauseMusic");
         }
@@ -349,7 +409,7 @@ public class Game extends AppCompatActivity {
         startService(audioManager);
         Log.d("Clicker-> ", "isMuted despues de pulsar?->:   " + isMuted);
 
-    }
+    }*/
 
     private void OpenFragment(String upgradeType, View container){
         Log.d("Clicker-> ", "Se ha hecho click en: " + upgradeType);
@@ -472,9 +532,6 @@ public class Game extends AppCompatActivity {
                     gameViewModel.resetUserStats();
                             Intent intent = new Intent(Game.this, MainActivity.class);
                             startActivity(intent);
-                            //getSupportFragmentManager().popBackStack();
-                            // isFragmentOpen = false;
-                            //AnimationManager.getInstance().moveLayoutButtons(context,horizontalFlech, isFragmentOpen, container, mainLayout, linearBottom);
                             finish();
                             AppDataBase.getInstance().Mode99(this);
                     dialog.dismiss();
@@ -487,7 +544,6 @@ public class Game extends AppCompatActivity {
                         });
                 builder.show();
                 areAllPassivePurchased = true;
-                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y todas las activas están compradas");
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(LanguageTranslator.getInstance().getFinalDialog()[1]);
@@ -497,7 +553,6 @@ public class Game extends AppCompatActivity {
                 });
                 builder.show();
                 areAllPassivePurchased = true;
-                //Log.d("Fragment End Game ->", "EndGame: " + upgradeType + " ha terminado y las activas NO están compradas");
             }
         }
     }
@@ -511,15 +566,6 @@ public class Game extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
                 builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[3]);
-                builder.setPositiveButton("Ok", (dialog, which) -> {
-                    dialog.dismiss();
-                });
-                builder.show();
-                areAllActivePurchased = true;
-            }else{
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
                 builder.setNegativeButton("twitter", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EMPEZAR
@@ -540,6 +586,16 @@ public class Game extends AppCompatActivity {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/ptrcgracia"));
                         startActivity(browserIntent);
                     }
+                });
+
+                builder.show();
+                areAllActivePurchased = true;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    dialog.dismiss();
                 });
                 builder.show();
                 areAllActivePurchased = true;
@@ -595,6 +651,7 @@ public class Game extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("Clicker->", "onResume en game");
+        startAudio();
+        updateVolumeIcon();
     }
 }

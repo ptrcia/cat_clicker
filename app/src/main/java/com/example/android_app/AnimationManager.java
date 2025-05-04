@@ -9,12 +9,16 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +26,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.android_app.RoomDB.AppDataBase;
 
 public class AnimationManager {
@@ -32,6 +37,7 @@ public class AnimationManager {
     public void initialize(Context context) {
         this.context = context;
     }
+
     public static synchronized AnimationManager getInstance() {
         if (instance == null) {
             instance = new AnimationManager();
@@ -52,7 +58,7 @@ public class AnimationManager {
 
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //mover flecha
-               // layout.animate().translationX(- 530).setDuration(100);
+                // layout.animate().translationX(- 530).setDuration(100);
                 //Log.d("AnimationManager", "moveLayoutButtons (landscape): " + (containerLayout.getWidth() - 100));
                 //mover pantalla
                 constraintSet.connect(mainLayout.getId(), ConstraintSet.END, containerLayout.getId(), ConstraintSet.START);
@@ -78,8 +84,7 @@ public class AnimationManager {
     }
 
 
-
-    public void TitleAnimation(View animatedResource){
+    public void TitleAnimation(View animatedResource) {
         ObjectAnimator animacionX = ObjectAnimator.ofFloat(animatedResource, "scaleX", 0.9f);
         ObjectAnimator animacionY = ObjectAnimator.ofFloat(animatedResource, "scaleY", 1f);
 
@@ -93,6 +98,16 @@ public class AnimationManager {
         animacionX.start();
         animacionY.start();
     }
+
+    // gif animados
+    void gifMainMode99(ImageView bottom, ImageView top, ImageView top1, ImageView top2, Context context) {
+        Glide.with(context).asGif().load(R.drawable.campfire).into(bottom);
+        Glide.with(context).asGif().load(R.drawable.fire).into(top);
+        Glide.with(context).asGif().load(R.drawable.fire).into(top1);
+        Glide.with(context).asGif().load(R.drawable.fire).into(top2);
+
+    }
+
 
     public void Scaling(View scalingItem){
         scalingItem.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
@@ -114,7 +129,7 @@ public class AnimationManager {
         Typeface typeface;
         if(AppDataBase.getInstance().loadMode99Preference(context)){
             textView.setTextColor(Color.parseColor("#ffffff"));
-            typeface = ResourcesCompat.getFont(context, R.font.vixa);
+            typeface = ResourcesCompat.getFont(context, R.font.hexagothic_display);
 
         }else {
             textView.setTextColor(Color.parseColor("#90CAF9"));
