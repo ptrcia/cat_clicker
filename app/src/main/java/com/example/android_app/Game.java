@@ -456,7 +456,7 @@ public class Game extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Game.this);
         alertDialogBuilder.setTitle(LanguageTranslator.getInstance().getScoredDialog()[0]);
         alertDialogBuilder
-                .setMessage(LanguageTranslator.getInstance().getScoredDialog()[1]  +pointsGained+ LanguageTranslator.getInstance().getScoredDialog()[2])
+                .setMessage(LanguageTranslator.getInstance().getScoredDialog()[1]  +NumberFormatter.formatNumber(pointsGained)+ LanguageTranslator.getInstance().getScoredDialog()[2])
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

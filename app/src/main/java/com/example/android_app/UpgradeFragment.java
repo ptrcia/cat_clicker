@@ -302,7 +302,22 @@ public class UpgradeFragment extends Fragment {
 
         //Sacamos el valor numérico del id
         String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
-        changeImg(numberId, newImg);
+        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+            newImg.setImageResource(R.drawable.upgradecat17);
+            newImg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            int minInput = 1;
+            int maxInput = 66;
+            int minAlpha = 0;
+            int maxAlpha = 255;
+
+            int numberIdInt = Integer.parseInt(numberId);
+            int alphaValue = (int) (((numberIdInt - minInput) / (float) (maxInput - minInput)) * (maxAlpha - minAlpha) + minAlpha);
+
+            newImg.setImageAlpha(alphaValue);
+
+        }else{
+            changeImg(numberId, newImg);
+        }
 
         newImg.setPadding(dpToPx(10), dpToPx(-10), dpToPx(10), dpToPx(10));
         newImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -318,7 +333,11 @@ public class UpgradeFragment extends Fragment {
         newTitle.setLayoutParams(titleParams);
 
         //Título personalizado
-        LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);
+        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+            newTitle.setText("😈 " + numberId + "\uD83D\uDC31 ");
+        }else{
+            LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);
+        }
 
         newTitle.setTextSize(textSize);
         newTitle.setTypeface(typeface);

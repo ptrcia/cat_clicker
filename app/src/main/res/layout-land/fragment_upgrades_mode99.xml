@@ -56,7 +56,7 @@
         <Space
             android:layout_width="180dp"
             android:layout_height="1dp"
-            android:layout_weight="2" >
+            android:layout_weight="1" >
         </Space>
         <TextView
             android:id="@+id/cost"
@@ -69,11 +69,7 @@
             android:text="coste"
             android:textSize="20sp">
         </TextView>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+
         <TextView
             android:id="@+id/effect"
             android:layout_width="wrap_content"
@@ -85,11 +81,7 @@
             android:text="efecto"
             android:textSize="20sp">
         </TextView>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+
 
         <TextView
             android:id="@+id/level"
@@ -102,11 +94,7 @@
             android:text="nivel"
             android:textSize="20sp">
         </TextView>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+
 
 
 

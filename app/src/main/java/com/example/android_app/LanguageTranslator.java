@@ -126,13 +126,13 @@ public class LanguageTranslator {
              return new String[]{
                      "¡Hola de nuevo!",
                      "En tu ausencia has acumulado",
-                     "puntos."
+                     " gatopuntos."
              };
          } else { // English
              return new String[]{
                      "Welcome back!",
-                     "In your absence you have accumulated",
-                     "passive.",
+                     "In your absence you have accumulated ",
+                     " cat points.",
              };
          }
      }

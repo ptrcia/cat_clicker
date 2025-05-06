@@ -260,8 +260,20 @@ public class MainActivity extends AppCompatActivity {
 
         //title
         titleButton.setOnClickListener(new View.OnClickListener() {
+            private int clickCount = 0;
+            private boolean testMode = true; //THIS MUST BE FALSE IN THE RELEASE VERSION
+
             @Override
             public void onClick(View v) {
+                if(testMode){
+                    clickCount++;
+                    if (clickCount >= 10) {
+                        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        AppDataBase.getInstance().Mode99(MainActivity.this); // Usar Game.this como Context
+                    }
+                }
                 if (!audioManager.isMutedSFX()) {
                     try {
                         audioManager.playSFX(catSounds[new Random().nextInt(catSounds.length)]);

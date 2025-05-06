@@ -93,9 +93,9 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             Log.d("Clicker->", "APPCYCLE -> Timer started resumedfor Game");
         }
 
-        if (gyroscopeManager != null) {
+        /*if (gyroscopeManager != null) {
             gyroscopeManager.startListening(); // Empieza a escuchar el giroscopio
-        }
+        }*/
         audioManager.playMusic();
     }
 
@@ -108,9 +108,9 @@ public class AppLifecycle extends Application implements Application.ActivityLif
             //Log.d("Clicker->", "APPCYCLE -> Timer stopped resumedfor Game");
         }
 
-        if (gyroscopeManager != null) {
+        /*if (gyroscopeManager != null) {
             gyroscopeManager.stopListening(); // Detén la escucha para ahorrar recursos
-        }
+        }*/
 
         audioManager.pauseMusic();
     }

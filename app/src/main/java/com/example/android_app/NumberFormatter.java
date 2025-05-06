@@ -13,7 +13,7 @@ public class NumberFormatter {
             }
         }
 
-        final String[] letters = new String[]{"", "K", "M", "B", "T"};
+        final String[] letters = new String[]{"", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", "Vg", "UVg", "DVg", "TVg"};
         int index = 0;
 
         double result = number;
