@@ -160,6 +160,24 @@ public class LanguageTranslator {
              };
          }
      }
+
+     public String[] getNewGame(){
+         if (currentLanguage == Language.SPANISH) {
+             return new String[]{
+                     "Crear una nueva partida borrará tus datos guardados.",
+                     "¿quieres continuar igualmente?",
+                     "Si",
+                     "No"
+             };
+             } else { // English
+             return new String[]{
+                     "Creating a new game will erase your saved data.",
+                     "Do you still want to continue?",
+                     "Yes",
+                     "No"
+             };
+         }
+     }
     public String[] getFinal99Dialog(){
         if (currentLanguage == Language.SPANISH) {
             return new String[]{

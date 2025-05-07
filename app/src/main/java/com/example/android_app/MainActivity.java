@@ -124,16 +124,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertDialogBuilder.setTitle("Crear una nueva partida borrará tus datos guardados.");
+                alertDialogBuilder.setTitle(LanguageTranslator.getInstance().getNewGame()[0]);
                 alertDialogBuilder
-                        .setMessage("¿quieres continuar igualmente?")
+                        .setMessage(LanguageTranslator.getInstance().getNewGame()[1])
                         .setCancelable(false)
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(LanguageTranslator.getInstance().getNewGame()[2], new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //EMPEZAR
                                 mainActivityViewModel.resetUserStats();
-                                Log.d("Clicker->", "Reseteando UserStats...");
-                                Log.d("Clicker->", "Reseteando UserUpgrades...");
+                                //Log.d("Clicker->", "Reseteando UserStats...");
+                                //Log.d("Clicker->", "Reseteando UserUpgrades...");
                                 resetGame();
                                 startActivity(new Intent(MainActivity.this, Game.class));
 
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                                 editor.apply(); // Guarda los cambios de manera asíncrona
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(LanguageTranslator.getInstance().getNewGame()[3], new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
