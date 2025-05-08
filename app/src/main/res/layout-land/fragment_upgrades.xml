@@ -118,7 +118,69 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#FFF8F0 ">
+            android:background="#FFF8F0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="0dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/upgradecat18"
+                    android:scaleX="0.7"
+                    android:scaleY="0.7">
+
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/upgrade_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/cleanow"
+                    android:textColor="@color/black"
+                    android:gravity="start"
+                    android:text="X" />
+
+                <TextView
+                    android:id="@+id/upgrade_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/cleanow"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:text="All Upgrades" />
+
+                <TextView
+                    android:id="@+id/upgrade_effect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/cleanow"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:text="Blocked" />
+
+                <TextView
+                    android:id="@+id/upgrade_level"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/hexagothic_display"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:text="66" />
+            </LinearLayout>
+
         </LinearLayout>
 
 

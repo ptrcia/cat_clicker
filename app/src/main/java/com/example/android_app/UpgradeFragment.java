@@ -63,6 +63,8 @@ public class UpgradeFragment extends Fragment {
     TextView effect;
     TextView level;
     public int buttonId;
+    TextView upgradeSecretCost;
+    TextView upgradeSecretEffect;
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeTypeInput) {
@@ -76,6 +78,8 @@ public class UpgradeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         context = getContext();
         if (!AppDataBase.getInstance().loadMode99Preference(context)) {
@@ -93,10 +97,20 @@ public class UpgradeFragment extends Fragment {
         effect = rootView.findViewById(R.id.effect);
         level = rootView.findViewById(R.id.level);
 
+
         //Idoma
         LanguageTranslator.getInstance().initializeButtons();
         LanguageTranslator translator = LanguageTranslator.getInstance();
         translator.Translate(context, translator.getCurrentLanguage());
+
+
+        upgradeSecretCost = rootView.findViewById(R.id.upgrade_cost);
+        upgradeSecretEffect = rootView.findViewById(R.id.upgrade_effect);
+        if(upgradeSecretCost != null && upgradeSecretEffect != null){
+            upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[0]);
+            upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[1]);
+        }
+
 
         //Conecta con el viewmodel
         viewModel = new ViewModelProvider(this).get(UpgradeFragmentViewModel.class);

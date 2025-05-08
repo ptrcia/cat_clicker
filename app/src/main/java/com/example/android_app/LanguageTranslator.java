@@ -160,6 +160,19 @@ public class LanguageTranslator {
              };
          }
      }
+     public String[] getSecretUpgradeText(){
+        if (currentLanguage == Language.SPANISH) {
+            return new String[]{
+                    "Todas\nlas\n mejoras\ncompradas",
+                    "Bloqueado"
+            };
+        } else { // English
+            return new String[]{
+                    "All\nupgrades\npurchased",
+                    "Blocked"
+            };
+        }
+     }
 
      public String[] getNewGame(){
          if (currentLanguage == Language.SPANISH) {

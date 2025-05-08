@@ -158,7 +158,7 @@ public abstract class AppDataBase extends RoomDatabase {
                 double cost = baseCost * Math.pow(growthRate, i - 1) * Math.pow(upgradeMultiplier, j - 1);
                 double costPassive = baseCostP * Math.pow(growthRateP, i - 1) * Math.pow(upgradeMultiplierP, j - 1);
 
-                boolean testMode = false;
+                boolean testMode = true;
                 if (testMode) {
                     cost = 1;
                     costPassive = 1;
