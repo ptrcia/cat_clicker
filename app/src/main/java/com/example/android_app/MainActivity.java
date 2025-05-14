@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     boolean mutedMusic;
     boolean mutedSFX;
     int[] catSounds = {R.raw.cat_purrs_01, R.raw.cat_purrs_02, R.raw.cat_purrs_03, R.raw.cat_purrs_04, R.raw.catpurrs, R.raw.catmeows, R.raw.cat_meows_02, R.raw.cat_meows_03, R.raw.cat_meows_04, R.raw.cat_meows_05, R.raw.cat_meows_06};
-
     boolean isLanguageOpen = false;
     public static MainActivity getInstance() {
         return instance;
@@ -68,19 +67,19 @@ public class MainActivity extends AppCompatActivity {
         //audioManager.initAudio();
 
         //Poner una vista dependiendo del modo
-        AppDataBase.getInstance().loadMode99Preference(this);
-        if(!AppDataBase.getInstance().loadMode99Preference(this)){
+        AppDataBase.getInstance().loadmode66Preference(this);
+        if(!AppDataBase.getInstance().loadmode66Preference(this)){
             setContentView(R.layout.activity_main);
         }else{
-            audioManager.mode99(this);
-            setContentView(R.layout.activity_main_mode99);
+            audioManager.mode66(this);
+            setContentView(R.layout.activity_main_mode66);
             bottomImage = findViewById(R.id.bottomImage);
             topImage = findViewById(R.id.topImage);
             topImage1 = findViewById(R.id.topImage1);
             topImage2 = findViewById(R.id.topImage2);
-            AnimationManager.getInstance().gifMainMode99(bottomImage, topImage, topImage1, topImage2, this);
+            AnimationManager.getInstance().gifMainmode66(bottomImage, topImage, topImage1, topImage2, this);
         }
-        Log.d("Mode99", "main  "+        AppDataBase.getInstance().loadMode99Preference(this));
+        Log.d("mode66", "main  "+        AppDataBase.getInstance().loadmode66Preference(this));
 
 
 
@@ -232,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            if(AppDataBase.getInstance().loadmode66Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.back66);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-550).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            if(AppDataBase.getInstance().loadmode66Preference(MainActivity.this)){buttonLanguageFlech.setImageResource(R.drawable.forward66);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.forward);
                             }
                         }
@@ -261,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         //title
         titleButton.setOnClickListener(new View.OnClickListener() {
             private int clickCount = 0;
-            private boolean testMode = true; //THIS MUST BE FALSE IN THE RELEASE VERSION
+            private boolean testMode = false; //THIS MUST BE FALSE IN THE RELEASE VERSION
 
             @Override
             public void onClick(View v) {
@@ -271,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                        AppDataBase.getInstance().Mode99(MainActivity.this); // Usar Game.this como Context
+                        AppDataBase.getInstance().mode66(MainActivity.this); // Usar Game.this como Context
                     }
                 }
                 if (!audioManager.isMutedSFX()) {
@@ -292,8 +291,8 @@ public class MainActivity extends AppCompatActivity {
             audioManager.initAudio();
         }
 
-        if(AppDataBase.getInstance().loadMode99Preference(MainActivity.this)){
-            icons = new int[]{R.drawable.volume99, R.drawable.musicon99, R.drawable.musicoff99, R.drawable.mute99};
+        if(AppDataBase.getInstance().loadmode66Preference(MainActivity.this)){
+            icons = new int[]{R.drawable.volume66, R.drawable.musicon66, R.drawable.musicoff66, R.drawable.mute66};
         }else{
             icons = new int[]{R.drawable.volume, R.drawable.musicon, R.drawable.musicoff, R.drawable.mute};
         }

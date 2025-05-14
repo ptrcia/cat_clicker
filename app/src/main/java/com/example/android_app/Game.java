@@ -86,14 +86,14 @@ public class Game extends AppCompatActivity {
         EdgeToEdge.enable(this);
         audioManager = AudioManager.getInstance(this);
 
-        //mde99
-        AppDataBase.getInstance().loadMode99Preference(this);
-        if(!AppDataBase.getInstance().loadMode99Preference(this)) {
+        //mde66
+        AppDataBase.getInstance().loadmode66Preference(this);
+        if(!AppDataBase.getInstance().loadmode66Preference(this)) {
             setContentView(R.layout.activity_game);
         } else{
-            setContentView(R.layout.activity_game_mode99);
+            setContentView(R.layout.activity_game_mode66);
         }
-        Log.d("Mode99", "game "+        AppDataBase.getInstance().loadMode99Preference(this));
+        Log.d("mode66", "game "+        AppDataBase.getInstance().loadmode66Preference(this));
 
         //setContentView(R.layout.activity_game);
         instance = this;
@@ -194,8 +194,8 @@ public class Game extends AppCompatActivity {
                     // Animación de escalado
                     AnimationManager.getInstance().Scaling(buttonClickScore);
 
-                    //Mode99
-                    if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
+                    //mode66
+                    if(AppDataBase.getInstance().loadmode66Preference(Game.this)){
                         buttonClickScore.setImageResource(R.drawable.catopen);
                     }
 
@@ -213,7 +213,7 @@ public class Game extends AppCompatActivity {
 
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
+                    if(AppDataBase.getInstance().loadmode66Preference(Game.this)){
                         buttonClickScore.setImageResource(R.drawable.catclose);
                     }
                 }
@@ -227,9 +227,9 @@ public class Game extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int currentActiveState = audioManager.getActiveAudioState();
-                Log.d("mode99", " currentActiveState: " + currentActiveState);
+                Log.d("mode66", " currentActiveState: " + currentActiveState);
                 int nextActiveState = (currentActiveState + 1) % icons.length;
-                Log.d("mode99", " nextActiveState: " + nextActiveState);
+                Log.d("mode66", " nextActiveState: " + nextActiveState);
 
                 buttonVolume.setImageResource(icons[nextActiveState]);
 
@@ -264,7 +264,7 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(0).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.forward99);}
+                            if(AppDataBase.getInstance().loadmode66Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.forward66);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.back);}
                         }
                     });
@@ -273,7 +273,7 @@ public class Game extends AppCompatActivity {
                     horizontalFlech.animate().translationX(-350).setDuration(500).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.back99);}
+                            if(AppDataBase.getInstance().loadmode66Preference(Game.this)){buttonLanguageFlech.setImageResource(R.drawable.back66);}
                             else{buttonLanguageFlech.setImageResource(R.drawable.forward);}
 
                         }
@@ -288,8 +288,8 @@ public class Game extends AppCompatActivity {
 
     private void startAudio(){
         Log.d("AudioManager", "el game pasa por aqui al volver a hacerse");
-        if(AppDataBase.getInstance().loadMode99Preference(Game.this)){
-            icons = new int[]{R.drawable.volume99, R.drawable.musicon99, R.drawable.musicoff99, R.drawable.mute99};
+        if(AppDataBase.getInstance().loadmode66Preference(Game.this)){
+            icons = new int[]{R.drawable.volume66, R.drawable.musicon66, R.drawable.musicoff66, R.drawable.mute66};
         }else{
             icons = new int[]{R.drawable.volume, R.drawable.musicon, R.drawable.musicoff, R.drawable.mute};
         }
@@ -298,7 +298,7 @@ public class Game extends AppCompatActivity {
         mutedSFX = audioManager.isMutedSFX();
         int activeState = audioManager.getActiveAudioState();
         // Actualizar la interfaz de usuario según el estado del audio
-        Log.d("mode99", "main - onCreate -> Leído audio_active_state: " + activeState);
+        Log.d("mode66", "main - onCreate -> Leído audio_active_state: " + activeState);
 
         switch (activeState) {
             case 0: audioManager.playAll(); break;
@@ -341,7 +341,7 @@ public class Game extends AppCompatActivity {
         ));
         String resourceName = "upgradecat" + id;
         int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
-        if(!AppDataBase.getInstance().loadMode99Preference(context)){
+        if(!AppDataBase.getInstance().loadmode66Preference(context)){
             newImage.setImageResource(resourceId);
         }else{
             //newImage.setImageResource(R.drawable.fire);
@@ -394,13 +394,13 @@ public class Game extends AppCompatActivity {
         if(isMuted){
             Log.d("Clicker-> ", "Queremos audio");
             //Queremos audio
-            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonVolume.setImageResource(R.drawable.volume99);
+            if(AppDataBase.getInstance().loadmode66Preference(Game.this)){buttonVolume.setImageResource(R.drawable.volume66);
             }else{buttonVolume.setImageResource(R.drawable.volume);}
             audioManager.setAction("playMusic");
         }else{
             Log.d("Clicker-> ", "No queremos audio");
             //No queremos audio
-            if(AppDataBase.getInstance().loadMode99Preference(Game.this)){buttonVolume.setImageResource(R.drawable.mute99);
+            if(AppDataBase.getInstance().loadmode66Preference(Game.this)){buttonVolume.setImageResource(R.drawable.mute66);
             }else{buttonVolume.setImageResource(R.drawable.mute);}
             audioManager.setAction("pauseMusic");
         }
@@ -499,7 +499,7 @@ public class Game extends AppCompatActivity {
                             Intent intent = new Intent(Game.this, MainActivity.class);
                             startActivity(intent);
                             finish();
-                            AppDataBase.getInstance().Mode99(this);
+                            AppDataBase.getInstance().mode66(this);
                     dialog.dismiss();
                 })
                 .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
@@ -533,7 +533,7 @@ public class Game extends AppCompatActivity {
                             Intent intent = new Intent(Game.this, MainActivity.class);
                             startActivity(intent);
                             finish();
-                            AppDataBase.getInstance().Mode99(this);
+                            AppDataBase.getInstance().mode66(this);
                     dialog.dismiss();
                 })
                         .setNegativeButton(LanguageTranslator.getInstance().getFinalDialog()[5], (dialog, which) -> {
@@ -564,8 +564,8 @@ public class Game extends AppCompatActivity {
             //crear un alert dialog
             if(areAllPassivePurchased) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[3]);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal66Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal66Dialog()[3]);
                 builder.setNegativeButton("twitter", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EMPEZAR
@@ -592,8 +592,8 @@ public class Game extends AppCompatActivity {
                 areAllActivePurchased = true;
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[0]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal66Dialog()[0]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal66Dialog()[2]);
                 builder.setPositiveButton("Ok", (dialog, which) -> {
                     dialog.dismiss();
                 });
@@ -604,8 +604,8 @@ public class Game extends AppCompatActivity {
         }else if(upgradeType.equals("Passive")){
             if(areAllActivePurchased){
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[3]);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal66Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal66Dialog()[3]);
                 builder.setNegativeButton("twitter", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EMPEZAR
@@ -632,8 +632,8 @@ public class Game extends AppCompatActivity {
                 areAllPassivePurchased = true;
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(LanguageTranslator.getInstance().getFinal99Dialog()[1]);
-                builder.setMessage(LanguageTranslator.getInstance().getFinal99Dialog()[2]);
+                builder.setTitle(LanguageTranslator.getInstance().getFinal66Dialog()[1]);
+                builder.setMessage(LanguageTranslator.getInstance().getFinal66Dialog()[2]);
                 builder.setPositiveButton("Ok", (dialog, which) -> {
                     dialog.dismiss();
                 });

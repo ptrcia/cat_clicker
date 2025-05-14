@@ -34,11 +34,11 @@ public class AudioManager {
             audioState = sharedPref.getInt("audio_active_state", 0);
 
             if (!isMutedMusic) {
-                boolean useMode99 = AppDataBase.getInstance().loadMode99Preference(context);
+                boolean usemode66 = AppDataBase.getInstance().loadmode66Preference(context);
 
-                if (useMode99) {
-                    musicAudio = MediaPlayer.create(context, R.raw.music99);
-                    Log.d("AudioManager", "musicAudio (music99): " + musicAudio);
+                if (usemode66) {
+                    musicAudio = MediaPlayer.create(context, R.raw.music66);
+                    Log.d("AudioManager", "musicAudio (music66): " + musicAudio);
                 } else {
                     musicAudio = MediaPlayer.create(context, R.raw.music);
                     Log.d("AudioManager", "musicAudio (music): " + musicAudio);
@@ -85,13 +85,13 @@ public class AudioManager {
         return instance;
     }
 
-    public void mode99(Context context) {
+    public void mode66(Context context) {
         if (musicAudio != null) {
             musicAudio.stop();
             musicAudio.release();
         }
-        Log.d("AudioManager", "mode99 -> musicAudio: " + musicAudio);
-        musicAudio = MediaPlayer.create(context, R.raw.music99);
+        Log.d("AudioManager", "mode66 -> musicAudio: " + musicAudio);
+        musicAudio = MediaPlayer.create(context, R.raw.music66);
         musicAudio.setLooping(true);
     }
 
@@ -119,9 +119,9 @@ public class AudioManager {
     public void playMusic() {
         isMutedMusic = false;
         if(musicAudio == null) {
-            boolean useMode99 = AppDataBase.getInstance().loadMode99Preference(context);
-            if (useMode99) {
-                musicAudio = MediaPlayer.create(context, R.raw.music99);
+            boolean usemode66 = AppDataBase.getInstance().loadmode66Preference(context);
+            if (usemode66) {
+                musicAudio = MediaPlayer.create(context, R.raw.music66);
             } else {
                 musicAudio = MediaPlayer.create(context, R.raw.music);
             }

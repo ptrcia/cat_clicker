@@ -144,9 +144,9 @@ public class LanguageTranslator {
                      "¡Has comprado todas las pasivas!",
                      "Solo te falta terminar todas las pasivas",
                      "Solo te falta terminar todas las activas",
-                     "Modo 99",
+                     "Modo 66",
                      "Salir",
-                     "¡Felicidades! Has comprado todas las mejoras. No lo he puesto fácil pero ¡ahí estás!. Ahora puedes elegirentrte: rendirte aquí y dar el juego por acabado o bien, intentar el modo 99."
+                     "¡Felicidades! Has comprado todas las mejoras. No lo he puesto fácil pero ¡ahí estás!. Ahora puedes elegir entre: rendirte aquí y dar el juego por acabado o bien, intentar el modo 66. \n(No puedo garantizar que la aplicación no se caiga a partir de este punto en adelante)"
              };
          } else { // English
              return new String[]{
@@ -154,9 +154,9 @@ public class LanguageTranslator {
                      "You've bought all the passives!",
                      "You just need to finish all the passives.",
                      "You just need to finish all the actives.",
-                     "Mode 99",
+                     "Mode 66",
                      "Exit",
-                     "Congratulations! You've bought all the upgrades. I didn't make it easy but there you are! Now you have a choice: either give up here and call it a day or try mode 99."
+                     "Congratulations! You've bought all the upgrades. I didn't make it easy but there you are! Now you have a choice: either give up here and call it a day or try mode 66.\n(I cannot ensure that the application will not crash at this point onwards.)"
              };
          }
      }
@@ -193,7 +193,7 @@ public class LanguageTranslator {
              };
          }
      }
-    public String[] getFinal99Dialog(){
+    public String[] getFinal66Dialog(){
         if (currentLanguage == Language.SPANISH) {
             return new String[]{
                     "¿Ya has comprado todas las activas?",

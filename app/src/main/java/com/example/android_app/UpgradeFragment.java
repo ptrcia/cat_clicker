@@ -82,10 +82,10 @@ public class UpgradeFragment extends Fragment {
 
 
         context = getContext();
-        if (!AppDataBase.getInstance().loadMode99Preference(context)) {
+        if (!AppDataBase.getInstance().loadmode66Preference(context)) {
             rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
         } else {
-            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode66, null);
         }
 
         context = rootView.getContext();
@@ -172,7 +172,7 @@ public class UpgradeFragment extends Fragment {
             if (upgrades == null || upgrades.isEmpty()) {
                 Log.d("Fragment End Game ->", "No hay más elementos en la lista." + upgradeType);
                 progressBar.setVisibility(View.GONE);
-                if(!AppDataBase.getInstance().loadMode99Preference(context)){
+                if(!AppDataBase.getInstance().loadmode66Preference(context)){
                     Game.getInstance().EndGame(upgradeType, context, container);
 
                 }else{
@@ -235,7 +235,7 @@ public class UpgradeFragment extends Fragment {
         Typeface typeface;
 
 
-        if(AppDataBase.getInstance().loadMode99Preference(getContext()))
+        if(AppDataBase.getInstance().loadmode66Preference(getContext()))
         {
             typeface = ResourcesCompat.getFont(context, R.font.hexagothic_display);
             colorbackgroud = "#1D1616";
@@ -323,7 +323,7 @@ public class UpgradeFragment extends Fragment {
 
         //Sacamos el valor numérico del id
         String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
-        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+        if(AppDataBase.getInstance().loadmode66Preference(getContext())){
             newImg.setImageResource(R.drawable.upgradecat17);
             newImg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             int minInput = 1;
@@ -354,7 +354,7 @@ public class UpgradeFragment extends Fragment {
         newTitle.setLayoutParams(titleParams);
 
         //Título personalizado
-        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+        if(AppDataBase.getInstance().loadmode66Preference(getContext())){
             newTitle.setText("😈 " + numberId + "\uD83D\uDC31 ");
         }else{
             LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);

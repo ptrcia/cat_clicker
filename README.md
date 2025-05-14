@@ -6,7 +6,7 @@ This game was initially presented as a final application development project and
 ### //Assets
 Gato. https://iconos8.es/icon/121197/gato
 
-Huella de gato. https://iconos8.es/icon/9199/huella-de-gato
+Huella de gato. https://iconos8.es/icon/9166/huella-de-gato
 
 Paw Icon  https://www.flaticon.com/free-icon/paw_4966345
 

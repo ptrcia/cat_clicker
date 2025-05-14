@@ -43,7 +43,7 @@ public abstract class AppDataBase extends RoomDatabase {
     private static  Context userRepositoryContext;
     static  int numberOfUpgrades=10; //18;
     static  int numberOfLevels=3; //3;
-    boolean mode99= false;
+    boolean mode66= false;
 
     static double growthRate=3;
     static double growthRateP=8;
@@ -85,8 +85,8 @@ public abstract class AppDataBase extends RoomDatabase {
         return instance;
     }
     //endregion
-    public boolean getMode99(){return mode99;}
-    public void Mode99(Context context){
+    public boolean getmode66(){return mode66;}
+    public void mode66(Context context){
         Game.getInstance().setAreAllActivePurchased(false);
         Game.getInstance().setAreAllPassivePurchased(false);
         numberOfUpgrades=66;
@@ -94,23 +94,23 @@ public abstract class AppDataBase extends RoomDatabase {
         growthRate = 10;
         growthRateP = 15;
         databaseWriteExecutor.execute(() ->  initData(userRepositoryContext));
-        mode99 = true;
-        SaveMode99Preference(context);
+        mode66 = true;
+        Savemode66Preference(context);
     }
 
-    private void SaveMode99Preference(Context context) {
-        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
+    private void Savemode66Preference(Context context) {
+        sharedPreferences = context.getSharedPreferences("mode66", context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("mode99", true);
+        editor.putBoolean("mode66", true);
         editor.apply();
     }
-    public boolean loadMode99Preference(Context context) {
+    public boolean loadmode66Preference(Context context) {
         if (context == null) {
-            Log.e("Mode99", "El contexto es nulo");
+            Log.e("mode66", "El contexto es nulo");
             return false;
         }
-        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean("mode99", false); // false como valor predeterminado
+        sharedPreferences = context.getSharedPreferences("mode66", context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("mode66", false); // false como valor predeterminado
     }
 
 

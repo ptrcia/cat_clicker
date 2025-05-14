@@ -100,7 +100,7 @@ public class AnimationManager {
     }
 
     // gif animados
-    void gifMainMode99(ImageView bottom, ImageView top, ImageView top1, ImageView top2, Context context) {
+    void gifMainmode66(ImageView bottom, ImageView top, ImageView top1, ImageView top2, Context context) {
         Glide.with(context).asGif().load(R.drawable.campfire).into(bottom);
         Glide.with(context).asGif().load(R.drawable.fire).into(top);
         Glide.with(context).asGif().load(R.drawable.fire).into(top1);
@@ -127,7 +127,7 @@ public class AnimationManager {
         textView.setText(text);  // Establecer el texto
         textView.setTextSize(25);  // Ajusta el tamaño de la fuente
         Typeface typeface;
-        if(AppDataBase.getInstance().loadMode99Preference(context)){
+        if(AppDataBase.getInstance().loadmode66Preference(context)){
             textView.setTextColor(Color.parseColor("#ffffff"));
             typeface = ResourcesCompat.getFont(context, R.font.hexagothic_display);
 
