@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-28dp"
+        android:background="#1D1616">
+
+        <LinearLayout
+            android:id="@+id/horizontalFlech"
+            android:layout_gravity="bottom|end"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="-170dp"
+            android:layout_marginBottom="150dp"
+
+            android:orientation="horizontal">
+            <!--             android:layout_marginBottom="70dp"
+     -->
+            <ImageButton
+                android:id="@+id/buttonLanguageFlech"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:layout_marginEnd="20dp"
+                app:srcCompat="@drawable/forward99" />
+
+            <ImageButton
+                android:id="@+id/buttonVolume"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:visibility="visible"
+                app:srcCompat="@drawable/volume99" />
+
+            <ImageButton
+                android:id="@+id/buttonLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="120dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:visibility="visible"
+                app:srcCompat="@drawable/language99" />
+
+            <ImageButton
+                android:id="@+id/info"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:background="@android:color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/info99"
+                />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/bottomImage"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="-5dp"
+            android:layout_height="100dp"
+            android:src="@drawable/campfire"
+            android:layout_gravity="bottom">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/topImage"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+            android:layout_gravity="top|start">
+        </ImageView>
+        <ImageView
+            android:id="@+id/topImage1"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+            android:layout_gravity="top|end">
+        </ImageView>
+        <ImageView
+            android:id="@+id/topImage2"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:layout_height="100dp"
+
+            android:rotation="180"
+            app:srcCompat="@drawable/fire"
+
+            android:layout_gravity="top|center">
+        </ImageView>
+
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="270dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="150dp"
+            android:layout_gravity="center|bottom"
+            >
+
+            <Button
+                android:id="@+id/buttonStart"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:textSize="30sp"
+                android:backgroundTint="#8E1616"
+                android:fontFamily="@font/hexagothic_display"
+                android:layout_height="wrap_content"
+                android:text="New Game"
+                />
+
+            <Button
+                android:id="@+id/buttonContinue"
+                android:layout_gravity="center"
+                android:textSize="30sp"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#8E1616"
+
+                android:text="Continue"
+                android:fontFamily="@font/hexagothic_display"
+                />
+            <Button
+                android:id="@+id/buttonExit"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+
+                android:text="Exit"
+                android:fontFamily="@font/hexagothic_display"
+                android:backgroundTint="#8E1616"
+
+                android:layout_marginHorizontal="30dp"
+                />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/titleButton"
+            android:alpha="0"
+            android:layout_width="200dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="90dp"
+            android:layout_gravity="center"
+            >
+        </Button>
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="150dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="160dp"
+            android:gravity="center"
+            android:text="Cat"
+            android:textColor="#EEEEEE"
+            android:textSize="90sp"
+            android:fontFamily="@font/vixa"
+            />
+        <TextView
+            android:id="@+id/titulo2"
+            android:layout_width="250dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="80dp"
+            android:gravity="center"
+            android:text="Clicker"
+            android:textColor="#EEEEEE"
+            android:textSize="80sp"
+            android:fontFamily="@font/vixa"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:fontFamily="@font/hexagothic_display"
+            android:textSize="15sp"
+            android:textColor="#D84040"
+            android:layout_marginBottom="100dp"
+            android:text="Patricia S. Gracia Artero"
+            >
+
+           <!-- android:text="ᕵᗩᖶᖇᓰᑢᓰᗩ S. ᘜᖇᗩᑢᓰᗩ ᗩᖇᖶᘿᖇᓍ"-->
+
+        </TextView>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

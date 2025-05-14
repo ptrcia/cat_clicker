@@ -1,19 +1,19 @@
 package com.example.android_app.RoomDB;
 
-import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import com.example.android_app.Game;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +27,7 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract LevelDAO levelDAO();
     public abstract UpgradesUserDAO upgradesUserDAO();
 
+
     //Manejo de hilos
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
@@ -35,9 +36,24 @@ public abstract class AppDataBase extends RoomDatabase {
 
     //Configurar la database
     private static volatile AppDataBase instance;
+    public static AppDataBase getInstance() {
+        return instance;
+    }
+
+    private static  Context userRepositoryContext;
+    static  int numberOfUpgrades=10; //18;
+    static  int numberOfLevels=3; //3;
+    boolean mode99= false;
+
+    static double growthRate=3;
+    static double growthRateP=8;
+
+
+    SharedPreferences sharedPreferences;
 
     public static AppDataBase getDatabase(final Context context) {
         if (instance == null) {
+            userRepositoryContext = context.getApplicationContext();
             instance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDataBase.class, "app_database")
                     //.fallbackToDestructiveMigration()
@@ -69,6 +85,35 @@ public abstract class AppDataBase extends RoomDatabase {
         return instance;
     }
     //endregion
+    public boolean getMode99(){return mode99;}
+    public void Mode99(Context context){
+        Game.getInstance().setAreAllActivePurchased(false);
+        Game.getInstance().setAreAllPassivePurchased(false);
+        numberOfUpgrades=66;
+        numberOfLevels=66;
+        growthRate = 10;
+        growthRateP = 15;
+        databaseWriteExecutor.execute(() ->  initData(userRepositoryContext));
+        mode99 = true;
+        SaveMode99Preference(context);
+    }
+
+    private void SaveMode99Preference(Context context) {
+        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("mode99", true);
+        editor.apply();
+    }
+    public boolean loadMode99Preference(Context context) {
+        if (context == null) {
+            Log.e("Mode99", "El contexto es nulo");
+            return false;
+        }
+        sharedPreferences = context.getSharedPreferences("Mode99", context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("mode99", false); // false como valor predeterminado
+    }
+
+
 
     private static void initData(Context context) {
         AppDataBase db = getDatabase(context);
@@ -81,7 +126,7 @@ public abstract class AppDataBase extends RoomDatabase {
         List<ClickUpgrade> activeUpgrades = new ArrayList<>();
         List<ClickUpgrade> passiveUpgrades = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) {
+        for (int i = 1; i <= numberOfUpgrades; i++) {
             activeUpgrades.add(new ClickUpgrade("ua_" + i, "Mejora" + i, 0, "", "Active"));
             passiveUpgrades.add(new ClickUpgrade("up_" + i, "Mejora" + i, 0, "", "Passive"));
         }
@@ -92,38 +137,53 @@ public abstract class AppDataBase extends RoomDatabase {
 
         //Cálculo de coste y efecto exponencial
 
-        double baseCost = 150; //coste de base
-        double growthRate = 5; //crecimiento exponencial
-        double upgradeMultiplier = 1000; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
-        double effectMultiplier = 0.005; //el efecto asociado al coste, 0.4 es un 40%
+        double baseCost = 500; // coste inicial
+        //growthRate = 10; // crecimietno entre mejoras
+        double upgradeMultiplier = 2.0; // crecimiento entre niveles de una misma mejora
+        double effectMultiplier = 0.0004; // el efecto
 
-        double baseCostP = 1500;//1500; //coste de base
-        double growthRateP = 8; //crecimiento exponencial
-        double upgradeMultiplierP = 750; //cuanto vale cada nivel dentro de cada mejora, por ejemplo del nivel 1 al nivel 2
-        double effectMultiplierP = 0.003; //el efecto asociado al coste, 0.4 es un 40%
+        double baseCostP = 500;
+        //growthRateP = 15;
+        double upgradeMultiplierP = 2.2;
+        double effectMultiplierP = 0.0003;
 
-        double minEffect = 0.05;
+        double minEffect = 0.01;
 
-//Niveles de las mejoras
+// Niveles de las mejoras
         List<Level> levels = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) { // mejora
-            for (int j = 1; j <= 3; j++) { //  nivel
+        for (int i = 1; i <= numberOfUpgrades; i++) { // mejora
+            for (int j = 1; j <= numberOfLevels; j++) { // nivel
 
-                double cost = baseCost * Math.pow(growthRate, (i - 1)) * Math.pow(upgradeMultiplier, (j - 1));
-                double effectMultiplierA = effectMultiplier+ (i * 0.005);
-                double effect = Math.max(cost* effectMultiplierA, minEffect);
-                levels.add(new Level("levelA" + i + "_" + j, "ua_" + i, String.valueOf(j), cost,  effect));
+                double cost = baseCost * Math.pow(growthRate, i - 1) * Math.pow(upgradeMultiplier, j - 1);
+                double costPassive = baseCostP * Math.pow(growthRateP, i - 1) * Math.pow(upgradeMultiplierP, j - 1);
 
+                boolean testMode = false;
+                if (testMode) {
+                    cost = 1;
+                    costPassive = 1;
+                }
 
-                double costPassive = baseCostP * Math.pow(growthRateP, (i - 1)) * Math.pow(upgradeMultiplierP, (j - 1));
-                double effectMultiplierPassive = effectMultiplierP + (i * 0.003);
+                // Aumentamos ligeramente el efecto por mejora (pero sigue siendo pequeño al inicio)
+                double effectMultiplierA = effectMultiplier + (i * 0.00005);
+                double effect = Math.max(cost * effectMultiplierA, minEffect);
+                levels.add(new Level("levelA" + i + "_" + j, "ua_" + i, String.valueOf(j), cost, effect));
+
+                double effectMultiplierPassive = effectMultiplierP + (i * 0.00003);
                 double effectPassive = Math.max(costPassive * effectMultiplierPassive, minEffect);
-                levels.add(new Level("levelP" + i + "_" + j, "up_" + i, String.valueOf(j),  costPassive,  effectPassive));
+                levels.add(new Level("levelP" + i + "_" + j, "up_" + i, String.valueOf(j), costPassive, effectPassive));
             }
         }
+
+
         Log.d("Clicker->", "Niveles: " + levels);
         levelDAO.insertAll(levels);
+
+
+        Log.d("Clicker->", "Niveles (Nuevo Algoritmo): " + levels);
+        if (levelDAO != null) {
+            levelDAO.insertAll(levels);
+        }
 
         // Insertar al usuariuo
         UserStats userStats = new UserStats("User1", "User1", 0, 0, 1);
@@ -133,7 +193,7 @@ public abstract class AppDataBase extends RoomDatabase {
 
         List<UpgradesUser> upgradesUsers = new ArrayList<>();
 
-        for (int i = 1; i <= 18; i++) {
+        for (int i = 1; i <= numberOfUpgrades; i++) {
             upgradesUsers.add(new UpgradesUser("upgradeuserActive_" + i, "ua_" + i, "0", "User1"));
             upgradesUsers.add(new UpgradesUser("upgradeuserPassive_" + i, "up_" + i, "0", "User1"));
         }

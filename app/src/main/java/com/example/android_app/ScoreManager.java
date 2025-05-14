@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 public class ScoreManager {
+    private AudioManager audioManager;
 
     private double clickValue=1;
     private double passiveValue=0;
@@ -27,11 +28,12 @@ public class ScoreManager {
         setScore(score);
         Game.getInstance().UpdateScoreText();
     }
+    
     public void ClickPassive(Double  timePassed, Double bonusCat){
         timePassed = (timePassed == null) ? 0 : timePassed;
-        bonusCat = (bonusCat == null) ? 0 : bonusCat;
+        //bonusCat = (bonusCat == null) ? 0 : bonusCat;
 
-        score += passiveValue + timePassed + bonusCat;
+        score += passiveValue + timePassed;// + bonusCat;
 
         setScore(score);
         if (Game.getInstance() != null) {
@@ -95,11 +97,10 @@ public class ScoreManager {
 
     void checkAudio(Context context){
         //Hacer sonar
-        if (!AudioManager.isMutedMusic()) {
-            Intent playIntent = new Intent(context, AudioManager.class);
-            playIntent.setAction("playSFX");
-            playIntent.putExtra("resourceID", R.raw.purchase);
-            context.startService(playIntent);
+        audioManager = AudioManager.getInstance(context);
+
+        if (!audioManager.isMutedSFX()) {
+            audioManager.playSFX(R.raw.purchase);
         }
     }
 

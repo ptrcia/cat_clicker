@@ -1,8 +1,7 @@
 package com.example.android_app;
 
-import android.annotation.SuppressLint;
+
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,20 +9,18 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.util.Log;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.example.android_app.RoomDB.AppDataBase;
 import com.example.android_app.RoomDB.ClickUpgrade;
 import com.example.android_app.RoomDB.Level;
 import com.example.android_app.RoomDB.UpgradeFragmentViewModel;
@@ -45,10 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 public class UpgradeFragment extends Fragment {
+
+    View rootView;
 
     private static final String ARG_UPGRADE_TYPE = "upgrade_type";
     UpgradeFragmentViewModel viewModel;
@@ -58,11 +56,15 @@ public class UpgradeFragment extends Fragment {
     TextView title;
     String userId = "User1";
     String upgradeType;
-
     String userLevel ="0";
     String idUpgrade ="";
-
     ImageView image;
+    TextView cost;
+    TextView effect;
+    TextView level;
+    public int buttonId;
+    TextView upgradeSecretCost;
+    TextView upgradeSecretEffect;
 
     //instancia segun el tipo
     public static UpgradeFragment newInstance(String upgradeTypeInput) {
@@ -76,13 +78,34 @@ public class UpgradeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("Clicker->", "UpgradeFragment inflando la vista");
-        View rootView = inflater.inflate(R.layout.fragment_upgrades, container, false);
+
+
+
+        context = getContext();
+        if (!AppDataBase.getInstance().loadMode99Preference(context)) {
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades, null);
+        } else {
+            rootView = View.inflate(getContext(), R.layout.fragment_upgrades_mode99, null);
+        }
+
         context = rootView.getContext();
         this.container = rootView.findViewById(R.id.container);
         ImageButton buttonBack = rootView.findViewById(R.id.buttonBack);
         title = rootView.findViewById(R.id.title);
         progressBar = rootView.findViewById(R.id.progressBar);
+        cost = rootView.findViewById(R.id.cost);
+        effect = rootView.findViewById(R.id.effect);
+        level = rootView.findViewById(R.id.level);
+
+
+        //Idoma
+        LanguageTranslator.getInstance().initializeButtons();
+        LanguageTranslator translator = LanguageTranslator.getInstance();
+        translator.Translate(context, translator.getCurrentLanguage());
+
+
+        upgradeSecretCost = rootView.findViewById(R.id.upgrade_cost);
+        upgradeSecretEffect = rootView.findViewById(R.id.upgrade_effect);
 
 
 
@@ -93,13 +116,20 @@ public class UpgradeFragment extends Fragment {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonBack.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(() -> {
+                    buttonBack.animate().scaleX(1f).scaleY(1f).setDuration(50).start();
+                }).start();
                 requireActivity().getSupportFragmentManager().popBackStack();
+                Game.getInstance().isFragmentOpen = false;
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container, Game.getInstance().mainLayout, Game.getInstance().linearBottom);
             }
         });
         //Boton de atras nativo
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                Game.getInstance().isFragmentOpen = false;
+                AnimationManager.getInstance().moveLayoutButtons(context, Game.getInstance().horizontalFlech, Game.getInstance().isFragmentOpen, container, Game.getInstance().mainLayout, Game.getInstance().linearBottom);
 
                 if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     requireActivity().getSupportFragmentManager().popBackStack();
@@ -109,37 +139,20 @@ public class UpgradeFragment extends Fragment {
             }
         });
 
-        // Mostrar algo básico si no hay datos
         assert getArguments() != null;
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
-       if(upgradeType.equals("Active")) title.setText("Mejoras activas");
-       else if(upgradeType.equals("Passive")) title.setText("Mejoras pasivas");
+       LanguageTranslator.getInstance().renameFragment(upgradeType, title, cost, effect, level);
 
-        //Metodo para gesto de hacia abajo
-        /*container.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    //animacion para bajar el tragmento
-                    v.animate()
-                            .translationY(1000f)
-                            .setDuration(500)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //y retroceder
-
-                                    requireActivity().getSupportFragmentManager().popBackStack(); //volver hacia atrás
-                                }
-                            })
-                            .start();
-                   // v.performClick(); //que no ionteractue con el cli
-                    return true;
-                } else {
-                    return false;
-                }
+       //idioma misteriosa mejora missteriosa
+        if(upgradeSecretCost != null && upgradeSecretEffect != null){
+            if(upgradeType.equals("Active")){
+                upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[0]);
+                upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[2]);
+            } else if (upgradeType.equals("Passive")) {
+                upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[1]);
+                upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[2]);
             }
-        });*/
+        }
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -153,7 +166,21 @@ public class UpgradeFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        //Recoger datos de la database
         viewModel.filteredUpgrades.observe(getViewLifecycleOwner(), upgrades -> {
+
+            if (upgrades == null || upgrades.isEmpty()) {
+                Log.d("Fragment End Game ->", "No hay más elementos en la lista." + upgradeType);
+                progressBar.setVisibility(View.GONE);
+                if(!AppDataBase.getInstance().loadMode99Preference(context)){
+                    Game.getInstance().EndGame(upgradeType, context, container);
+
+                }else{
+                    Game.getInstance().SecretEnding(upgradeType);
+                }
+                return;
+            }
+
             // Crear una copia y hacerlo dentro de un syncronized  para que no haya conflicto
             Map<ClickUpgrade, Level> upgradesCopy;
             synchronized (upgrades) {
@@ -202,8 +229,27 @@ public class UpgradeFragment extends Fragment {
     //Volcado UI
     int textSize=17;
     private void FormatUI(String name, String description, String idUpgrade, String idUserLevel, double cost, double effect) {
+        String colorbackgroud;
+        String titleUpgrade;
+        String costeffectbutton;
+        Typeface typeface;
 
 
+        if(AppDataBase.getInstance().loadMode99Preference(getContext()))
+        {
+            typeface = ResourcesCompat.getFont(context, R.font.hexagothic_display);
+            colorbackgroud = "#1D1616";
+            costeffectbutton = "#EA906C";
+            titleUpgrade = "#FFFFFF";
+
+        }else{
+
+            colorbackgroud = "#FFF8F0";
+            costeffectbutton = "#8f2d56";
+            titleUpgrade = "#000000";
+            typeface = ResourcesCompat.getFont(context, R.font.cleanow);
+
+        }
 
     //Main Layout
         LinearLayout mainLayout = new LinearLayout(context);
@@ -223,7 +269,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutImg.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutImg.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutImg.setBackgroundColor(Color.parseColor("#F7EDE2"));
+        verticalLayoutImg.setBackgroundColor(Color.parseColor(colorbackgroud));
 
         //Layout vertical para el texto y el botón
         LinearLayout verticalLayoutTextButton = new LinearLayout(context);
@@ -234,7 +280,7 @@ public class UpgradeFragment extends Fragment {
         ));
         verticalLayoutTextButton.setOrientation(LinearLayout.VERTICAL);
         verticalLayoutTextButton.setPadding(0, dpToPx(10), 0, dpToPx(0));
-        verticalLayoutTextButton.setBackgroundColor(Color.parseColor("#F7EDE2"));
+        verticalLayoutTextButton.setBackgroundColor(Color.parseColor(colorbackgroud));
 
 
         //Layout horizontal para el texto
@@ -267,9 +313,7 @@ public class UpgradeFragment extends Fragment {
         //Imagen
         ImageView newImg = new ImageView(context);
         LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
-                /*0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f*/
+
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
@@ -279,10 +323,24 @@ public class UpgradeFragment extends Fragment {
 
         //Sacamos el valor numérico del id
         String numberId = idUpgrade.replaceAll("\\D", ""); // Elimina todos los caracteres que no sean dígitos
-        System.out.println(numberId);
-        changeImg(numberId, newImg);
+        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+            newImg.setImageResource(R.drawable.upgradecat17);
+            newImg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            int minInput = 1;
+            int maxInput = 66;
+            int minAlpha = 0;
+            int maxAlpha = 255;
 
-        newImg.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+            int numberIdInt = Integer.parseInt(numberId);
+            int alphaValue = (int) (((numberIdInt - minInput) / (float) (maxInput - minInput)) * (maxAlpha - minAlpha) + minAlpha);
+
+            newImg.setImageAlpha(alphaValue);
+
+        }else{
+            changeImg(numberId, newImg);
+        }
+
+        newImg.setPadding(dpToPx(10), dpToPx(-10), dpToPx(10), dpToPx(10));
         newImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 
@@ -293,14 +351,18 @@ public class UpgradeFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
         );
-        titleParams.setMarginStart(dpToPx(10));
-        titleParams.setMarginEnd(dpToPx(10));
         newTitle.setLayoutParams(titleParams);
-        newTitle.setText(name);
+
+        //Título personalizado
+        if(AppDataBase.getInstance().loadMode99Preference(getContext())){
+            newTitle.setText("😈 " + numberId + "\uD83D\uDC31 ");
+        }else{
+            LanguageTranslator.getInstance().renameUpgrades(numberId, newTitle);
+        }
+
         newTitle.setTextSize(textSize);
-        Typeface typefaceTitle = ResourcesCompat.getFont(context, R.font.cleanow);
-        newTitle.setTypeface(typefaceTitle);
-        newTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
+        newTitle.setTypeface(typeface);
+        newTitle.setTextColor(Color.parseColor(titleUpgrade));
         newTitle.setGravity(Gravity.START);
 
         //Nivel
@@ -313,9 +375,8 @@ public class UpgradeFragment extends Fragment {
         newLevel.setLayoutParams(levelParams);
         newLevel.setText(idUserLevel);
         newLevel.setTextSize(textSize);
-        Typeface typefaceLevel = ResourcesCompat.getFont(context, R.font.cleanow);
-        newLevel.setTypeface(typefaceLevel);
-        newLevel.setTextColor(Color.BLACK);
+        newLevel.setTypeface(typeface);
+        newLevel.setTextColor(Color.parseColor(titleUpgrade));
         newLevel.setGravity(Gravity.CENTER);
 
         //Coste
@@ -328,9 +389,8 @@ public class UpgradeFragment extends Fragment {
         newCost.setLayoutParams(costParams);
         newCost.setText(NumberFormatter.formatNumber(cost));
         newCost.setTextSize(textSize);
-        Typeface typefaceCost = ResourcesCompat.getFont(context, R.font.cleanow);
-        newCost.setTypeface(typefaceCost);
-        newCost.setTextColor(Color.parseColor("#8f2d56"));
+        newCost.setTypeface(typeface);
+        newCost.setTextColor(Color.parseColor(costeffectbutton));
         newCost.setGravity(Gravity.CENTER);
 
         //Effect
@@ -344,9 +404,8 @@ public class UpgradeFragment extends Fragment {
         if(Objects.equals(upgradeType, "Active"))newEffect.setText(NumberFormatter.formatNumber(effect) + "/ck");
         else if(Objects.equals(upgradeType, "Passive")) newEffect.setText(NumberFormatter.formatNumber(effect) + "/s");
         newEffect.setTextSize(textSize);
-        Typeface typefaceEffect = ResourcesCompat.getFont(context, R.font.cleanow);
-        newEffect.setTypeface(typefaceEffect);
-        newEffect.setTextColor(Color.parseColor("#8f2d56"));
+        newEffect.setTypeface(typeface);
+        newEffect.setTextColor(Color.parseColor(costeffectbutton));
         newEffect.setGravity(Gravity.CENTER);
 
         //Button
@@ -358,23 +417,20 @@ public class UpgradeFragment extends Fragment {
         buttonParams.setMargins(0, 0, dpToPx(10),0);
         newButton.setWidth(dpToPx(150));
         newButton.setLayoutParams(buttonParams);
-        newButton.setText("mejorar");
-        newButton.setAllCaps(false);
-
-        if(userHasEnoughScore(cost)) {
-            //newButton.setEnabled(true);
-            newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
+        if(LanguageTranslator.getInstance().getCurrentLanguage() == LanguageTranslator.Language.SPANISH){
+            newButton.setText("Mejorar");
 
         }else{
-            //newButton.setEnabled(false);
-            newButton.setBackgroundColor(Color.parseColor("#9b9b9b"));
-            //shakeAnimation(newButton);
-        }
+            newButton.setText("Upgrade");
 
-        //newButton.setBackgroundColor(Color.parseColor("#8f2d56"));
+        }
+        newButton.setAllCaps(false);
+        newButton.setId(View.generateViewId());
+        buttonId = newButton.getId();
+        monitorButtonState(newButton);
+
         newButton.setTextSize(textSize);
         newButton.setTextColor(Color.parseColor("#F7EDE2"));
-        Typeface typeface = ResourcesCompat.getFont(context, R.font.glina_script);
         newButton.setTypeface(typeface);
         newButton.setGravity(Gravity.CENTER);
 
@@ -415,6 +471,42 @@ public class UpgradeFragment extends Fragment {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
+
+//region Gestión de actualizar la compra de mejoras segun el score actualizado
+    private final Handler handler = new Handler();
+    private void monitorButtonState(Button button) {
+        Runnable buttonUpdater = new Runnable() {
+            @Override
+            public void run() {
+                updateButtonState(button); // Pasar la referencia del botón
+                handler.postDelayed(this, 500); // Comprobar cada 500 ms
+            }
+        };
+
+        handler.post(buttonUpdater); // Iniciar el monitoreo
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null); // Detener todos los callbacks
+    }
+    public void updateButtonState(Button button) {
+        double cost = (double) button.getTag(R.id.cost_tag);
+        if (userHasEnoughScore(cost)) {
+            button.setBackgroundColor(Color.parseColor("#8f2d56"));
+        } else {
+            button.setBackgroundColor(Color.parseColor("#9b9b9b"));
+        }
+    }
+//endregion
+
+    private boolean userHasEnoughScore(double cost){
+        double score = ScoreManager.getInstance().getScore();
+        return score >= cost;
+    }
+
+
     private final View.OnClickListener ButtonUpgrade = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -429,17 +521,17 @@ public class UpgradeFragment extends Fragment {
 
 
             if(!userHasEnoughScore(cost)){
-                shakeAnimation(view);
+                AnimationManager.getInstance().shakeAnimation(view);
             }else {
 
                 Log.d("Clicker->", "Coste: " + cost + ", Efecto: " + effect);
 
                 //toast
-                Toast.makeText(
+                /*Toast.makeText(
                         context,
                         userHasEnoughScore(cost) ? "Has comprado la mejora" + idUpgrade : "No tienes suficiente score",
                         Toast.LENGTH_SHORT
-                ).show();
+                ).show();*/
 
                 if (upgradeType.equals("Active"))
                     ScoreManager.getInstance().applyActiveUpgrade(requireContext(), cost, effect);
@@ -450,33 +542,28 @@ public class UpgradeFragment extends Fragment {
                 viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
 
                 synchronized (container) {
-                    container.removeAllViews();//eliminar las vistas
+                    //container.removeAllViews();//eliminar las vistas
+                    List<View> viewsToRemove = new ArrayList<>();
+                    for (int i = 0; i < container.getChildCount(); i++) {
+                        View child = container.getChildAt(i);
+                        if (child.getId() != R.id.mystery_layout) {
+                            viewsToRemove.add(child);
+                        }
+                    }
+                    for (View viewUpgrade : viewsToRemove) {
+                        container.removeView(viewUpgrade);
+                    }
                 }
                 viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
 
                 //Animación de caer gatitos
                 Game.getInstance().addImage(context, idUserLevel);
 
-            /*if (img == null) {
-                Log.e("ButtonUpgrade", "La ImageView asociada al botón es null. Revisa el ID o la asociación.");
-                return; // Detener si no hay imagen asociada
-            }*/
             }
         }
     };
 
-    public void shakeAnimation(View button){
-        Animation shake = new TranslateAnimation(0, 10, 0, 0);
-        shake.setDuration(70);
-        shake.setRepeatCount(7);
-        shake.setRepeatMode(Animation.REVERSE);
-        button.startAnimation(shake);
-    }
 
-    private boolean userHasEnoughScore(double cost){
-        double score = ScoreManager.getInstance().getScore();
-        return score >= cost;
-    }
 
     void changeImg(String idUserLevel, ImageView image){
         switch (idUserLevel){
