@@ -138,6 +138,7 @@
             android:background="#FFF8F0">
 
             <LinearLayout
+                android:id="@+id/mystery_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -169,22 +170,22 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="16sp"
                     android:fontFamily="@font/cleanow"
-                    android:textColor="@color/black"
                     android:gravity="center"
-                    android:text="All Upgrades" />
+                    android:text="Have all  active upgrades purchased"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/upgrade_effect"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="16sp"
                     android:fontFamily="@font/cleanow"
-                    android:textColor="@color/black"
                     android:gravity="center"
-                    android:text="Blocked" />
+                    android:text="Blocked"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/upgrade_level"

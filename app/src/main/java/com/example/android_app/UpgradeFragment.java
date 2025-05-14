@@ -106,10 +106,7 @@ public class UpgradeFragment extends Fragment {
 
         upgradeSecretCost = rootView.findViewById(R.id.upgrade_cost);
         upgradeSecretEffect = rootView.findViewById(R.id.upgrade_effect);
-        if(upgradeSecretCost != null && upgradeSecretEffect != null){
-            upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[0]);
-            upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[1]);
-        }
+
 
 
         //Conecta con el viewmodel
@@ -146,6 +143,16 @@ public class UpgradeFragment extends Fragment {
        upgradeType = getArguments().getString(ARG_UPGRADE_TYPE);
        LanguageTranslator.getInstance().renameFragment(upgradeType, title, cost, effect, level);
 
+       //idioma misteriosa mejora missteriosa
+        if(upgradeSecretCost != null && upgradeSecretEffect != null){
+            if(upgradeType.equals("Active")){
+                upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[0]);
+                upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[2]);
+            } else if (upgradeType.equals("Passive")) {
+                upgradeSecretCost.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[1]);
+                upgradeSecretEffect.setText(LanguageTranslator.getInstance().getSecretUpgradeText()[2]);
+            }
+        }
 
         //FormatUI("Name", "Description", "Id", 0, 0);
 
@@ -535,7 +542,17 @@ public class UpgradeFragment extends Fragment {
                 viewModel.updateUserLevel(idUpgrade, idUserLevel, upgradeType, userId);
 
                 synchronized (container) {
-                    container.removeAllViews();//eliminar las vistas
+                    //container.removeAllViews();//eliminar las vistas
+                    List<View> viewsToRemove = new ArrayList<>();
+                    for (int i = 0; i < container.getChildCount(); i++) {
+                        View child = container.getChildAt(i);
+                        if (child.getId() != R.id.mystery_layout) {
+                            viewsToRemove.add(child);
+                        }
+                    }
+                    for (View viewUpgrade : viewsToRemove) {
+                        container.removeView(viewUpgrade);
+                    }
                 }
                 viewModel.getUpgradesTypeUserLevel(upgradeType, userId);
 

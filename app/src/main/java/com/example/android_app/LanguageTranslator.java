@@ -163,12 +163,14 @@ public class LanguageTranslator {
      public String[] getSecretUpgradeText(){
         if (currentLanguage == Language.SPANISH) {
             return new String[]{
-                    "Todas\nlas\n mejoras\ncompradas",
+                    "Tener\ntodas\nlas\n mejoras\nACTIVAS\ncompradas",
+                    "Tener\ntodas\nlas\n mejoras\nPASIVAs\ncompradas",
                     "Bloqueado"
             };
         } else { // English
             return new String[]{
-                    "All\nupgrades\npurchased",
+                    "Have\nall\nACTIVE\nupgrades\npurchased",
+                    "Have\nall\nPASSIVE\nupgrades\npurchased",
                     "Blocked"
             };
         }
