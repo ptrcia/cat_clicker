@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.android_app"
+    namespace = "com.patriciagracia.catclicker"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.android_app"
+        applicationId = "com.patriciagracia.catclicker"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
